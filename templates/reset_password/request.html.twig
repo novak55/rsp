@@ -1,0 +1,24 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{% trans %}Obnova hesla{% endtrans %}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+    {% for flashError in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
+
+    <div class="alert alert-warning" style="width: 30rem;">
+    {{ form_start(requestForm) }}
+        {{ form_row(requestForm.email) }}
+        <div>
+            <small>Zadejte Vaší emailovou adresu na kterou Vám zašleme odkaz pro obnovu hesla.</small>
+        </div>
+        <div class="separator"></div>
+        <div class="text-center"><button class="btn btn-danger">Obnovit heslo</button></div>
+        {{ form_end(requestForm) }}
+        <div class="separator"></div>
+        <div class="text-center col-sm-12"><a href="{{ path('login') }}">Zpět na přihlášení do systému</a></div>
+        </div>
+    </div>
+{% endblock %}

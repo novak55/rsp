@@ -1,0 +1,14 @@
+<h1>Dobrý den,</h1>
+<p>
+    na adrese {{ nastaveni.domain }} bylo požádáno o obnovu hesla, pokud jste tak neučinil/a Vy, berte tento email prosím jako bezpředmětný.
+</p>
+<p>
+    Pro obnovu hesla použijte následující odkaz
+    <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">OBNOVA HESLA</a>
+    platnost tohoto odkazu je jedna hodina.
+</p>
+
+<p>
+    Se srdečným pozdravem
+    {{ nastaveni.firma }}
+</p>
