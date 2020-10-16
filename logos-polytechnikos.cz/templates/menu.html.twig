@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark topmenu">
+    <a class="navbar-brand" title="Zobrazit domovskou stránku" href="/"> {{ setting.settings.companyName ?? 'Název firmy není dostupný' }} <span class="small">v.0.0.1.<i>B</i></span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Menu</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Public A</a>
+                    <a class="dropdown-item" href="#">Public B</a>
+                    <a class="dropdown-item" href="#">Public C</a>
+                </div>
+            </li>
+{% if app.user %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Organizace</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Příspěvky</a>
+                <a class="dropdown-item" href="#">Uživatelé</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item open-form alert-warning" href="#">Přidat něco</a>
+            </div>
+        </li>
+    {% endif %}
+{% endif %}
+        </ul>
+{% if app.user %}
+    <div class=""><abbr title="Máte přiřazenu roli: {{ app.user.getRolePopis() }}">{{ app.user.name }} {{ app.user.surname }}</abbr></div>
+    <a href="{{ path('logout') }}" class="btn btn-warning btn-sm">Odhlásit</a>
+{% else%}
+    <a path="#" class="btn btn-info btn-sm"><i class="fa fa-registered"></i>  Registrovat</a>  
+    <a href="{{ path('login') }}" class="btn btn-info btn-sm open-form"><i class="fa fa-user-check"></i>  Přihlásit</a>
+{% endif %}
+    </div>
+</nav>

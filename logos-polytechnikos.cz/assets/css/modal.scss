@@ -1,0 +1,26 @@
+div .separator{
+  border-bottom: 1px solid lightgray;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.text-brown{
+  color: brown;
+}
+
+.modal-body{
+  font-size: 0.8rem;
+}
+
+.modal-body div div table{
+  border-bottom: 1px solid gray;
+}
+
+.modal-body div div table tr td, .modal-body div div table tr th{
+  margin: 0.3rem;
+  padding: 0.3rem;
+}
+
+.modal-body div div h4{
+  margin-bottom: 0.6rem
+}

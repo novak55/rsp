@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=9" />
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width">
+        {% set _title = block('title') %}
+        {% set _h2Title = block('h2Title') %}
+        <title>
+            {% if _title|length > 0 %}
+                {% block title %}{% endblock %} | {% if setting.settings|length > 0 %}{{ setting.settings.companyName }}{% else %}Název firmy není dostupný{% endif %}
+            {% elseif _h2Title|length > 0 %}
+                {% block h2Title %}{% endblock %} | {% if setting.settings|length > 0 %}{{ setting.settings.companyName }}{% else %}Název firmy není dostupný{% endif %}
+            {% else %}
+                {% if setting.settings|length > 0 %}{{ setting.settings.companyName }}{% else %}Název firmy není dostupný{% endif %}
+            {% endif %}
+        </title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="shortcut icon" type="image/ico" href=""" />
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,7 @@
+body {
+    background-color: lightgray;
+}
+
+a:hover{
+    background-color: #8f0e07 !important;
+}
