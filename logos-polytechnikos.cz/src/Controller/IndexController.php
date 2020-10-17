@@ -13,7 +13,7 @@ class IndexController extends AbstractController
 
 	public function __construct()
 	{
-	    /** odmazat až tady něco bude */
+		/** odmazat až tady něco bude */
 	}
 
 	/**
@@ -25,6 +25,7 @@ class IndexController extends AbstractController
 		$nahodneCislo = rand(0, 6);
 		return $this->render('rsp/index.html.twig', [
 			'twigVar' => $nahodneCislo,
+            'container' => $this->container,
 		]);
 	}
 

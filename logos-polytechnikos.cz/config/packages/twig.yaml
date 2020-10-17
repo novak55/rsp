@@ -7,3 +7,4 @@ twig:
         - bootstrap_4_horizontal_layout.html.twig
     globals:
         setting: '@App\Repository\SettingsRepository'
+        empty_item: 'Položka není vyplněná'

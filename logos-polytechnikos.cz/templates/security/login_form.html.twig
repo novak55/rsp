@@ -5,13 +5,9 @@
 {% block content %}
     <div class="row justify-content-center">
         <div class="col col-lg-4 col-md-5">
-            <div class="row">
-                <div class="col">
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey }}</div>
-                {% endif %}
-                </div>
-            </div>
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey }}</div>
+            {% endif %}
             <div class="row">
                 <form action="{{ path('login') }}" method="POST" class="alert alert-primary col col-sm-12"  style="width: 30rem;">
                 <div class="form-group row">

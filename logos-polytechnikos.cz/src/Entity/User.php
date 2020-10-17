@@ -68,6 +68,16 @@ class User implements UserInterface, Serializable
 		return $this->surname . ' ' . $this->name;
 	}
 
+	/**
+	 * @return string[]
+	 */
+	public function getRoles(): array
+	{
+		return[
+			$this->role->getRole(),
+		];
+	}
+
 	public function getSalt(): void
 	{
 		/** nutná implementace z interface */
@@ -78,7 +88,7 @@ class User implements UserInterface, Serializable
 		/** nutná implementace z interface */
 	}
 
-	public function serialize(): Serializable
+	public function serialize()
 	{
 		return serialize([
 			$this->id,
@@ -162,7 +172,7 @@ class User implements UserInterface, Serializable
 		$this->email = $email;
 	}
 
-	public function getRoles(): ?UserRole
+	public function getRole(): ?UserRole
 	{
 		return $this->role;
 	}

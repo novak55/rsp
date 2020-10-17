@@ -1,6 +1,6 @@
 <h1>Dobrý den,</h1>
 <p>
-    na adrese {{ nastaveni.domain }} bylo požádáno o obnovu hesla, pokud jste tak neučinil/a Vy, berte tento email prosím jako bezpředmětný.
+    na adrese {{ setting.settings.domain ?? empty_item }} bylo požádáno o obnovu hesla, pokud jste tak neučinil/a Vy, berte tento email prosím jako bezpředmětný.
 </p>
 <p>
     Pro obnovu hesla použijte následující odkaz
@@ -10,5 +10,5 @@
 
 <p>
     Se srdečným pozdravem
-    {{ nastaveni.firma }}
+    {{ setting.settings.companyName ?? empty_item}}
 </p>
