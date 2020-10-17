@@ -27,3 +27,13 @@ yarn-error.log
 /composer.lock
 /yarn.lock
 /sql/
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
+/src/DataFixtures/AppFixtures.php
+/package-lock.json
+/phpcs.xml.dist
+/symfony.lock
+/assets/app.js

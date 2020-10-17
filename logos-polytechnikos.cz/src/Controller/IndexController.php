@@ -25,7 +25,6 @@ class IndexController extends AbstractController
 		$nahodneCislo = rand(0, 6);
 		return $this->render('rsp/index.html.twig', [
 			'twigVar' => $nahodneCislo,
-            'container' => $this->container,
 		]);
 	}
 
