@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Setting;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
+use App\Repository\SettingsRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,11 +29,16 @@ class ResetPasswordController extends AbstractController
 
 	use ResetPasswordControllerTrait;
 
+	/** @var ResetPasswordHelperInterface */
 	private $resetPasswordHelper;
 
-	public function __construct(ResetPasswordHelperInterface $resetPasswordHelper)
+	/** @var Setting|null */
+	private $settings;
+
+	public function __construct(ResetPasswordHelperInterface $resetPasswordHelper, SettingsRepository $settingsRepository)
 	{
 		$this->resetPasswordHelper = $resetPasswordHelper;
+		$this->settings = $settingsRepository->getSettings();
 	}
 
 	/**
@@ -162,9 +169,9 @@ class ResetPasswordController extends AbstractController
 		}
 
 		$email = (new TemplatedEmail())
-			->from(new Address('obnova.hesla@novhost.cz', '"Domkat obnova hesla"'))
+			->from(new Address('obnova.hesla@' . $this->settings->getDomain(), $this->settings->getCompanyName() . '" obnova hesla"'))
 			->to($user->getEmail())
-			->subject('Obnova hesla pro Domkat')
+			->subject('Obnova hesla pro ' . $this->settings->getCompanyName())
 			->htmlTemplate('reset_password/email.html.twig')
 			->context([
 				'resetToken' => $resetToken,
