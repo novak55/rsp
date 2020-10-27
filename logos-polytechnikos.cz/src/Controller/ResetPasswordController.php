@@ -169,7 +169,7 @@ class ResetPasswordController extends AbstractController
 		}
 
 		$email = (new TemplatedEmail())
-			->from(new Address('obnova.hesla@' . $this->settings->getDomain(), $this->settings->getCompanyName() . '" obnova hesla"'))
+			->from(new Address('rsp-obnova.hesla@vspj.cz', $this->settings->getCompanyName() . '" obnova hesla"'))
 			->to($user->getEmail())
 			->subject('Obnova hesla pro ' . $this->settings->getCompanyName())
 			->htmlTemplate('reset_password/email.html.twig')

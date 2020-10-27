@@ -13,7 +13,7 @@ class UserRole
 
 	/**
 	 * @ORM\Id()
-	 * @ORM\Column(type="integer")
+	 * @ORM\Column(type="integer", unique=true)
 	 * @var int|null
 	 */
 	private $id;
@@ -35,74 +35,56 @@ class UserRole
 	 * @var User[]
 	 */
 	private $usersRole;
-    
-    public function __construct()
-    {
-        $this->usersRole = new ArrayCollection();
-    }
-    
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-    
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-    
-    /**
-     * @return string|null
-     */
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-    
-    /**
-     * @param string|null $role
-     */
-    public function setRole(?string $role): void
-    {
-        $this->role = $role;
-    }
-    
-    /**
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-    
-    /**
-     * @param string|null $description
-     */
-    public function setDescription(?string $description): void
-    {
-        $this->description = $description;
-    }
-    
-    /**
-     * @return User[]
-     */
-    public function getUsersRole(): array
-    {
-        return $this->usersRole;
-    }
-    
-    /**
-     * @param User[] $usersRole
-     */
-    public function setUsersRole(array $usersRole): void
-    {
-        $this->usersRole = $usersRole;
-    }
+
+	public function __construct()
+	{
+		$this->usersRole = new ArrayCollection();
+	}
+
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
+
+	public function setId(?int $id): void
+	{
+		$this->id = $id;
+	}
+
+	public function getRole(): ?string
+	{
+		return $this->role;
+	}
+
+	public function setRole(?string $role): void
+	{
+		$this->role = $role;
+	}
+
+	public function getDescription(): ?string
+	{
+		return $this->description;
+	}
+
+	public function setDescription(?string $description): void
+	{
+		$this->description = $description;
+	}
+
+	/**
+	 * @return User[]
+	 */
+	public function getUsersRole(): array
+	{
+		return $this->usersRole;
+	}
+
+	/**
+	 * @param User[] $usersRole
+	 */
+	public function setUsersRole(array $usersRole): void
+	{
+		$this->usersRole = $usersRole;
+	}
 
 }
