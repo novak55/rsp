@@ -5,7 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    <br>
     {% if _h2Title %}
         {% set _h2Title = setting.settings.companyName ?? 'Název firmy není dostupný' ~ block('h2Title') %}
     {% else %}
