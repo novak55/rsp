@@ -23,7 +23,7 @@ class User implements UserInterface, Serializable
 	private $id;
 
 	/**
-	 * @ORM\Column(type="string", length=7, unique=true, name="login")
+	 * @ORM\Column(type="string", length=20, unique=true, name="login")
 	 * @var string|null
 	 */
 	private $username;

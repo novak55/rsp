@@ -30,6 +30,12 @@ class Setting
 	 */
 	private $domain;
 
+	/**
+	 * @ORM\Column(type="boolean")
+	 * @var bool|null
+	 */
+	private $loginByEmail;
+
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -58,6 +64,16 @@ class Setting
 	public function setDomain(?string $domain): void
 	{
 		$this->domain = $domain;
+	}
+
+	public function getLoginByEmail(): ?bool
+	{
+		return $this->loginByEmail;
+	}
+
+	public function setLoginByEmail(?bool $loginByEmail): void
+	{
+		$this->loginByEmail = $loginByEmail;
 	}
 
 }
