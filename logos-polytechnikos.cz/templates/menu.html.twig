@@ -25,6 +25,16 @@
             </div>
         </li>
     {% endif %}
+    {% if is_granted('ROLE_AUTOR') %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Moje články</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('app_article_addarticle') }}">Přidat článek</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ path('app_article_myarticles') }}">Přehled</a>
+            </div>
+        </li>
+    {% endif %}
 {% endif %}
         </ul>
 {% if app.user %}

@@ -1,0 +1,37 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Seznam mých článků{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped datatable_filter">
+        <thead>
+        <tr>
+            <th>Název</th>
+            <th>Vložen</th>
+            <th>Stav</th>
+            <th>Akce</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if articles|length > 0 %}
+            {% for article in articles %}
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný Vámi odeslaný článek.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('articleMyArticles') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('articleMyArticles') }}
+{% endblock %}
