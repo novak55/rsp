@@ -41,8 +41,8 @@
     <div class="text-white"><abbr title="Máte přiřazenu roli: {{ app.user.role.description }}">{{ app.user.name }} {{ app.user.surname }}</abbr>  </div>
     <a href="{{ path('logout') }}" class="btn btn-warning btn-sm"><i class="fa fa-power-off"></i>  Odhlásit</a>
 {% else%}
-    <a path="#" class="btn btn-info btn-sm"><i class="fa fa-registered"></i>  Registrovat</a>  
-    <a href="{{ path('login') }}" class="btn btn-info btn-sm open-form"><i class="fa fa-user-check"></i>  Přihlásit</a>
+    <a href="{{ path('register') }}" class="btn btn-navbar"><i class="fa fa-registered"></i>  Registrovat</a>  
+    <a href="{{ path('login') }}" class="btn btn-navbar"><i class="fa fa-user-check"></i>  Přihlásit</a>
 {% endif %}
     </div>
 </nav>

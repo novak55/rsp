@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap";
+@import "theme";
 $images-path: "../images";
 // podpora Bootstrap v3 col-xx-yyy
 @mixin make-td-col($size, $columns: $grid-columns) {

@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.body {
+  background: #c2c2c2;
+  font-family: Roboto;
+}
+
+.navbar {
+  border: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-family: Roboto;
+  padding: 0px;
+  padding-right: 0.5em;
+
+  .navbar-nav {
+    height: 100%;
+  }
+
+  .btn.btn-navbar {
+    display: inline-block;
+    border: none;
+    color: white;
+    height: 100%;
+    border-radius: 0px;
+    padding: 1em;
+    background: #f3333f;
+
+    &:hover {
+      color: black;
+      background: white;
+    }
+  }
+
+  .navbar-brand, .navbar-nav {
+    padding: 1em;
+  }
+}
+
+.navbar-dark {
+  background-color: #E8212E !important;
+}
+
+.card {
+  border-radius: 5px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+  .card-header {
+    background: #f3f3f3;
+    color: black;
+    border: none;
+
+    .card-title {
+      margin: 0px;
+    }
+  }
+}
+
+.alert {
+  padding-right: 2.5rem;
+  border: none;
+}
+
+.alert,
+.alert h1,
+.alert h2,
+.alert h3,
+.alert h4,
+.alert h5,
+.alert h6 {
+  color: #fff;
+}
+
+.alert-primary {
+  background: #2196f3;
+}
+
+.alert-secondary {
+  background: #fff;
+}
+
+.alert-success {
+  background: #4caf50;
+}
+
+.alert-info {
+  background: #9c27b0;
+}
+
+.alert-warning {
+  background: #ff9800;
+}
+
+.alert-danger {
+  background: #e51c23;
+}
+
+.alert-light {
+  background: #fff;
+}
+
+.alert-dark {
+  background: #222;
+}

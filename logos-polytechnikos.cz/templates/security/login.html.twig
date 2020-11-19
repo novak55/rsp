@@ -1,3 +1,34 @@
-{% extends app.request.xmlHttpRequest
-    ? 'security/login_ajax.html.twig'
-    : 'security/login_form.html.twig' %}
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-lg-5 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Přihlášení{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error.messageKey }}
+                        </div>
+                    {% endif %}
+                    <form>
+                        <div class="form-group">
+                            <label for="username is-invalid">{% trans %}Přihlašovací jméno{% endtrans %}</label>
+                            <input type="text" class="form-control" id="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">{% trans %}Heslo{% endtrans %}</label>
+                            <input type="password" class="form-control" id="exampleInputPassword1">
+                        </div>
+                        <div class="form-group">
+                            <a href="{{ path('app_forgot_password_request') }}">{% trans %}Zapomněli jste heslo?{% endtrans %}</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{% trans %}Zaregistrovat{% endtrans %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
