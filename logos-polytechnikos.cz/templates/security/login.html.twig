@@ -13,14 +13,14 @@
                             {{ error.messageKey }}
                         </div>
                     {% endif %}
-                    <form>
+                    <form action="{{ path('login') }}" method="POST">
                         <div class="form-group">
-                            <label for="username is-invalid">{% trans %}Přihlašovací jméno{% endtrans %}</label>
-                            <input type="text" class="form-control" id="username">
+                            <label for="_username is-invalid">{% trans %}Přihlašovací jméno{% endtrans %}</label>
+                            <input type="text" class="form-control" name="_username" value="{{ lastUsername }}" id="_username">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">{% trans %}Heslo{% endtrans %}</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1">
+                            <label for="_password">{% trans %}Heslo{% endtrans %}</label>
+                            <input type="password" class="form-control" name="_password" id="_password">
                         </div>
                         <div class="form-group">
                             <a href="{{ path('app_forgot_password_request') }}">{% trans %}Zapomněli jste heslo?{% endtrans %}</a>
