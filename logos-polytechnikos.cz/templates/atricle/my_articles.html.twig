@@ -10,12 +10,52 @@
             <th>Název</th>
             <th>Vložen</th>
             <th>Stav</th>
-            <th>Akce</th>
+            <th class="datatable-ignore">Spoluautoři</th>
+            <th class="datatable-ignore col-2">Akce</th>
         </tr>
         </thead>
         <tbody>
         {% if articles|length > 0 %}
             {% for article in articles %}
+                <tr>
+                    <td>
+                        <a href="#"
+                           title="Stáhnout článek"
+                        >{{ article.name }}</a>
+                    </td>
+                    <td class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                    <td class="text-center">{{ article.aktualState.state }}</td>
+                    <td >
+                        {% if article.collaborators|length > 0 %}
+                            {% for collaborator in article.collaborators %}
+                                <a href="mailto: {{ collaborator.email }}"
+                                   title="Odelat e-mail spoluautorovi">{{ collaborator.fullName }}</a><br>
+                            {% endfor %}
+                        {% else %}
+                            Neuvedeni
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-info"
+                           href="#"
+                           title="Zobrazit historii stavů článku"><i class="fa fa-recycle"></i>
+                        </a>
+                        <a class="btn btn-sm btn-warning"
+                           href="#"
+                           title="Upravit článek"><i class="fa fa-edit"></i>
+                        </a>
+                        {% if article.aktualState.id == 1 %}
+                        <a class="btn btn-sm btn-warning"
+                           href="#"
+                           title="Odevzdat článek redaktorovi"><i class="fa fa-check"></i>
+                        </a>
+                        <a class="btn btn-sm btn-danger"
+                           href="#"
+                           title="Odstranit článek"><i class="fa fa-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
         {% else %}
             <tr>

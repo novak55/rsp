@@ -1,12 +1,88 @@
 {% extends 'layout.html.twig' %}
 
+{% block _add_article_attachment_label %}
+    <label class="col-sm-12 control-label" for="{{ form.vars.name }}">{{ form.vars.label|raw }}</label>
+{% endblock %}
+
 {% block content %}
     {{ form_start(form) }}
+    <div class="list-group-item">
+    <div class="row" style="margin-bottom: 1rem;">
+        <div class="col-md-6">Název článku<span class="text-danger">*</span> {{ form_errors(form.name) }}{{ form_widget(form.name) }}{{ form_help(form.name) }}</div>
+        <div class="col-md-4">Vlastní článek {{ form_errors(form.attachment) }}{{ form_widget(form.attachment) }}{{ form_help(form.attachment) }}</div>
+        <div class="col-md-2 text-right"><br>{{ form_widget(form.submit) }}</div>
+    </div>
+    <div class="row" style="margin-bottom: 1rem;">
+        <div class="col-12">
+            <div class="row">
+                <hr>
+                <div class="col-12">
+                    <h4>Přidání spoluautora</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">Titul před {{ form_widget(form.degreeBefore) }}{{ form_help(form.degreeBefore) }}</div>
+                <div class="col-md-4">Spoluautor<span class="text-danger">**</span> {{ form_widget(form.nameCollaborator) }}{{ form_help(form.nameCollaborator) }}</div>
+                <div class="col-md-2">Titul za {{ form_widget(form.degreeAfter) }}{{ form_help(form.degreeAfter) }}</div>
+                <div class="col-md-3">E-mail<span class="text-danger">**</span> {{ form_widget(form.email) }}{{ form_help(form.email) }}</div>
+                <div class="col-md-1 text-right"><br>{{ form_widget(form.addCollaborator) }}</div>
+            </div>
+        </div>
+    </div>
     {{ form_rest(form) }}
     {{ form_end(form) }}
+    {% if article.collaborators|length > 0 %}
+        <div class="row" style="margin-bottom: 1rem;">
+            <div class="col-12">
+                <div class="row">
+                    <hr>
+                    <div class="col-12">
+                        <h4>Přidaní spoluautoři</h4>
+                    </div>
+                </div>
+                {% for collaborator in article.collaborators %}
+                    {% if collaborator.disabled != true %}
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-2">Titul před: {{ collaborator.degreeBefore }}</div>
+                            <div class="col-md-3">Jméno: {{ collaborator.name }}</div>
+                            <div class="col-md-2">Titul za: {{ collaborator.degreeAfter }}</div>
+                            <div class="col-md-3">E-mail: {{ collaborator.email }}</div>
+                            <div class="col-md-2 text-right">
+                                <a href="#"
+                                   class="btn btn-sm btn-warning confirm"
+                                   data-confirm-title = "Odstranění"
+                                   data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
+                                   title="Upravit spoluatora"><i class="fa fa-edit"></i></a>
+                                <a href="{{ path('app_article_disablecolaborator',{collaborator: collaborator.id}) }}"
+                                   class="btn btn-sm btn-danger confirm"
+                                   data-confirm-title = "Odstranění"
+                                   data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
+                                   title="Smazat spoluautora"><i class="fa fa-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    </div>
+    <div class="row small" style="margin-top: 1rem;">
+        <div class="col-12 text-danger">* Povinná položka, je nutné takto označenou položku vyplnit.</div>
+        <div class="col-12 text-danger">** Povinná položka v případě, že přidáváte spoluautora, je nutné vyplnit i položky označené *.</div>
+    </div>
 {% endblock %}
 
 {% block title %}
     Vložení nového článku
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('articleAddArticle') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('articleAddArticle') }}
+{% endblock %}

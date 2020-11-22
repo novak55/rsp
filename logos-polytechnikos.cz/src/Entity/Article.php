@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -71,9 +72,16 @@ class Article
 	 */
 	private $reviews;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\ArticleCollaborator", mappedBy="article", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @var ArticleCollaborator[]|Collection
+	 */
+	private $collaborators;
+
 	public function __construct()
 	{
 		$this->reviews = new ArrayCollection();
+		$this->collaborators = new ArrayCollection();
 		$this->attachments = new ArrayCollection();
 		$this->articleStatesHistory = new ArrayCollection();
 		$this->insertDate = new DateTime();
@@ -167,6 +175,22 @@ class Article
 	public function setName(string $name): void
 	{
 		$this->name = $name;
+	}
+
+	/**
+	 * @return ArticleCollaborator[]|Collection
+	 */
+	public function getCollaborators()
+	{
+		return $this->collaborators;
+	}
+
+	/**
+	 * @param ArticleCollaborator[]|Collection $colaborators
+	 */
+	public function setCollaborators($collaborators): void
+	{
+		$this->collaborators = $collaborators;
 	}
 
 }
