@@ -8,8 +8,8 @@
     {{ form_start(form) }}
     <div class="list-group-item">
     <div class="row" style="margin-bottom: 1rem;">
-        <div class="col-md-6">Název článku<span class="text-danger">*</span> {{ form_errors(form.name) }}{{ form_widget(form.name) }}{{ form_help(form.name) }}</div>
-        <div class="col-md-4">Vlastní článek {{ form_errors(form.attachment) }}{{ form_widget(form.attachment) }}{{ form_help(form.attachment) }}</div>
+        <div class="col-md-6">Název příspěvku<span class="text-danger">*</span> {{ form_errors(form.name) }}{{ form_widget(form.name) }}{{ form_help(form.name) }}</div>
+        <div class="col-md-4">Nahrát text příspěvku {{ form_errors(form.attachment) }}{{ form_widget(form.attachment) }}{{ form_help(form.attachment) }}</div>
         <div class="col-md-2 text-right"><br>{{ form_widget(form.submit) }}</div>
     </div>
     <div class="row" style="margin-bottom: 1rem;">
@@ -45,14 +45,16 @@
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-2">Titul před: {{ collaborator.degreeBefore }}</div>
-                            <div class="col-md-3">Jméno: {{ collaborator.name }}</div>
+                            <div class="col-md-3">Jméno: {{ collaborator.nameCollaborator }}</div>
                             <div class="col-md-2">Titul za: {{ collaborator.degreeAfter }}</div>
                             <div class="col-md-3">E-mail: {{ collaborator.email }}</div>
                             <div class="col-md-2 text-right">
                                 <a href="#"
                                    class="btn btn-sm btn-warning confirm"
-                                   data-confirm-title = "Odstranění"
+                                   data-confirm-title = "Upravit spoluautora"
                                    data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
+                                   data-confirm-url = "{{ path('app_article_modifycollaborator', {collaborator: collaborator.id}) }}"
+                                   data-confirm-buttons = '<input class="btn btn-sm btn-danger " type="submit" value="Uložit změny">'
                                    title="Upravit spoluatora"><i class="fa fa-edit"></i></a>
                                 <a href="{{ path('app_article_disablecolaborator',{collaborator: collaborator.id}) }}"
                                    class="btn btn-sm btn-danger confirm"

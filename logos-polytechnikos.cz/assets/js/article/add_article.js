@@ -8,9 +8,9 @@ if (module.hot) {
 }
 
 $(function () {
-    $('#add_article_addCollaborator').on('click', function (e) {
-        let collaborator = $('#add_article_nameCollaborator');
-        let email = $('#add_article_email');
+    $('#article_type_article_addCollaborator').on('click', function (e) {
+        let collaborator = $('#article_type_article_nameCollaborator');
+        let email = $('#article_type_article_email');
         if($.trim(collaborator.val()) !== '' && $.trim(email.val()) !== ''){
             return true;
         }

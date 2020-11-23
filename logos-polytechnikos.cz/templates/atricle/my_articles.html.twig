@@ -41,7 +41,7 @@
                            title="Zobrazit historii stavů článku"><i class="fa fa-recycle"></i>
                         </a>
                         <a class="btn btn-sm btn-warning"
-                           href="#"
+                           href="{{ path('app_article_modifyarticle', {article: article.id}) }}"
                            title="Upravit článek"><i class="fa fa-edit"></i>
                         </a>
                         {% if article.aktualState.id == 1 %}

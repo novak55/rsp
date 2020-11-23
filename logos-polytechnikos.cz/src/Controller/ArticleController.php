@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\ArticleCollaborator;
 use App\Entity\ArticleStateHistory;
-use App\Form\AddArticleType;
+use App\Form\ArticleCollaboratorType;
+use App\Form\ArticleTypeArticle;
 use App\Manager\RspManager;
 use App\Repository\ArticleRepository;
 use DateTime;
@@ -72,7 +73,7 @@ class ArticleController extends AbstractController
 		if ($article === null) {
 			$article = new Article();
 		}
-		$form = $this->formFactory->create(AddArticleType::class, $article);
+		$form = $this->formFactory->create(ArticleTypeArticle::class, $article, ['buttonAddCollaboratorDisabled' => false]);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			if ($article->getId() === null) {
@@ -92,12 +93,12 @@ class ArticleController extends AbstractController
 			if ($form->get('addCollaborator')->isClicked()) {
 				$collaborator = new ArticleCollaborator();
 				$collaborator->setArticle($article);
-				$collaborator->setDegreeBefore($request->request->get('add_article')['degreeBefore']);
-				$collaborator->setName($request->request->get('add_article')['nameCollaborator']);
-				$collaborator->setDegreeAfter($request->request->get('add_article')['degreeAfter']);
-				$collaborator->setEmail($request->request->get('add_article')['email']);
+				$collaborator->setDegreeBefore($request->request->get('article_type_article')['degreeBefore']);
+				$collaborator->setNameCollaborator($request->request->get('article_type_article')['nameCollaborator']);
+				$collaborator->setDegreeAfter($request->request->get('article_type_article')['degreeAfter']);
+				$collaborator->setEmail($request->request->get('article_type_article')['email']);
 				$this->manager->ulozit($collaborator);
-				$this->flashBag->add('success', 'Spoluautor  <strong>' . $collaborator->getName() . '</strong> byl úspěšně přidán.');
+				$this->flashBag->add('success', 'Spoluautor  <strong>' . $collaborator->getNameCollaborator() . '</strong> byl úspěšně přidán.');
 				return new RedirectResponse($this->generateUrl('app_article_addarticle', ['article' => $article->getId()]));
 			}
 			return new RedirectResponse($this->generateUrl('app_article_myarticles'));
@@ -107,12 +108,18 @@ class ArticleController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
-    
-    public function modifyArticle(Request $request, ?Article $article = null)
-    {
-        return null;
+
+	/**
+	 * @Route("/modify-article/{article}")
+	 * @param Request $request
+	 * @param Article $article
+	 * @return RedirectResponse|Response
+	 */
+	public function modifyArticle(Request $request, Article $article)
+	{
+		return $this->addArticle($request, $article);
 	}
-	
+
 	/**
 	 * @Route("/diasble-collaborator/{collaborator}")
 	 * @param ArticleCollaborator $collaborator
@@ -129,6 +136,26 @@ class ArticleController extends AbstractController
 
 		$this->addFlash('danger', 'Tohoto spoluautora nemůžete odstranit! Nejedná se o vašeho spoluautora.');
 		return new RedirectResponse($this->generateUrl('/'));
+	}
+
+	/**
+	 * @Route("/modify-collaborator/{collaborator}")
+	 * @param Request $request
+	 * @param ArticleCollaborator $collaborator
+	 * @return RedirectResponse|Response
+	 */
+	public function modifyCollaborator(Request $request, ArticleCollaborator $collaborator)
+	{
+		$form = $this->createForm(ArticleCollaboratorType::class, $collaborator, ['buttonAddCollaboratorDisabled' => true]);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$this->manager->ulozit($collaborator);
+			$this->addFlash('success', 'Spoluautor byl upraven.');
+			return $this->redirect($this->generateUrl('app_article_modifyarticle', ['article' => $collaborator->getArticle()->getId()]));
+		}
+		return $this->render('atricle/modify_collaborator_ajax.html.twig', [
+			'form' => $form->createView(),
+		]);
 	}
 
 }

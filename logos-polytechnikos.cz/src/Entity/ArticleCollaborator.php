@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use function trim;
 
 /**
  * @ORM\Entity()
@@ -26,7 +27,7 @@ class ArticleCollaborator
 
 	/**
 	 * @ORM\Column(type="string", length=35, nullable=true)
-	 * @var string
+	 * @var string|null
 	 */
 	private $degreeBefore;
 
@@ -34,11 +35,11 @@ class ArticleCollaborator
 	 * @ORM\Column(type="string", nullable=false)
 	 * @var string
 	 */
-	private $name;
+	private $nameCollaborator;
 
 	/**
 	 * @ORM\Column(type="string", length=30, nullable=true)
-	 * @var string
+	 * @var string|null
 	 */
 	private $degreeAfter;
 
@@ -62,11 +63,13 @@ class ArticleCollaborator
 	public function getFullName(): string
 	{
 		$fullName = '';
-		if ($this->getDegreeBefore() !== null) {
+		if ($this->getDegreeBefore() !== null && trim($this->getDegreeBefore()) !== '') {
 			$fullName .= $this->getDegreeBefore() . ' ';
 		}
-		$fullName .= $this->getName();
-		$fullName .= ', ' . $this->getDegreeAfter();
+		$fullName .= $this->getNameCollaborator();
+		if ($this->getDegreeAfter() !== null && trim($this->getDegreeAfter()) !== '') {
+			$fullName .= ', ' . $this->getDegreeAfter();
+		}
 		return $fullName;
 	}
 
@@ -95,19 +98,19 @@ class ArticleCollaborator
 		return $this->degreeBefore;
 	}
 
-	public function setDegreeBefore(string $degreeBefore): void
+	public function setDegreeBefore(?string $degreeBefore): void
 	{
 		$this->degreeBefore = $degreeBefore;
 	}
 
-	public function getName(): ?string
+	public function getNameCollaborator(): string
 	{
-		return $this->name;
+		return $this->nameCollaborator;
 	}
 
-	public function setName(string $name): void
+	public function setNameCollaborator(string $nameCollaborator): void
 	{
-		$this->name = $name;
+		$this->nameCollaborator = $nameCollaborator;
 	}
 
 	public function getDegreeAfter(): ?string
@@ -115,12 +118,12 @@ class ArticleCollaborator
 		return $this->degreeAfter;
 	}
 
-	public function setDegreeAfter(string $degreeAfter): void
+	public function setDegreeAfter(?string $degreeAfter): void
 	{
 		$this->degreeAfter = $degreeAfter;
 	}
 
-	public function getEmail(): ?string
+	public function getEmail(): string
 	{
 		return $this->email;
 	}
