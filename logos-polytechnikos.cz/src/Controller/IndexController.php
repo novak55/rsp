@@ -2,18 +2,21 @@
 
 namespace App\Controller;
 
+use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function rand;
 
 class IndexController extends AbstractController
 {
 
-	public function __construct()
+	/** @var ArticleRepository */
+	private $articleRepository;
+
+	public function __construct(ArticleRepository $articleRepository)
 	{
-		/** odmazat až tady něco bude */
+		$this->articleRepository = $articleRepository;
 	}
 
 	/**
@@ -22,9 +25,8 @@ class IndexController extends AbstractController
 	 */
 	public function index()
 	{
-		$nahodneCislo = rand(0, 6);
 		return $this->render('rsp/index.html.twig', [
-			'twigVar' => $nahodneCislo,
+			'articles' => $this->articleRepository->getPublicArticle(),
 		]);
 	}
 

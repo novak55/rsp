@@ -22,7 +22,7 @@ class FileRepository
 
 	public function isUserReviewerOfArticle(User $reviewer, Article $article): bool
 	{
-		return count($this->em->createQueryBuilder()
+		$isReviewrer = $this->em->createQueryBuilder()
 			->select('r')
 			->from(Review::class, 'r')
 			->join('r.article', 'a')
@@ -32,7 +32,10 @@ class FileRepository
 			->setParameters([
 				'reviewer' => $reviewer,
 				'article' => $article,
-			])) > 0;
+			])
+			->getQuery()
+			->getOneOrNullResult();
+		return count($isReviewrer ?? []) > 0;
 	}
 
 }

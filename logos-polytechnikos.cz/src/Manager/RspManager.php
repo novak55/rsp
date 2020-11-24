@@ -2,7 +2,6 @@
 
 namespace App\Manager;
 
-use App\Entity\FileAttachment;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RspManager
@@ -38,5 +37,5 @@ class RspManager
 		$this->em->persist($object);
 		$this->em->flush();
 	}
-	
+
 }

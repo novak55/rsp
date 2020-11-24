@@ -1,0 +1,44 @@
+<div class="table-responsive">
+    <table class="table table-striped datatable_filter">
+        <thead>
+        <tr>
+            <th>Název</th>
+            <th>Autor</th>
+            <th>Ze dne</th>
+            <th class="datatable-ignore">Spoluautoři</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if articles|length > 0 %}
+            {% for article in articles %}
+                <tr>
+                    <td data-sort="{{ article.name }}"
+                        data-filter="{{ article.name }}">{% if article.currentAttachment is not null %}
+                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+                               title="Stáhnout článek"
+                            >{{ article.name }}</a>
+                        {% else %}
+                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
+                        {% endif %}
+                    </td>
+                    <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
+                    <td data-sort="{{ article.insertDate|date('U') }}" class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                    <td class="col-3">
+                        {% if article.collaborators|length > 0 %}
+                            {% for collaborator in article.collaborators %}
+                                {{ collaborator.fullName }}<br>
+                            {% endfor %}
+                        {% else %}
+                            Neuvedeni
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>

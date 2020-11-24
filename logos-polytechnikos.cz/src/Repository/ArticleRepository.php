@@ -2,12 +2,12 @@
 
 namespace App\Repository;
 
+use App\Controller\ArticleController;
 use App\Entity\Article;
 use App\Entity\ArticleState;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use function ksort;
 
 class ArticleRepository
 {
@@ -30,26 +30,20 @@ class ArticleRepository
 	}
 
 	/**
-	 * @param Article $article
-	 * @return object[]
-	 */
-	public function getCollaborators(Article $article): array
-	{
-		$existing = [];
-		foreach ($article->getCollaborators() as $collaborator) {
-			$existing['c-' . $collaborator->getId()] = $collaborator;
-		}
-		ksort($existing);
-		return $existing;
-	}
-
-	/**
 	 * @param int $id
 	 * @return ArticleState|null
 	 */
 	public function getStateArticleById(int $id): ?object
 	{
 		return $this->em->getRepository(ArticleState::class)->findOneBy(['id' => $id]);
+	}
+
+	/**
+	 * @return Article[]|null
+	 */
+	public function getPublicArticle(): array
+	{
+		return $this->em->getRepository(Article::class)->findBy(['currentState' => ArticleController::PUBLIC_STATES]);
 	}
 
 }

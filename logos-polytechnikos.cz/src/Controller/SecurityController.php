@@ -25,20 +25,20 @@ class SecurityController extends AbstractController
 		]);
 	}
 
-    /**
-     * @Route("/register", name="register")
-     */
-    public function register(Request $request, AuthenticationUtils $utils): Response
-    {
-        return $this->render('security/register.html.twig', []);
-    }
+	/**
+	 * @Route("/register", name="register")
+	 */
+	public function register(Request $request, AuthenticationUtils $utils): Response
+	{
+		return $this->render('security/register.html.twig', []);
+	}
 
 	/**
 	 * @Route("/logout", name="logout")
 	 */
 	public function logout(): void
 	{
-		$this->redirectToRoute('app_nastaveni_nastaveni');
+		/* odhlášení ze systému */
 	}
 
 }

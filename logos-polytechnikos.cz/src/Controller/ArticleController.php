@@ -27,6 +27,14 @@ class ArticleController extends AbstractController
 
 	public const STAV_VYTVORENO = 1;
 	public const STAV_PODANO = 2;
+	public const STAV_VRACENO = 3;
+	public const STAV_PREDANO_RECENZENTUM = 4;
+	public const STAV_PRIJTO_VYHRADA = 5;
+	public const STAV_PRIJATO = 6;
+	public const STAV_ZAMITNUTO = 7;
+
+	/* todo: STAV_PODANO je potřeba odstranit, přidáno z důvodu testování */
+	public const PUBLIC_STATES = [self::STAV_PODANO, self::STAV_PRIJTO_VYHRADA, self::STAV_PRIJATO];
 
 	/** @var ArticleRepository */
 	private $articleRepository;

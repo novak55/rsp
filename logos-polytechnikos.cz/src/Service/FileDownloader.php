@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Controller\ArticleController;
 use App\Entity\FileAttachment;
 use App\Entity\User;
 use App\Repository\FileRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use function in_array;
 
 class FileDownloader
 {
@@ -30,18 +32,23 @@ class FileDownloader
 	 * @param FileAttachment $fileAttachment
 	 * @return bool|string
 	 */
-	public function downLoad(FileAttachment $fileAttachment, User $user)
+	public function downLoad(FileAttachment $fileAttachment, ?User $user = null)
 	{
-		if (
-			$this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
-			|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
-			|| $this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
-			|| ($this->authorizationChecker->isGranted('ROLE_AUTOR')
-				&& $fileAttachment->getArticle()->getAuthor() === $user
+		$inArray = in_array($fileAttachment->getArticle()->getCurrentState()->getId(), ArticleController::PUBLIC_STATES, true);
+		if (($user === null && $inArray)
+			||
+			($user !== null &&
+				($this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
+					|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
+					|| $this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
+					|| ($this->authorizationChecker->isGranted('ROLE_AUTOR')
+						&& $fileAttachment->getArticle()->getAuthor() === $user
+						)
+				)
 			)
 		) {
-			$this->setSubfolder($fileAttachment->getPlanServisu()
-				->getId() . '/' . $fileAttachment->getHashSouboru());
+			$this->setSubfolder($fileAttachment->getArticle()
+				->getId() . '/' . $fileAttachment->getFileSystemName());
 			return $this->getTargetDirectory();
 		}
 

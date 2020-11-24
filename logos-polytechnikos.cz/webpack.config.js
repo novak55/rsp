@@ -27,6 +27,7 @@ Encore
 	.addEntry('app', './assets/js/app.js')
 	.addEntry('articleMyArticles', './assets/js/article/my_articles.js')
 	.addEntry('articleAddArticle', './assets/js/article/add_article.js')
+	.addEntry('rspIndex', './assets/js/rsp/index.js')
 
 	.copyFiles({
 		from: './node_modules/tinymce/skins',

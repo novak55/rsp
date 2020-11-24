@@ -1,6 +1,6 @@
 {% extends "layout.html.twig" %}
 
-{% block title %}Seznam mých článků{% endblock %}
+{% block title %}Seznam článků{% endblock %}
 
 {% block content %}
 <div class="table-responsive">
@@ -18,10 +18,13 @@
         {% if articles|length > 0 %}
             {% for article in articles %}
                 <tr>
-                    <td>
-                        <a href="#"
+                    <td>{% if article.currentAttachment is not null %}
+                        <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
                            title="Stáhnout článek"
                         >{{ article.name }}</a>
+                        {% else %}
+                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
+                        {% endif %}
                     </td>
                     <td class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
                     <td class="text-center">{{ article.currentState.state }}</td>
