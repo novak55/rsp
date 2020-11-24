@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,13 +41,18 @@ class FileAttachment
 	 * @ORM\Column(type="datetime")
 	 * @var DateTime
 	 */
-	private $vlozeno;
+	private $inserted;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="attachments")
 	 * @var Article
 	 */
 	private $article;
+
+	public function __construct()
+	{
+		$this->inserted = new DateTime();
+	}
 
 	public function getId(): ?int
 	{
@@ -98,14 +104,14 @@ class FileAttachment
 		$this->mimeType = $mimeType;
 	}
 
-	public function getVlozeno(): DateTime
+	public function getInserted(): DateTime
 	{
-		return $this->vlozeno;
+		return $this->inserted;
 	}
 
-	public function setVlozeno(DateTime $vlozeno): void
+	public function setInserted(DateTime $inserted): void
 	{
-		$this->vlozeno = $vlozeno;
+		$this->inserted = $inserted;
 	}
 
 }

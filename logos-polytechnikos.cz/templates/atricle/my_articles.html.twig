@@ -24,7 +24,7 @@
                         >{{ article.name }}</a>
                     </td>
                     <td class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
-                    <td class="text-center">{{ article.aktualState.state }}</td>
+                    <td class="text-center">{{ article.currentState.state }}</td>
                     <td >
                         {% if article.collaborators|length > 0 %}
                             {% for collaborator in article.collaborators %}
@@ -44,10 +44,10 @@
                            href="{{ path('app_article_modifyarticle', {article: article.id}) }}"
                            title="Upravit článek"><i class="fa fa-edit"></i>
                         </a>
-                        {% if article.aktualState.id == 1 %}
+                        {% if article.currentState.id == 1 %}
                         <a class="btn btn-sm btn-warning"
-                           href="#"
-                           title="Odevzdat článek redaktorovi"><i class="fa fa-check"></i>
+                           href="{{ path('app_article_submitarticle', {article: article.id}) }}"
+                           title="Podat článek"><i class="fa fa-check"></i>
                         </a>
                         <a class="btn btn-sm btn-danger"
                            href="#"

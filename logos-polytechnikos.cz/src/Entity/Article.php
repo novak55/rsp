@@ -50,14 +50,21 @@ class Article
 	 * @ORM\JoinColumn(nullable=false)
 	 * @var ArticleState
 	 */
-	private $aktualState;
+	private $currentState;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="App\Entity\ArticleStateHistory", mappedBy="article")
+	 * @ORM\OneToMany(targetEntity="App\Entity\ArticleStateHistory", mappedBy="article", orphanRemoval=true, cascade={"persist"})
 	 * @ORM\JoinColumn(nullable=false)
 	 * @var ArrayCollection
 	 */
 	private $articleStatesHistory;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\FileAttachment")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var FileAttachment|null
+	 */
+	private $currentAttachment;
 
 	/**
 	 * @ORM\OneToMany (targetEntity="App\Entity\FileAttachment", mappedBy="article")
@@ -85,6 +92,16 @@ class Article
 		$this->attachments = new ArrayCollection();
 		$this->articleStatesHistory = new ArrayCollection();
 		$this->insertDate = new DateTime();
+	}
+
+	public function addArticleStatesHistory(ArticleStateHistory $articleStateHistory): void
+	{
+		if ($this->articleStatesHistory->contains($articleStateHistory)) {
+			return;
+		}
+
+		$this->articleStatesHistory[] = $articleStateHistory;
+		$articleStateHistory->setArticle($this);
 	}
 
 	public function getId(): ?int
@@ -127,14 +144,14 @@ class Article
 		$this->insertDate = $insertDate;
 	}
 
-	public function getAktualState(): ?ArticleState
+	public function getCurrentState(): ?ArticleState
 	{
-		return $this->aktualState;
+		return $this->currentState;
 	}
 
-	public function setAktualState(ArticleState $aktualState): void
+	public function setCurrentState(ArticleState $currentState): void
 	{
-		$this->aktualState = $aktualState;
+		$this->currentState = $currentState;
 	}
 
 	public function getArticleStatesHistory(): ArrayCollection
@@ -186,11 +203,21 @@ class Article
 	}
 
 	/**
-	 * @param ArticleCollaborator[]|Collection $colaborators
+	 * @param ArticleCollaborator[]|Collection $collaborators
 	 */
 	public function setCollaborators($collaborators): void
 	{
 		$this->collaborators = $collaborators;
+	}
+
+	public function getCurrentAttachment(): ?FileAttachment
+	{
+		return $this->currentAttachment;
+	}
+
+	public function setCurrentAttachment(?FileAttachment $currentAttachment): void
+	{
+		$this->currentAttachment = $currentAttachment;
 	}
 
 }

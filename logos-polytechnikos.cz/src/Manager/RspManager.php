@@ -2,6 +2,7 @@
 
 namespace App\Manager;
 
+use App\Entity\FileAttachment;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RspManager
@@ -18,13 +19,13 @@ class RspManager
 		$this->em = $em;
 	}
 
-	public function odstranit(object $object): void
+	public function remove(object $object): void
 	{
 		$this->em->remove($object);
 		$this->em->flush();
 	}
 
-	public function ulozit(object $object): void
+	public function save(object $object): void
 	{
 		if ($object->getId() === null) {
 			$this->em->persist($object);
@@ -32,10 +33,10 @@ class RspManager
 		$this->em->flush();
 	}
 
-	public function pridat(object $object): void
+	public function add(object $object): void
 	{
 		$this->em->persist($object);
 		$this->em->flush();
 	}
-
+	
 }

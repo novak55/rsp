@@ -15,12 +15,12 @@ class FileUploader
 	/** @var string */
 	private $targetDirectory;
 
-	public function __construct($targetDirectory)
+	public function __construct(string $targetDirectory)
 	{
 		$this->targetDirectory = $targetDirectory;
 	}
 
-	public function setSubfolder(string $subFolder): void
+	public function setSubfolder(?string $subFolder = null): void
 	{
 		$this->targetDirectory .= '/' . $subFolder;
 	}

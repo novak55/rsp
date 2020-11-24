@@ -44,8 +44,8 @@ class ArticleTypeArticle extends ArticleCollaboratorType
 							'application/msword',
 							'application/vnd.ms-word',
 							'application/x-msword',
-							'application/msword;
-					    charset=binary',
+							'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+							'application/msword; charset=binary',
 						],
 						'mimeTypesMessage' => 'Vkládejte soubor v požadovaném formátu: PDF, DOC, DOCX!',
 					]),
