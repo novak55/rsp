@@ -3,6 +3,46 @@
 {% block content %}
     <div class="row justify-content-center">
         <div class="col col-lg-5 col-md-8">
+
+            {# todo: Předělat na symfony formulář a používat form prvky navázané na ORM #}
+            {# Příklad: vše se musí odehrávat mezi form_start(form) a form_end(form) #}
+            {# složitá cesta:#}
+            <div class="">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col col-xs-12 col-md-5">
+                        <label for="register_name">Jméno {{ form_errors(form.name) }}</label>
+                        <div>{{ form_widget(form.name) }}</div>
+                        <div>{{ form_help(form.name) }}</div>
+                    </div>
+                    <div class="col col-xs-12 col-md-5">
+                        <label for="register_surname">Příjmení {{ form_errors(form.surname) }}</label>
+                        <div>{{ form_widget(form.surname) }}</div>
+                        <div>{{ form_help(form.surname) }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-5">
+                        <label for="register_password_first">Heslo {{ form_errors(form.password.first) }}</label>
+                        <div>{{ form_widget(form.password.first) }}</div>
+                        <div>{{ form_help(form.password.first) }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-xs-12 col-md-5">
+                        <label for="register_password_first">Heslo znovu {{ form_errors(form.password.second) }}</label>
+                        <div>{{ form_widget(form.password.second) }}</div>
+                        <div>{{ form_help(form.password.second) }}</div>
+                    </div>
+                </div>
+                {{ form_widget(form.password)}}
+                {# jednoduchá cesta: použít pouze poslední položku formuláře {{ form_rest(form) }} je dobré mít tuto
+                    položku vždy použitou, a nechat vykreslení na symfony a obalit form nějakýma krasopravkama #}
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+            </div>
+            {# ------- #}
+
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">{% trans %}Registrace{% endtrans %}</h5>

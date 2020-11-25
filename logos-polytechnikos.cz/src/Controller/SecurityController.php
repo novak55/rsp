@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\RegisterType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,11 +29,20 @@ class SecurityController extends AbstractController
 	}
 
 	/**
-	 * @Route("/register", name="register")
+	 * @Route("/registrovat")
 	 */
-	public function register(Request $request, AuthenticationUtils $utils): Response
+	public function register(Request $request, FormFactoryInterface $formFactory): Response
 	{
-		return $this->render('security/register.html.twig', []);
+		$user = new User();
+		$form = $formFactory->create(RegisterType::class, $user);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			/* todo: zpracování formuláře -> vytvoření uživatele */
+		}
+		return $this->render('security/register.html.twig', [
+			'form' => $form->createView(),
+		]);
 	}
 
 	/**

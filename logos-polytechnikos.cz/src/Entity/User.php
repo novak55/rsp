@@ -152,7 +152,7 @@ class User implements UserInterface, Serializable
 		$this->name = $name;
 	}
 
-	public function getSurname(): string
+	public function getSurname(): ?string
 	{
 		return $this->surname;
 	}
