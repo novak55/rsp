@@ -32,7 +32,7 @@ class ArticleTypeArticle extends ArticleCollaboratorType
 				'help' => 'Zadejte název článku, maximální dálka je omezena na 255 znaků.',
 			])
 			->add('attachment', FileType::class, [
-				'label' => 'Článek: Podporovány jsou soubory: pdf,docx',
+				'label' => 'Článek',
 				'mapped' => false,
 				'required' => false,
 				'constraints' => [
@@ -50,13 +50,13 @@ class ArticleTypeArticle extends ArticleCollaboratorType
 						'mimeTypesMessage' => 'Vkládejte soubor v požadovaném formátu: PDF, DOC, DOCX!',
 					]),
 				],
-				'help' => 'Vkládejte soubor v požadovaném formátu: PDF, DOC, DOCX. Maximální velikost souboru je 10MB.',
+				'help' => 'Podporovány jsou soubory: pdf, docx. Maximální velikost souboru je 10MB.',
 				'help_html' => true,
 			])
 			->add('submit', SubmitType::class, [
 				'label' => 'Uložit článek',
 				'attr' => [
-					'class' => 'btn btn-primary btn-sm',
+					'class' => 'btn btn-primary btn-block',
 					'title' => 'Uloží článek',
 				],
 			]);

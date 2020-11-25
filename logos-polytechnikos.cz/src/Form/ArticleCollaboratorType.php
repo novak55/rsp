@@ -28,7 +28,7 @@ class ArticleCollaboratorType extends AbstractType
 				'required' => false,
 			])
 			->add('nameCollaborator', TextType::class, [
-				'label' => 'Spoluautor',
+				'label' => 'Jméno a příjmení',
 				'mapped' => $options['maping'],
 				'attr' => [
 					'maxlength' => 255,

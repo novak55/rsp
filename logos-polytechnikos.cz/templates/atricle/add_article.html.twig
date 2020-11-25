@@ -1,83 +1,112 @@
 {% extends 'layout.html.twig' %}
 
-{% block _add_article_attachment_label %}
+{# {% block _add_article_attachment_label %}
     <label class="col-sm-12 control-label" for="{{ form.vars.name }}">{{ form.vars.label|raw }}</label>
-{% endblock %}
+{% endblock %}#}
 
 {% block content %}
     {{ form_start(form) }}
-    <div class="list-group-item">
-    <div class="row" style="margin-bottom: 1rem;">
-        <div class="col-md-6">Název příspěvku<span class="text-danger">*</span> {{ form_errors(form.name) }}{{ form_widget(form.name) }}{{ form_help(form.name) }}</div>
-        <div class="col-md-4">Nahrát text příspěvku {{ form_errors(form.attachment) }}{{ form_widget(form.attachment) }}{{ form_help(form.attachment) }}</div>
-        <div class="col-md-2 text-right"><br>{{ form_widget(form.submit) }}</div>
-    </div>
-    <div class="row" style="margin-bottom: 1rem;">
-        <div class="col-12">
-            <div class="row">
-                <hr>
-                <div class="col-12">
-                    <h4>Přidání spoluautora</h4>
+    <div class="row justify-content-center">
+        <div class="col col-lg-8 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Informace o článku{% endtrans %}</h5>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">Titul před {{ form_widget(form.degreeBefore) }}{{ form_help(form.degreeBefore) }}</div>
-                <div class="col-md-4">Spoluautor<span class="text-danger">**</span> {{ form_widget(form.nameCollaborator) }}{{ form_help(form.nameCollaborator) }}</div>
-                <div class="col-md-2">Titul za {{ form_widget(form.degreeAfter) }}{{ form_help(form.degreeAfter) }}</div>
-                <div class="col-md-3">E-mail<span class="text-danger">**</span> {{ form_widget(form.email) }}{{ form_help(form.email) }}</div>
-                <div class="col-md-1 text-right"><br>{{ form_widget(form.addCollaborator) }}</div>
-            </div>
-        </div>
-    </div>
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
-    {% if article.collaborators|length > 0 %}
-        <div class="row" style="margin-bottom: 1rem;">
-            <div class="col-12">
-                <div class="row">
-                    <hr>
-                    <div class="col-12">
-                        <h4>Přidaní spoluautoři</h4>
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name) }}
                     </div>
                 </div>
-                {% for collaborator in article.collaborators %}
-                    {% if collaborator.disabled != true %}
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-md-2">Titul před: {{ collaborator.degreeBefore }}</div>
-                            <div class="col-md-3">Jméno: {{ collaborator.nameCollaborator }}</div>
-                            <div class="col-md-2">Titul za: {{ collaborator.degreeAfter }}</div>
-                            <div class="col-md-3">E-mail: {{ collaborator.email }}</div>
-                            <div class="col-md-2 text-right">
-                                <a href="#"
-                                   class="btn btn-sm btn-warning confirm"
-                                   data-confirm-title = "Upravit spoluautora"
-                                   data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
-                                   data-confirm-url = "{{ path('app_article_modifycollaborator', {collaborator: collaborator.id}) }}"
-                                   data-confirm-buttons = '<input class="btn btn-sm btn-danger " type="submit" value="Uložit změny">'
-                                   title="Upravit spoluatora"><i class="fa fa-edit"></i></a>
-                                <a href="{{ path('app_article_disablecolaborator',{collaborator: collaborator.id}) }}"
-                                   class="btn btn-sm btn-danger confirm"
-                                   data-confirm-title = "Odstranění"
-                                   data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
-                                   title="Smazat spoluautora"><i class="fa fa-trash"></i></a>
-                            </div>
+            </div>
+        </div>
+    </div><br>
+
+    <div class="row justify-content-center">
+        <div class="col col-lg-8 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Text článku{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_label(form.attachment) }}
+                        {{ form_widget(form.attachment) }}
+                        {{ form_help(form.attachment) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+
+    {% if article.collaborators|length > 0 %}
+    <div class="row justify-content-center">
+        <div class="col col-lg-8 col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Autoři{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-1">
+                            {{ form_label(form.degreeBefore) }}
+                            {{ form_widget(form.degreeBefore) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.nameCollaborator) }}
+                            {{ form_widget(form.nameCollaborator) }}
+                        </div>
+                        <div class="col-md-1">
+                            {{ form_label(form.degreeAfter) }}
+                            {{ form_widget(form.degreeAfter) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                        </div>
+                        <div class="col-md-2 text-right">
+                            {{ form_widget(form.addCollaborator) }}
                         </div>
                     </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-    </div>
-    <div class="row small" style="margin-top: 1rem;">
-        <div class="col-12 text-danger">* Povinná položka, je nutné takto označenou položku vyplnit.</div>
-        <div class="col-12 text-danger">** Povinná položka v případě, že přidáváte spoluautora, je nutné vyplnit i položky označené *.</div>
-    </div>
-{% endblock %}
 
-{% block title %}
-    Vložení nového článku
+                    {% for collaborator in article.collaborators %}
+                        {% if collaborator.disabled != true %}
+                            <div class="row">
+                                <div class="col-md-1">{{ collaborator.degreeBefore }}</div>
+                                <div class="col-md-4">{{ collaborator.nameCollaborator }}</div>
+                                <div class="col-md-1">{{ collaborator.degreeAfter }}</div>
+                                <div class="col-md-4">{{ collaborator.email }}</div>
+                                <div class="col-md-2 text-right">
+                                    <a href="#"
+                                       class="btn btn-sm btn-warning confirm"
+                                       data-confirm-title = "Upravit spoluautora"
+                                       data-confirm-text = "Opravdu upravit spoluautora: <b>{{ collaborator.fullName }}</b>?"
+                                       data-confirm-url = "{{ path('app_article_modifycollaborator', {collaborator: collaborator.id}) }}"
+                                       data-confirm-buttons = '<input class="btn btn-sm btn-danger " type="submit" value="Uložit změny">'
+                                       title="Upravit spoluatora"><i class="fa fa-edit"></i></a>
+                                    <a href="{{ path('app_article_disablecolaborator',{collaborator: collaborator.id}) }}"
+                                       class="btn btn-sm btn-danger confirm"
+                                       data-confirm-title = "Odstranění"
+                                       data-confirm-text = "Opravdu odstranit spoluautora: <b>{{ collaborator.fullName }}</b>?"
+                                       title="Smazat spoluautora"><i class="fa fa-trash"></i></a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div><br>
+
+    <div class="row justify-content-center">
+        <div class="col col-lg-8 col-md-8">
+            {{ form_widget(form.submit) }}
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
