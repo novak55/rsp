@@ -14,13 +14,13 @@ use function is_file;
 use function is_readable;
 
 /**
- * @Route("/soubor")
+ * @Route("/file")
  */
 class FileController extends AbstractController
 {
 
 	/**
-	 * @Route("/stahnout-clanek/{fileAttachment}")
+	 * @Route("/download-article/{fileAttachment}")
 	 * @return RedirectResponse|FileResponse
 	 */
 	public function downloadAttachment(FileDownloader $fileDownloader, FileAttachment $fileAttachment, FlashBagInterface $flashBag)

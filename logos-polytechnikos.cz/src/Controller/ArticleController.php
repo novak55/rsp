@@ -202,7 +202,7 @@ class ArticleController extends AbstractController
 	}
 
 	/**
-	 * @Route("/podat-clanek/{article}")
+	 * @Route("/submit-article/{article}")
 	 * @param Article $article
 	 * @return RedirectResponse|Response
 	 */

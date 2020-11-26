@@ -29,20 +29,20 @@ class SecurityController extends AbstractController
 	}
 
 	/**
-	 * @Route("/registrovat")
+	 * @Route("/register")
 	 */
 	public function register(Request $request, FormFactoryInterface $formFactory): Response
 	{
-		$user = new User();
-		$form = $formFactory->create(RegisterType::class, $user);
-		$form->handleRequest($request);
-
-		if ($form->isSubmitted() && $form->isValid()) {
-			/* todo: zpracování formuláře -> vytvoření uživatele */
-		}
+	    $user = new User();
+	    $form = $formFactory->create(RegisterType::class, $user);
+	    $form->handleRequest($request);
+	    
+	    if ($form->isSubmitted() && $form->isValid()){
+	        /* todo: zpracování formuláře -> vytvoření uživatele */
+        }
 		return $this->render('security/register.html.twig', [
-			'form' => $form->createView(),
-		]);
+		    'form' => $form->createView(),
+        ]);
 	}
 
 	/**
