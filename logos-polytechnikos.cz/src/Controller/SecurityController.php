@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class SecurityController extends AbstractController
 {
@@ -57,13 +58,16 @@ class SecurityController extends AbstractController
 	    $form->handleRequest($request);
 	    
 	    if ($form->isSubmitted() && $form->isValid()){
-            // TODO - [LR] - dořešit výjimky nějaká error page?
-	    	$this->userService->create($user);
-			$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
-			return $this->render('security/login.html.twig', [
-				'lastUsername'  => "",
-				'error'         => "",
-			]);
+	    	try {
+	    		$this->userService->create($user);
+				$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
+				return $this->render('security/login.html.twig', [
+					'lastUsername' => "",
+					'error' => "",
+				]);
+			} catch (UniqueConstraintViolationException $e) {
+				$this->flashBag->add('warning', 'Nepodařilo se vytvořit účet kontaktujte administrátora webu.');
+			}
         }
 		return $this->render('security/register.html.twig', [
 		    'form' => $form->createView(),
