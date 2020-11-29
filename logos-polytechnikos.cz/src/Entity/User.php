@@ -35,13 +35,13 @@ class User implements UserInterface, Serializable
 	private $password;
 
 	/**
-	 * @ORM\Column(type="string", length=15, nullable=true)
+	 * @ORM\Column(type="string", length=40, nullable=true)
 	 * @var string
 	 */
 	private $titleBeforeName;
 
 	/**
-	 * @ORM\Column(type="string", length=15, nullable=true)
+	 * @ORM\Column(type="string", length=40, nullable=true)
 	 * @var string
 	 */
 	private $titleAfterName;
