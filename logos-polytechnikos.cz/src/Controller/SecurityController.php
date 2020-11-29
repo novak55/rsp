@@ -9,20 +9,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    /** @var UserService */
+    /** @var FlashBagInterface */
+	private $flashBag;
+	/** @var UserService */
     private $userService;
+
 
     /**
      * SecurityController constructor.
      * @param UserService $userService
      */
-    public function __construct(UserService $userService)
+    public function __construct(FlashBagInterface $flashBag, UserService $userService)
     {
+    	$this->flashBag = $flashBag;
         $this->userService = $userService;
     }
 
@@ -53,6 +59,11 @@ class SecurityController extends AbstractController
 	    if ($form->isSubmitted() && $form->isValid()){
             // TODO - [LR] - dořešit výjimky nějaká error page?
 	    	$this->userService->create($user);
+			$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
+			return $this->render('security/login.html.twig', [
+				'lastUsername'  => "",
+				'error'         => "",
+			]);
         }
 		return $this->render('security/register.html.twig', [
 		    'form' => $form->createView(),
