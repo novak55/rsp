@@ -33,6 +33,20 @@ class RegisterType extends AbstractType
 				],
 				'required' => true,
 			])
+			->add('titleBeforeName', TextType::class, [
+				'label' => 'Titul před jménem',
+				'attr' => [
+					'maxlength' => 15,
+				],
+				'required' => false,
+			])
+			->add('titleAfterName', TextType::class, [
+				'label' => 'Titul za jménem',
+				'attr' => [
+					'maxlength' => 15,
+				],
+				'required' => false,
+			])
 			->add('surname', TextType::class, [
 				'label' => 'Příjmení',
 				'attr' => [

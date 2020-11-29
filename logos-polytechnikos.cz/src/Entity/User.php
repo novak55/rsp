@@ -35,6 +35,18 @@ class User implements UserInterface, Serializable
 	private $password;
 
 	/**
+	 * @ORM\Column(type="string", length=15, nullable=true)
+	 * @var string
+	 */
+	private $titleBeforeName;
+
+	/**
+	 * @ORM\Column(type="string", length=15, nullable=true)
+	 * @var string
+	 */
+	private $titleAfterName;
+
+	/**
 	 * @ORM\Column(type="string", length=100)
 	 * @var string|null
 	 */
@@ -73,7 +85,7 @@ class User implements UserInterface, Serializable
 	 */
 	public function getRoles(): array
 	{
-		return[
+		return [
 			$this->role->getRole(),
 		];
 	}
@@ -95,6 +107,8 @@ class User implements UserInterface, Serializable
 			$this->username,
 			$this->email,
 			$this->password,
+			$this->titleBeforeName,
+			$this->titleAfterName,
 			$this->name,
 			$this->surname,
 		]);
@@ -107,6 +121,8 @@ class User implements UserInterface, Serializable
 			$this->username,
 			$this->email,
 			$this->password,
+			$this->titleBeforeName,
+			$this->titleAfterName,
 			$this->name,
 			$this->surname,
 		] = unserialize($serialized, ['allowed_classes' => false]);
@@ -140,6 +156,26 @@ class User implements UserInterface, Serializable
 	public function setPassword(?string $password): void
 	{
 		$this->password = $password;
+	}
+
+	public function getTitleBeforeName(): ?string
+	{
+		return $this->titleBeforeName;
+	}
+
+	public function setTitleBeforeName(?string $titleBeforeName): void
+	{
+		$this->titleBeforeName = $titleBeforeName;
+	}
+
+	public function getTitleAfterName(): ?string
+	{
+		return $this->titleAfterName;
+	}
+
+	public function setTitleAfterName(?string $titleAfterName): void
+	{
+		$this->titleAfterName = $titleAfterName;
 	}
 
 	public function getName(): ?string
@@ -181,5 +217,4 @@ class User implements UserInterface, Serializable
 	{
 		$this->role = $role;
 	}
-
 }

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterType;
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,8 +14,20 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /** @var UserService */
+    private $userService;
 
-	/**
+    /**
+     * SecurityController constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+
+    /**
 	 * @Route("/login", name="login")
 	 */
 	public function login(Request $request, AuthenticationUtils $utils): Response
@@ -38,7 +51,8 @@ class SecurityController extends AbstractController
 	    $form->handleRequest($request);
 	    
 	    if ($form->isSubmitted() && $form->isValid()){
-	        /* todo: zpracování formuláře -> vytvoření uživatele */
+            // TODO - [LR] - dořešit výjimky nějaká error page?
+	    	$this->userService->create($user);
         }
 		return $this->render('security/register.html.twig', [
 		    'form' => $form->createView(),

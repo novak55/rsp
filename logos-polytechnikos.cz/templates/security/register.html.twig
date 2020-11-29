@@ -12,10 +12,14 @@
                 <div class="card-body">
                     {{ form_start(form) }}
                         <div class="form-group row">
-                            {#<div class="col col-xs-12 col-md-2">
-                                {{ form_label(form.title) }}
-                                {{ form_widget(form.title) }}
-                            </div> #}
+                            <div class="col col-xs-12 col-md-5">
+                                {{ form_label(form.titleBeforeName) }}
+                                {{ form_widget(form.titleBeforeName) }}
+                            </div>
+                            <div class="col col-xs-12 col-md-5">
+                                {{ form_label(form.titleAfterName) }}
+                                {{ form_widget(form.titleAfterName) }}
+                            </div>
                             <div class="col col-xs-12 col-md-5">
                                 {{ form_label(form.name) }}
                                 {{ form_widget(form.name) }}
