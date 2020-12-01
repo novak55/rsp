@@ -17,24 +17,24 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class SecurityController extends AbstractController
 {
-    /** @var FlashBagInterface */
+	/** @var FlashBagInterface */
 	private $flashBag;
 	/** @var UserService */
-    private $userService;
+	private $userService;
 
 
-    /**
-     * SecurityController constructor.
-     * @param UserService $userService
-     */
-    public function __construct(FlashBagInterface $flashBag, UserService $userService)
-    {
+	/**
+	 * SecurityController constructor.
+	 * @param UserService $userService
+	 */
+	public function __construct(FlashBagInterface $flashBag, UserService $userService)
+	{
     	$this->flashBag = $flashBag;
-        $this->userService = $userService;
-    }
+    	$this->userService = $userService;
+	}
 
 
-    /**
+	/**
 	 * @Route("/login", name="login")
 	 */
 	public function login(Request $request, AuthenticationUtils $utils): Response
@@ -59,12 +59,9 @@ class SecurityController extends AbstractController
 	    
 	    if ($form->isSubmitted() && $form->isValid()){
 	    	try {
-	    		$this->userService->create($user);
+	    		$this->userService->createAuthor($user);
 				$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
-				return $this->render('security/login.html.twig', [
-					'lastUsername' => "",
-					'error' => "",
-				]);
+				return $this->redirect('/login');
 			} catch (UniqueConstraintViolationException $e) {
 				$this->flashBag->add('warning', 'Nepodařilo se vytvořit účet kontaktujte administrátora webu.');
 			}
