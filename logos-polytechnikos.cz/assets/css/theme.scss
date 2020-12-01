@@ -10,6 +10,18 @@
   margin-top: 24px;
 }
 
+.form-row-columns-align-sides .col:first-child {
+  padding-left: 0px;
+}
+
+.form-row-columns-align-sides .col:last-child {
+  padding-right: 0px;
+}
+
+.card .card-body .form-group:last-child {
+  margin-bottom: 0px;
+}
+
 .form-subitem {
   margin-top: 5px;
 }
