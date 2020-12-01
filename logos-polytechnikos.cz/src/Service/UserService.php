@@ -39,9 +39,29 @@ class UserService
 		$this->passwordEncoder = $passwordEncoder;
 	}
 
-	public function create(User $user)
+	public function createAuthor(User $user)
 	{
-		$user->setRole($this->userRoleRepository->getRoleByName("ROLE_AUTOR"));
+		$this->createUser($user, "ROLE_AUTOR");
+	}
+
+	public function createRedaktor(User $user)
+	{
+		$this->createUser($user, "ROLE_REDAKTOR");
+	}
+
+	public function createSefRedaktor(User $user)
+	{
+		$this->createUser($user, "ROLE_SEFREDAKTOR");
+	}
+
+	public function createRecenzent(User $user)
+	{
+		$this->createUser($user, "ROLE_RECENZENT");
+	}
+
+	private function createUser(User $user, string  $role)
+	{
+		$user->setRole($this->userRoleRepository->getRoleByName($role));
 		$user->setPassword($this->passwordEncoder->encodePassword($user ,$user->getPassword()));
 		$this->rspManager->save($user);
 	}
