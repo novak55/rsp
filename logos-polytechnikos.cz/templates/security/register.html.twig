@@ -4,32 +4,33 @@
 
 {% block content %}
     <div class="row justify-content-center">
-        <div class="col col-lg-5 col-md-8">
+        <div class="col col-xl-6 col-lg-8 col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">{% trans %}Registrace{% endtrans %}</h5>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                        <div class="form-group row">
-                            <div class="col col-xs-12 col-md-5">
+                        <div class="form-group row form-row-columns-align-sides">
+                            <div class="col col-xs-12 col-md-2 nowrap">
                                 {{ form_label(form.titleBeforeName) }}
                                 {{ form_widget(form.titleBeforeName) }}
                             </div>
-                            <div class="col col-xs-12 col-md-5">
-                                {{ form_label(form.titleAfterName) }}
-                                {{ form_widget(form.titleAfterName) }}
-                            </div>
-                            <div class="col col-xs-12 col-md-5">
+                            <div class="col col-xs-12 col-md-4 nowrap">
                                 {{ form_label(form.name) }}
                                 {{ form_widget(form.name) }}
                             </div>
-                            <div class="col col-xs-12 col-md-5">
+                            <div class="col col-xs-12 col-md-4 nowrap">
                                 {{ form_label(form.surname) }}
                                 {{ form_widget(form.surname) }}
                             </div>
+                            <div class="col col-xs-12 col-md-2 nowrap">
+                                {{ form_label(form.titleAfterName) }}
+                                {{ form_widget(form.titleAfterName) }}
+                            </div>
                         </div>
-                    {{ form_rest(form) }}
+                        {{ form_widget(form._token) }}
+                        {{ form_rest(form) }}
                     {{ form_end(form) }}
                 </div>
             </div>
