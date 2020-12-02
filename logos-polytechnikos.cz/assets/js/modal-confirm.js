@@ -5,7 +5,7 @@ $(function () {
         let confirmModal = $('#confirmModal');
         confirmModal.find('#confirmModalTitle').text(a.data('confirmTitle'));
         if( a.data('confirmUrl') !== undefined ){
-            $('#confirmModalText').html('<div class="text-center"><img src="/images/loader.gif" style="width: 20px;"></div>');
+            $('#confirmModalText').html('<div class="text-center"><img src="/images/load.gif" style="width: 20px;"></div>');
             $('#confirmModal form').attr('action', a.data('confirmUrl'));
             $.ajax({
                 type: 'GET',
