@@ -33,14 +33,29 @@ class FileDownloader
 	 * @return bool|string
 	 */
 	public function downLoad(FileAttachment $fileAttachment, ?User $user = null)
-	{
-		$inArray = in_array($fileAttachment->getArticle()->getCurrentState()->getId(), ArticleController::PUBLIC_STATES, true);
-		if (($user === null && $inArray)
+    {
+		if (
+			(
+				$user === null
+				&& in_array(
+					$fileAttachment->getArticle()->getCurrentState()->getId(),
+					ArticleController::PUBLIC_STATES,
+					true
+				)
+			)
 			||
-			($user !== null &&
-				($this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
-					|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
-					|| $this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
+			(
+				$user !== null
+				&&
+				(
+					(
+						($this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
+							|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
+						)
+						&& in_array($fileAttachment->getArticle()->getCurrentState()->getId(), ArticleController::PUBLIC_STATES, true)
+					)
+					|| ($this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
+						&& $fileAttachment->getArticle()->getCurrentState()->getId() === ArticleController::STAV_PREDANO_RECENZENTUM)
 					|| ($this->authorizationChecker->isGranted('ROLE_AUTOR')
 						&& $fileAttachment->getArticle()->getAuthor() === $user
 						)
