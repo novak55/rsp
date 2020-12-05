@@ -27,6 +27,14 @@
             </div>
         </li>
     {% endif %}
+    {% if is_granted('ROLE_REDAKTOR') %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Správa uživatelů</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Přidat uživatele</a>
+            </div>
+        </li>
+    {% endif %}
 {% endif %}
         </ul>
 {% if app.user %}
@@ -39,7 +47,7 @@
         </div>
     </div>
 {% else%}
-    <a href="{{ path('app_security_register') }}" class="btn btn-navbar"><i class="fa fa-registered"></i>  Registrovat</a>  
+    <a href="{{ path('app_user_registerauthor') }}" class="btn btn-navbar"><i class="fa fa-registered"></i>  Registrovat</a>  
     <a href="{{ path('login') }}" class="btn btn-navbar"><i class="fa fa-user-check"></i>  Přihlásit</a>
 {% endif %}
     </div>
