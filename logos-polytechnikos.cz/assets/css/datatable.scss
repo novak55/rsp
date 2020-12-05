@@ -14,6 +14,14 @@ table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td
 
 table.dataTable {
 	border-collapse: collapse !important;
+
+	tr {
+		background: none !important;
+
+		td {
+			background: none !important;
+		}
+	}
 }
 
 div.sirka-1 {

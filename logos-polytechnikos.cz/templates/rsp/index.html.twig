@@ -1,7 +1,5 @@
 {% extends "layout.html.twig" %}
 
-{% block title %}{% if setting.settings|length > 0 %}{{ setting.settings.companyName }}{% else %}Název firmy není dostupný{% endif %} - Vydané články{% endblock %}
-
 {% block content %}
     {# todo: doddělat widgety úvodní stránka #}
     {% if app.user is null %}

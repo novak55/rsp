@@ -15,3 +15,5 @@ elementDatasetPolyfill();
 if (module.hot) {
     module.hot.accept();
 }
+
+$('[data-toggle=tooltip]').tooltip();

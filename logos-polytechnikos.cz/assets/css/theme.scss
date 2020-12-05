@@ -133,3 +133,11 @@
 .alert-dark {
   background: #222;
 }
+
+.dt-hide-filter .dataTables_wrapper .row:first-child {
+  display: none;
+}
+
+i[data-toggle=tooltip] {
+  cursor: pointer;
+}

@@ -1,44 +1,70 @@
-<div class="table-responsive">
-    <table class="table table-striped datatable_filter">
-        <thead>
-        <tr>
-            <th>Název</th>
-            <th>Autor</th>
-            <th>Ze dne</th>
-            <th class="datatable-ignore">Spoluautoři</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if articles|length > 0 %}
-            {% for article in articles %}
-                <tr>
-                    <td data-sort="{{ article.name }}"
-                        data-filter="{{ article.name }}">{% if article.currentAttachment is not null %}
-                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
-                               title="Stáhnout článek"
-                            >{{ article.name }}</a>
-                        {% else %}
-                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
-                        {% endif %}
-                    </td>
-                    <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
-                    <td data-sort="{{ article.insertDate|date('U') }}" class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
-                    <td class="col-3">
-                        {% if article.collaborators|length > 0 %}
-                            {% for collaborator in article.collaborators %}
-                                {{ collaborator.fullName }}<br>
+<div class="row justify-content-center">
+    <div class="col col-xl-10 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title float-left">{% trans %}Vydané články{% endtrans %}</h5>
+                <div class="float-right">
+                    <form class="form-inline my-2 my-lg-0">
+                        <label for="#table-page-size">Záznamů na stránce: </label>
+                        <select id="table-page-size" class="form-control ml-2 mr-sm-2"
+                                data-pagelen-for=".dataTables_filter">
+                            <option>100</option>
+                            <option>200</option>
+                            <option>300</option>
+                            <option value="-1" selected>Vše</option>
+                        </select>
+                        <input class="form-control mr-sm-2" type="search" placeholder="{% trans %}Hledat{% endtrans %}"
+                               aria-label="Search" data-search-in=".dataTables_filter">
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive dt-hide-filter">
+                    <table class="table table-striped datatable_filter">
+                        <thead>
+                        <tr>
+                            <th>Název</th>
+                            <th>Autor</th>
+                            <th>Ze dne</th>
+                            <th class="datatable-ignore">Spoluautoři</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if articles|length > 0 %}
+                            {% for article in articles %}
+                                <tr>
+                                    <td data-sort="{{ article.name }}"
+                                        data-filter="{{ article.name }}">{% if article.currentAttachment is not null %}
+                                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+                                               title="Stáhnout článek"
+                                            >{{ article.name }}</a>
+                                        {% else %}
+                                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
+                                        {% endif %}
+                                    </td>
+                                    <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
+                                    <td data-sort="{{ article.insertDate|date('U') }}"
+                                        class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                                    <td class="col-3">
+                                        {% if article.collaborators|length > 0 %}
+                                            {% for collaborator in article.collaborators %}
+                                                {{ collaborator.fullName }}<br>
+                                            {% endfor %}
+                                        {% else %}
+                                            Neuvedeni
+                                        {% endif %}
+                                    </td>
+                                </tr>
                             {% endfor %}
                         {% else %}
-                            Neuvedeni
+                            <tr>
+                                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
+                            </tr>
                         {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
