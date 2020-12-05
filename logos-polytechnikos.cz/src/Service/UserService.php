@@ -44,24 +44,24 @@ class UserService
 		$this->createUser($user, "ROLE_AUTOR");
 	}
 
-	public function createRedaktor(User $user)
-	{
-		$this->createUser($user, "ROLE_REDAKTOR");
-	}
-
-	public function createSefRedaktor(User $user)
+	public function createEditorInChief(User $user)
 	{
 		$this->createUser($user, "ROLE_SEFREDAKTOR");
 	}
 
-	public function createRecenzent(User $user)
+	public function createEditor(User $user)
+	{
+		$this->createUser($user, "ROLE_REDAKTOR");
+	}
+
+	public function createReviewer(User $user)
 	{
 		$this->createUser($user, "ROLE_RECENZENT");
 	}
 
 	private function createUser(User $user, string  $role)
 	{
-		$user->setRole($this->userRoleRepository->getRoleByName($role));
+		$user->setRole($this->userRoleRepository->getRole($user->getRolePlainText()));
 		$user->setPassword($this->passwordEncoder->encodePassword($user ,$user->getPassword()));
 		$this->rspManager->save($user);
 	}
