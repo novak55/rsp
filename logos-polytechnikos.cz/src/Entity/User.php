@@ -70,6 +70,11 @@ class User implements UserInterface, Serializable
 	 */
 	private $role;
 
+	/**
+	 * @var string|null
+	 */
+	private $rolePlainText;
+
 	public function getFullNameByName(): ?string
 	{
 		return $this->name . ' ' . $this->surname;
@@ -217,4 +222,22 @@ class User implements UserInterface, Serializable
 	{
 		$this->role = $role;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getRolePlainText(): ?string
+	{
+		return $this->rolePlainText;
+	}
+
+	/**
+	 * @param string|null $rolePlainText
+	 */
+	public function setRolePlainText(?string $rolePlainText): void
+	{
+		$this->rolePlainText = $rolePlainText;
+	}
+
+
 }
