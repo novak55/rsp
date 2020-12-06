@@ -14,18 +14,14 @@ class SecurityController extends AbstractController
 {
 	/** @var FlashBagInterface */
 	private $flashBag;
-	/** @var UserService */
-	private $userService;
-
 
 	/**
 	 * SecurityController constructor.
 	 * @param UserService $userService
 	 */
-	public function __construct(FlashBagInterface $flashBag, UserService $userService)
+	public function __construct(FlashBagInterface $flashBag)
 	{
     	$this->flashBag = $flashBag;
-    	$this->userService = $userService;
 	}
 
 	/**
