@@ -14,6 +14,7 @@ class IndexController extends AbstractController
 
 	/** @var ArticleRepository */
 	private $articleRepository;
+
 	/** @var SecurityService */
 	private $securityService;
 
@@ -29,13 +30,9 @@ class IndexController extends AbstractController
 	 */
 	public function index()
 	{
-		if ($this->securityService->hasRole("ROLE_AUTOR")) {
-			return $this->redirect('/my-articles');
-		} else {
-			return $this->render('rsp/index.html.twig', [
-				'articles' => $this->articleRepository->getPublicArticle(),
-			]);
-		}
+		return $this->securityService->hasRole('ROLE_AUTOR') ? $this->redirect('/my-articles') : $this->render('rsp/index.html.twig', [
+			'articles' => $this->articleRepository->getArticleWidgetByUserAndRole($this->getUser()),
+		]);
 	}
 
 }

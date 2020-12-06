@@ -8,6 +8,8 @@ use App\Entity\ArticleState;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use function implode;
 
 class ArticleRepository
 {
@@ -15,9 +17,13 @@ class ArticleRepository
 	/** @var ManagerRegistry */
 	private $em;
 
-	public function __construct(EntityManagerInterface $entityManager)
+	/** @var AuthorizationCheckerInterface */
+	private $authorizationChecker;
+
+	public function __construct(EntityManagerInterface $entityManager, AuthorizationCheckerInterface $authorizationChecker)
 	{
 		$this->em = $entityManager;
+		$this->authorizationChecker = $authorizationChecker;
 	}
 
 	/**
@@ -44,6 +50,32 @@ class ArticleRepository
 	public function getPublicArticle(): array
 	{
 		return $this->em->getRepository(Article::class)->findBy(['currentState' => ArticleController::PUBLIC_STATES]);
+	}
+
+	/**
+	 * @param User|null $user
+	 * @return Article[]|null
+	 */
+	public function getArticleWidgetByUserAndRole(?User $user = null): array
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a');
+		if ($user === null) {
+			$qb->andWhere('a.currentState in (' . implode(',', ArticleController::PUBLIC_STATES) . ')');
+		} else {
+			if ($this->authorizationChecker->isGranted('ROLE_RECENZENT')) {
+				$qb->join('a.reviews', 'r')
+					->andWhere('a.currentState = ' . ArticleController::STAV_PREDANO_RECENZENTUM)
+					->andWhere('r.reviewer = :user')
+					->setParameter('user', $user);
+			}
+			if ($this->authorizationChecker->isGranted('ROLE_REDAKTOR')
+				|| $this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')) {
+				$qb->andWhere('a.currentState in (' . ArticleController::STAV_PREDANO_RECENZENTUM . ',' . ArticleController::STAV_PODANO . ')');
+			}
+		}
+		return $qb->getQuery()->getResult();
 	}
 
 }

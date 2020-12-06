@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -71,9 +73,18 @@ class User implements UserInterface, Serializable
 	private $role;
 
 	/**
-	 * @var string|null
+	 * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="reviewer")
+	 * @var Collection|Review[]|null
 	 */
+	private $reviews;
+
+	/** @var string|null */
 	private $rolePlainText;
+
+	public function __construct()
+	{
+		$this->reviews = new ArrayCollection();
+	}
 
 	public function getFullNameByName(): ?string
 	{
@@ -223,21 +234,30 @@ class User implements UserInterface, Serializable
 		$this->role = $role;
 	}
 
-	/**
-	 * @return string|null
-	 */
 	public function getRolePlainText(): ?string
 	{
 		return $this->rolePlainText;
 	}
 
-	/**
-	 * @param string|null $rolePlainText
-	 */
 	public function setRolePlainText(?string $rolePlainText): void
 	{
 		$this->rolePlainText = $rolePlainText;
 	}
 
+	/**
+	 * @return Review[]|Collection|null
+	 */
+	public function getReviews()
+	{
+		return $this->reviews;
+	}
+
+	/**
+	 * @param Review[]|Collection|null $reviews
+	 */
+	public function setReviews($reviews): void
+	{
+		$this->reviews = $reviews;
+	}
 
 }

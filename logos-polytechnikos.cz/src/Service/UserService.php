@@ -1,5 +1,5 @@
 <?php
-
+/** todo: Nepotřebný soubor, možné odstranit  */
 
 namespace App\Service;
 

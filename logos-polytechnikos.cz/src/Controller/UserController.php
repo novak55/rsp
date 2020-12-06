@@ -2,10 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Entity\Review;
 use App\Entity\User;
+use App\Form\AddReviewerArticleType;
+use App\Form\AdvancedUserRegisterType;
+use App\Form\UserProfileType;
 use App\Form\UserRegisterType;
-use App\Security\SecurityService;
-use App\Service\UserService;
+use App\Manager\RspManager;
+use App\Repository\ArticleRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -13,26 +19,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Throwable;
 
 class UserController extends AbstractController
 {
+
+	public const ROLE_AUTOR = 2;
+
 	/** @var FlashBagInterface */
 	private $flashBag;
-	/** @var UserService */
-	private $userService;
-	/** @var SecurityService */
-	private $securityService;
 
-	/**
-	 * UserController constructor.
-	 * @param UserService $userService
-	 */
-	public function __construct(FlashBagInterface $flashBag, UserService $userService, SecurityService $securityService)
+	/** @var RspManager */
+	private $manager;
+
+	/** @var UserRepository */
+	private $userRepository;
+
+	public function __construct(FlashBagInterface $flashBag, RspManager $manager, UserRepository $userRepository)
 	{
-    	$this->flashBag = $flashBag;
-    	$this->userService = $userService;
-    	$this->securityService = $securityService;
+		$this->flashBag = $flashBag;
+		$this->manager = $manager;
+		$this->userRepository = $userRepository;
 	}
 
 	/**
@@ -40,56 +47,19 @@ class UserController extends AbstractController
 	 * @param Request $request
 	 * @return RedirectResponse|Response
 	 */
-	public function registerAuthor(Request $request, FormFactoryInterface $formFactory): Response
-	{
-	    $user = new User();
-	    $form = $formFactory->create(UserRegisterType::class, $user);
-	    $form->handleRequest($request);
-	    
-	    if ($form->isSubmitted() && $form->isValid()){
-	    	try {
-	    		$this->userService->createAuthor($user);
-				$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
-				return new RedirectResponse($this->generateUrl('login'));
-			} catch (\Exception $e) {
-				$this->flashBag->add('warning', 'Nepodařilo se vytvořit účet kontaktujte administrátora webu.');
-			}
-        }
-		return $this->render('user/register.html.twig', [
-		    'form' => $form->createView(),
-        ]);
-	}
-
-	/**
-	 * @Route("/register/redaktor")
-	 * @param Request $request
-	 * @return RedirectResponse|Response
-	 * @IsGranted("ROLE_REDAKTOR")
-	 */
-	public function registerEditor(Request $request, FormFactoryInterface $formFactory): Response
+	public function registerAuthor(Request $request, FormFactoryInterface $formFactory)
 	{
 		$user = new User();
 		$form = $formFactory->create(UserRegisterType::class, $user);
 		$form->handleRequest($request);
 
-		if ($form->isSubmitted() && $form->isValid()){
+		if ($form->isSubmitted() && $form->isValid()) {
 			try {
-				switch ($user->getRolePlainText()) {
-					case 'ROLE_SEFREDAKTOR':
-						$this->userService->createEditorInChief($user);
-						break;
-					case 'ROLE_REDAKTOR':
-						$this->userService->createEditor($user);
-						break;
-					case 'ROLE_RECENZENT':
-						$this->userService->createReviewer($user);
-						break;
-					default:
-						throw new Exception("");
-				}
-				$this->flashBag->add('success', 'Uživatel byl úspěšně vytvořen.');
-				return new RedirectResponse($this->generateUrl('rsp'));
-			} catch (\Exception $e) {
+				$user->setRole($this->userRepository->getRoleById(self::ROLE_AUTOR));
+				$this->manager->saveUser($user);
+				$this->flashBag->add('success', 'Byl jste úspěšně zaregistrován jako autor. Můžete se přihlásit.');
+				return new RedirectResponse($this->generateUrl('login'));
+			} catch (Throwable $e) {
 				$this->flashBag->add('warning', 'Nepodařilo se vytvořit účet kontaktujte administrátora webu.');
 			}
 		}
@@ -97,4 +67,81 @@ class UserController extends AbstractController
 			'form' => $form->createView(),
 		]);
 	}
+
+	/**
+	 * @Route("/register/redaktor")
+	 * @param Request $request
+	 * @return RedirectResponse|Response
+	 */
+	public function registerEditor(Request $request, FormFactoryInterface $formFactory)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		$user = new User();
+		$form = $formFactory->create(AdvancedUserRegisterType::class, $user);
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) {
+			try {
+				$this->manager->saveUser($user);
+				$this->flashBag->add('success', 'Uživatel byl úspěšně vytvořen.');
+				return new RedirectResponse($this->generateUrl('rsp'));
+			} catch (Throwable $e) {
+				$this->flashBag->add('warning', 'Nepodařilo se vytvořit účet kontaktujte administrátora webu.');
+			}
+		}
+		return $this->render('user/register.html.twig', [
+			'form' => $form->createView(),
+		]);
+	}
+
+	/**
+	 * @Route("/add-reviewer-article/{article}")
+	 * @param Request $request
+	 * @return Response|RedirectResponse
+	 */
+	public function addReviewerArticle(Request $request, Article $article, ArticleRepository $articleRepository)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$review = new Review();
+		$form = $this->createForm(AddReviewerArticleType::class, $review, ['article' => $article]);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$this->flashBag->add('success', 'Recenzent ' . $review->getReviewer()->getFullNameByName() . ' byl úspěšně přiřazen k článku ' . $article->getName() . '.');
+			$review->setArticle($article);
+			$this->manager->add($review);
+			$this->manager->changeArticleState($article, $articleRepository->getStateArticleById(ArticleController::STAV_PREDANO_RECENZENTUM), $this->getUser());
+			return new RedirectResponse($this->generateUrl('rsp'));
+		}
+
+		return $this->render('user/add_reviewer_article.html.twig', [
+			'form' => $form->createView(),
+		]);
+	}
+
+	/**
+	 * @Route("/change-profile")
+	 * @param Request $request
+	 * @return RedirectResponse|Response
+	 */
+	public function changeProfile(Request $request)
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		$user = $this->getUser();
+		$form = $this->createForm(UserProfileType::class, $user);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			$this->manager->saveUser($user, $this->getUser()->getPassword());
+			$this->flashBag->add('success', 'Váš profil byl upraven.');
+			return new RedirectResponse($this->generateUrl('rsp'));
+		}
+		return $this->render('user/register.html.twig', [
+			'form' => $form->createView(),
+		]);
+	}
+
 }

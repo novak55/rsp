@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col col-xl-10 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title float-left">{% trans %}Články k recenzi{% endtrans %}</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive dt-hide-filter">
+                    <table class="table table-striped datatable_filter">
+                        <thead>
+                        <tr>
+                            <th>Název</th>
+                            <th>Stav</th>
+                            <th>Autor</th>
+                            <th>Ze dne</th>
+                            <th class="datatable-ignore">Spoluautoři</th>
+                            <th class="datatable-ignore">Činnosti</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if articles|length > 0 %}
+                            {% for article in articles %}
+                                <tr>
+                                    <td data-sort="{{ article.name }}"
+                                        data-filter="{{ article.name }}">{% if article.currentAttachment is not null %}
+                                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+                                               title="Stáhnout článek"
+                                            >{{ article.name }}</a>
+                                        {% else %}
+                                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ article.currentState.state }}{% if article.currentState.id == 4 %} ({{ article.reviews|length }}x){% endif %}</td>
+                                    <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
+                                    <td data-sort="{{ article.insertDate|date('U') }}"
+                                        class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                                    <td class="col-3">
+                                        {% if article.collaborators|length > 0 %}
+                                            {% for collaborator in article.collaborators %}
+                                                {{ collaborator.fullName }}<br>
+                                            {% endfor %}
+                                        {% else %}
+                                            Neuvedeni
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}"
+                                                   class="btn btn-sm btn-info open-form"
+                                                   title="Vyplnit recenzi článku"><i class="fa fa-pen"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

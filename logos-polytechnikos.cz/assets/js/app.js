@@ -6,6 +6,7 @@ import './collection-init';
 import './select2';
 import './tinymce';
 import './modal-ajax';
+import './confirm';
 import 'promise-polyfill';
 import 'whatwg-fetch';
 import 'classlist-polyfill';

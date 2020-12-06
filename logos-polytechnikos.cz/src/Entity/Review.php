@@ -25,10 +25,37 @@ class Review
 	private $article;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\User")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="reviews")
 	 * @var User|null
 	 */
 	private $reviewer;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\EvaluationLevel")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var EvaluationLevel|null
+	 */
+	private $topicalityInterestAndUsefulness;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\EvaluationLevel")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var EvaluationLevel|null
+	 */
+	private $originalityAndProffesionalLevel;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\EvaluationLevel")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var EvaluationLevel|null
+	 */
+	private $languageAndStylisticLevel;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $comment;
 
 	public function getId(): ?int
 	{
@@ -58,6 +85,46 @@ class Review
 	public function setReviewer(?User $reviewer): void
 	{
 		$this->reviewer = $reviewer;
+	}
+
+	public function getTopicalityInterestAndUsefulness(): ?EvaluationLevel
+	{
+		return $this->topicalityInterestAndUsefulness;
+	}
+
+	public function setTopicalityInterestAndUsefulness(?EvaluationLevel $topicalityInterestAndUsefulness): void
+	{
+		$this->topicalityInterestAndUsefulness = $topicalityInterestAndUsefulness;
+	}
+
+	public function getOriginalityAndProffesionalLevel(): ?EvaluationLevel
+	{
+		return $this->originalityAndProffesionalLevel;
+	}
+
+	public function setOriginalityAndProffesionalLevel(?EvaluationLevel $originalityAndProffesionalLevel): void
+	{
+		$this->originalityAndProffesionalLevel = $originalityAndProffesionalLevel;
+	}
+
+	public function getLanguageAndStylisticLevel(): ?EvaluationLevel
+	{
+		return $this->languageAndStylisticLevel;
+	}
+
+	public function setLanguageAndStylisticLevel(?EvaluationLevel $languageAndStylisticLevel): void
+	{
+		$this->languageAndStylisticLevel = $languageAndStylisticLevel;
+	}
+
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	public function setComment(?string $comment): void
+	{
+		$this->comment = $comment;
 	}
 
 }

@@ -33,7 +33,7 @@ class FileDownloader
 	 * @return bool|string
 	 */
 	public function downLoad(FileAttachment $fileAttachment, ?User $user = null)
-    {
+	{
 		if (
 			(
 				$user === null
@@ -52,7 +52,8 @@ class FileDownloader
 						($this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
 							|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
 						)
-						&& in_array($fileAttachment->getArticle()->getCurrentState()->getId(), ArticleController::PUBLIC_STATES, true)
+						&& $fileAttachment->getArticle()->getCurrentState()->getId() > 1
+						&& $fileAttachment->getArticle()->getCurrentState()->getId() !== 3
 					)
 					|| ($this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
 						&& $fileAttachment->getArticle()->getCurrentState()->getId() === ArticleController::STAV_PREDANO_RECENZENTUM)

@@ -8,7 +8,7 @@ function openForm(url){
             '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
             '</div>' +
             '            <div class="modal-body">' +
-            '               <div class="text-center"><img src="/Img/load.gif" style="width: 50px;"></div>' +
+            '               <div class="text-center"><img src="/images/load.gif" style="width: 50px;"></div>' +
             '            </div>' +
             '            <div class="modal-footer">' +
             '                <div class="row">' +

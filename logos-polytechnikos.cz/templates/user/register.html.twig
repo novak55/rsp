@@ -7,7 +7,7 @@
         <div class="col col-xl-6 col-lg-8 col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">{% trans %}Registrace{% endtrans %}</h5>
+                    <h5 class="card-title">{% if 'app_user_changeprofile' in app.request.get('_route') %}Úprava profilu{% else %}Registrace{% endif %}</h5>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -29,7 +29,38 @@
                                 {{ form_widget(form.titleAfterName) }}
                             </div>
                         </div>
-                        {{ form_widget(form._token) }}
+                    {% if form.role is defined %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                        {{ form_row(form.role) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if form.username is defined %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                        {{ form_row(form.username) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.email) }}
+                        </div>
+                    </div>
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.password.first) }}
+                        </div>
+                    </div>
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.password.second) }}
+                        </div>
+                    </div>
+
+
+                    {{ form_widget(form._token) }}
                         {{ form_rest(form) }}
                     {{ form_end(form) }}
                 </div>

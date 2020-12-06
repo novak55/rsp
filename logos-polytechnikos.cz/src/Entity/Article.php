@@ -69,13 +69,13 @@ class Article
 	/**
 	 * @ORM\OneToMany (targetEntity="App\Entity\FileAttachment", mappedBy="article")
 	 * @ORM\JoinColumn(nullable=true)
-	 * @var ArrayCollection|null
+	 * @var Collection|FileAttachment[]|null
 	 */
 	private $attachments;
 
 	/**
 	 * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="article")
-	 * @var ArrayCollection
+	 * @var Collection|Review[]|null
 	 */
 	private $reviews;
 
@@ -174,7 +174,10 @@ class Article
 		$this->attachments = $attachments;
 	}
 
-	public function getReviews(): ArrayCollection
+	/**
+	 * @return Review[]|Collection|null
+	 */
+	public function getReviews()
 	{
 		return $this->reviews;
 	}

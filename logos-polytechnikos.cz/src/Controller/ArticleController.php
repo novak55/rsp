@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\ArticleCollaborator;
-use App\Entity\ArticleState;
 use App\Entity\ArticleStateHistory;
 use App\Entity\FileAttachment;
 use App\Form\ArticleCollaboratorType;
@@ -69,7 +68,7 @@ class ArticleController extends AbstractController
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		$articles = $this->articleRepository->getUserArticles($this->getUser());
-		return $this->render('atricle/my_articles.html.twig', [
+		return $this->render('article/my_articles.html.twig', [
 			'articles' => $articles,
 		]);
 	}
@@ -132,7 +131,7 @@ class ArticleController extends AbstractController
 			}
 			return new RedirectResponse($this->generateUrl('app_article_myarticles'));
 		}
-		return $this->render('atricle/add_article.html.twig', [
+		return $this->render('article/add_article.html.twig', [
 			'article' => $article,
 			'form' => $form->createView(),
 		]);
@@ -196,7 +195,7 @@ class ArticleController extends AbstractController
 			$this->addFlash('success', 'Spoluautor byl upraven.');
 			return $this->redirect($this->generateUrl('app_article_modifyarticle', ['article' => $collaborator->getArticle()->getId()]));
 		}
-		return $this->render('atricle/modify_collaborator_ajax.html.twig', [
+		return $this->render('article/modify_collaborator_ajax.html.twig', [
 			'form' => $form->createView(),
 		]);
 	}
@@ -218,19 +217,26 @@ class ArticleController extends AbstractController
 		}
 		$articleState = $this->articleRepository->getStateArticleById(self::STAV_PODANO);
 		$this->flashBag->add('success', 'Váš článek byl podán. O dalším průběhu budete informováni.');
-		$this->changeArticleState($article, $articleState);
+		$this->manager->changeArticleState($article, $articleState, $this->getUser());
 		return new RedirectResponse($this->generateUrl('app_article_myarticles'));
 	}
 
-	public function changeArticleState(Article $article, ArticleState $articleState): void
+	/**
+	 * @Route("/return-article-not-suitable-thema/{article}")
+     * @param Request $request
+	 * @param Article $article
+	 * @return RedirectResponse|Response
+	 */
+	public function returnArticleNotSuitableThema(Request $request, Article $article)
 	{
-		$article->setCurrentState($articleState);
-		$articleStateHistory = new ArticleStateHistory();
-		$articleStateHistory->setWhoChanged($this->getUser());
-		$articleStateHistory->setArticle($article);
-		$articleStateHistory->setArticleState($articleState);
-		$article->addArticleStatesHistory($articleStateHistory);
-		$this->manager->save($article);
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+        $uri = $request->query->has('uri') ? $request->query->get('uri') : $this->urlGenerator->generate('app_zarizeniwc_prehled');
+        
+        $this->manager->changeArticleState($article, $this->articleRepository->getStateArticleById(self::STAV_VRACENO), $this->getUser());
+        $this->flashBag->add('warning', 'Článek ' . $article->getName() . ' byl vrácen z důvodu tématické nevhodnosti.');
+		return new RedirectResponse($this->generateUrl($uri));
 	}
 
 }
