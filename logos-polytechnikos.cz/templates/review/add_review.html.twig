@@ -1,0 +1,62 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    {{ form_start(form) }}
+    <div class="row justify-content-center">
+        <div class="col col-xl-8 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Přidání recenze článku{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        {{ form_label(form.topicalityInterestAndUsefulness) }}
+                        {{ form_widget(form.topicalityInterestAndUsefulness) }}
+                        {{ form_help(form.topicalityInterestAndUsefulness) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.originality) }}
+                        {{ form_widget(form.originality) }}
+                        {{ form_help(form.originality) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.proffesionalLevel) }}
+                        {{ form_widget(form.proffesionalLevel) }}
+                        {{ form_help(form.proffesionalLevel) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(form.languageAndStylisticLevel) }}
+                        {{ form_widget(form.languageAndStylisticLevel) }}
+                        {{ form_help(form.languageAndStylisticLevel) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+    <div class="row justify-content-center">
+        <div class="col col-xl-8 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Volný textový komentář{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row form-group-inlined">
+                        <div class="col-md-12 nowrap">
+                            {{ form_label(form.comment) }}
+                            {{ form_widget(form.comment) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+
+    <div class="row justify-content-center">
+        <div class="col col-xl-8 col-lg-12">
+            {{ form_widget(form.submit) }}
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

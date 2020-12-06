@@ -42,7 +42,14 @@ class Review
 	 * @ORM\JoinColumn(nullable=true)
 	 * @var EvaluationLevel|null
 	 */
-	private $originalityAndProffesionalLevel;
+	private $originality;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\EvaluationLevel")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var EvaluationLevel|null
+	 */
+	private $proffesionalLevel;
 
 	/**
 	 * @ORM\ManyToOne(targetEntity="App\Entity\EvaluationLevel")
@@ -56,6 +63,17 @@ class Review
 	 * @var string|null
 	 */
 	private $comment;
+
+	/**
+	 * @ORM\Column(type="boolean", nullable=false)
+	 * @var bool
+	 */
+	private $submitedReview;
+
+	public function __construct()
+	{
+		$this->submitedReview = false;
+	}
 
 	public function getId(): ?int
 	{
@@ -97,16 +115,6 @@ class Review
 		$this->topicalityInterestAndUsefulness = $topicalityInterestAndUsefulness;
 	}
 
-	public function getOriginalityAndProffesionalLevel(): ?EvaluationLevel
-	{
-		return $this->originalityAndProffesionalLevel;
-	}
-
-	public function setOriginalityAndProffesionalLevel(?EvaluationLevel $originalityAndProffesionalLevel): void
-	{
-		$this->originalityAndProffesionalLevel = $originalityAndProffesionalLevel;
-	}
-
 	public function getLanguageAndStylisticLevel(): ?EvaluationLevel
 	{
 		return $this->languageAndStylisticLevel;
@@ -125,6 +133,36 @@ class Review
 	public function setComment(?string $comment): void
 	{
 		$this->comment = $comment;
+	}
+
+	public function getOriginality(): ?EvaluationLevel
+	{
+		return $this->originality;
+	}
+
+	public function setOriginality(?EvaluationLevel $originality): void
+	{
+		$this->originality = $originality;
+	}
+
+	public function getProffesionalLevel(): ?EvaluationLevel
+	{
+		return $this->proffesionalLevel;
+	}
+
+	public function setProffesionalLevel(?EvaluationLevel $proffesionalLevel): void
+	{
+		$this->proffesionalLevel = $proffesionalLevel;
+	}
+
+	public function isSubmitedReview(): bool
+	{
+		return $this->submitedReview;
+	}
+
+	public function setSubmitedReview(bool $submitedReview): void
+	{
+		$this->submitedReview = $submitedReview;
 	}
 
 }

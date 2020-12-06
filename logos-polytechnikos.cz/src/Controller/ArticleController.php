@@ -223,7 +223,7 @@ class ArticleController extends AbstractController
 
 	/**
 	 * @Route("/return-article-not-suitable-thema/{article}")
-     * @param Request $request
+	 * @param Request $request
 	 * @param Article $article
 	 * @return RedirectResponse|Response
 	 */
@@ -232,10 +232,10 @@ class ArticleController extends AbstractController
 		if (!$this->isGranted('ROLE_REDAKTOR')) {
 			return $this->render('security/secerr.html.twig');
 		}
-        $uri = $request->query->has('uri') ? $request->query->get('uri') : $this->urlGenerator->generate('app_zarizeniwc_prehled');
-        
-        $this->manager->changeArticleState($article, $this->articleRepository->getStateArticleById(self::STAV_VRACENO), $this->getUser());
-        $this->flashBag->add('warning', 'Článek ' . $article->getName() . ' byl vrácen z důvodu tématické nevhodnosti.');
+		$uri = $request->query->has('uri') ? $request->query->get('uri') : $this->urlGenerator->generate('app_zarizeniwc_prehled');
+
+		$this->manager->changeArticleState($article, $this->articleRepository->getStateArticleById(self::STAV_VRACENO), $this->getUser());
+		$this->flashBag->add('warning', 'Článek ' . $article->getName() . ' byl vrácen z důvodu tématické nevhodnosti.');
 		return new RedirectResponse($this->generateUrl($uri));
 	}
 

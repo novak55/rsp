@@ -32,6 +32,7 @@ class IndexController extends AbstractController
 	{
 		return $this->securityService->hasRole('ROLE_AUTOR') ? $this->redirect('/my-articles') : $this->render('rsp/index.html.twig', [
 			'articles' => $this->articleRepository->getArticleWidgetByUserAndRole($this->getUser()),
+            'user' => $this->getUser(),
 		]);
 	}
 

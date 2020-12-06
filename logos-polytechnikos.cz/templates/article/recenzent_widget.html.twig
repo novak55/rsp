@@ -43,9 +43,27 @@
                                             Neuvedeni
                                         {% endif %}
                                     </td>
-                                    <td><a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}"
-                                                   class="btn btn-sm btn-info open-form"
-                                                   title="Vyplnit recenzi článku"><i class="fa fa-pen"></i></a>
+                                    <td>
+                                        {% for review in article.reviews %}
+                                            {% if review.reviewer.id == user.id %}
+                                                {% if review.submitedReview == false %}
+                                                <a href="{{ path('app_review_addreview', {review: review.id}) }}"
+                                                    class="btn btn-sm btn-info"
+                                                    title="Vyplnit recenzi článku"><i class="fa fa-pen"></i></a>
+                                                    {% if review.topicalityInterestAndUsefulness is not null and review.originality is not null and review.proffesionalLevel is not null and review.languageAndStylisticLevel is not null %}
+                                                <a href="{{ path('app_review_submitreview', {review: review.id}) }}"
+                                                    data-confirm-title="Odevzdání recenze"
+                                                    data-confirm-text="Opravdu si přejete odevzdat Vaši recenzi?"
+                                                    class="btn btn-sm btn-success confirm"
+                                                    title="Odevzdat recenzi článku autorovy i redaktorovi, po té již nebude možná úprava."><i class="fa fa-check"></i></a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <a href="{{ path('app_review_showreview', {review: review.id}) }}"
+                                                           class="btn btn-sm btn-primary"
+                                                           title="Zobrazit vyplněnou recenzi článku"><i class="fa fa-eye"></i></a>
+                                                    {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
                                     </td>
                                 </tr>
                             {% endfor %}
