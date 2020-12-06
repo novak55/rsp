@@ -48,6 +48,7 @@
                             {{ form_row(form.email) }}
                         </div>
                     </div>
+                    {% if form.password is defined %}
                     <div class="form-group row form-row-columns-align-sides">
                         <div class="col col-12">
                             {{ form_row(form.password.first) }}
@@ -58,8 +59,7 @@
                             {{ form_row(form.password.second) }}
                         </div>
                     </div>
-
-
+                    {% endif %}
                     {{ form_widget(form._token) }}
                         {{ form_rest(form) }}
                     {{ form_end(form) }}
