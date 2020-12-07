@@ -41,7 +41,7 @@ class RspManager
 		$this->em->flush();
 	}
 
-	public function saveUser(User $user, ?string $password): void
+	public function saveUser(User $user, ?string $password = null): void
 	{
 		$user->setPassword($user->getPassword() !== $password
 			? $this->passwordEncoder->encodePassword($user, $user->getPassword())

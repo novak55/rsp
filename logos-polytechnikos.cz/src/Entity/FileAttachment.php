@@ -44,7 +44,7 @@ class FileAttachment
 	private $inserted;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="attachments")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="attachments", fetch="EAGER")
 	 * @var Article
 	 */
 	private $article;

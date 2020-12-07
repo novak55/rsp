@@ -49,17 +49,22 @@ class FileDownloader
 				&&
 				(
 					(
-						($this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
-							|| $this->authorizationChecker->isGranted('ROLE_REDAKTOR')
+						(
+							$this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
+							||
+							$this->authorizationChecker->isGranted('ROLE_REDAKTOR')
 						)
 						&& $fileAttachment->getArticle()->getCurrentState()->getId() > 1
 						&& $fileAttachment->getArticle()->getCurrentState()->getId() !== 3
 					)
-					|| ($this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
+					||
+					(
+						$this->fileRepository->isUserReviewerOfArticle($user, $fileAttachment->getArticle())
 						&& $fileAttachment->getArticle()->getCurrentState()->getId() === ArticleController::STAV_PREDANO_RECENZENTUM)
-					|| ($this->authorizationChecker->isGranted('ROLE_AUTOR')
-						&& $fileAttachment->getArticle()->getAuthor() === $user
-						)
+					||
+					(
+                        $fileAttachment->getArticle()->getAuthor() === $user
+					)
 				)
 			)
 		) {

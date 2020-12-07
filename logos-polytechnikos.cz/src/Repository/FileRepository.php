@@ -27,14 +27,14 @@ class FileRepository
 			->from(Review::class, 'r')
 			->join('r.article', 'a')
 			->join('r.reviewer', 'u')
-			->where('r = :reviewer and a = :article')
+			->where('u = :reviewer and a = :article')
 			->setMaxResults(1)
 			->setParameters([
 				'reviewer' => $reviewer,
 				'article' => $article,
 			])
 			->getQuery()
-			->getOneOrNullResult();
+			->getResult();
 		return count($isReviewrer ?? []) > 0;
 	}
 
