@@ -239,4 +239,16 @@ class ArticleController extends AbstractController
 		return new RedirectResponse($this->generateUrl($uri));
 	}
 
+	/**
+	 * @Route("/show-article/{article}")
+	 * @param Article $article
+	 * @return Response
+	 */
+	public function showArticle(Article $article): Response
+	{
+		return $this->render('article/show_article.html.twig', [
+			'article' => $article,
+		]);
+	}
+
 }

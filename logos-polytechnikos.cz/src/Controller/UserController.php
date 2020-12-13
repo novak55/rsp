@@ -11,6 +11,7 @@ use App\Form\UserProfileType;
 use App\Form\UserRegisterType;
 use App\Manager\RspManager;
 use App\Repository\ArticleRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -102,7 +103,7 @@ class UserController extends AbstractController
 	 * @param Request $request
 	 * @return Response|RedirectResponse
 	 */
-	public function addReviewerArticle(Request $request, Article $article, ArticleRepository $articleRepository)
+	public function addReviewerArticle(Request $request, Article $article, ArticleRepository $articleRepository, ReviewRepository $reviewRepository)
 	{
 		if (!$this->isGranted('ROLE_REDAKTOR')) {
 			return $this->render('security/secerr.html.twig');
@@ -113,6 +114,7 @@ class UserController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->flashBag->add('success', 'Recenzent ' . $review->getReviewer()->getFullNameByName() . ' byl úspěšně přiřazen k článku ' . $article->getName() . '.');
 			$review->setArticle($article);
+			$review->setReviewState($reviewRepository->getStateReviewById(ReviewController::ROZPRACOVANO));
 			$this->manager->add($review);
 			$this->manager->changeArticleState($article, $articleRepository->getStateArticleById(ArticleController::STAV_PREDANO_RECENZENTUM), $this->getUser());
 			return new RedirectResponse($this->generateUrl('rsp'));

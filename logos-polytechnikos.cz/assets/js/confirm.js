@@ -6,7 +6,7 @@ $('.confirm').click(function (event) {
     if(a.hasClass('confirm-xl')){confirmModal.find('.modal-dialog').addClass('modal-xl');}
     if(a.hasClass('confirm-lg')){confirmModal.find('.modal-dialog').addClass('modal-lg');}
     if( a.data('confirmUrl') !== undefined ){
-        $('#confirmModalText').html('<div class="text-center"><img src="/images/loader.gif" style="width: 20px;"></div>');
+        $('#confirmModalText').html('<div class="text-center"><img src="/images/load.gif" style="width: 20px;"></div>');
         $('#confirmModal form').attr('action', a.data('confirmUrl'));
         $.ajax({
             type: 'GET',

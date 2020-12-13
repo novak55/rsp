@@ -59,21 +59,27 @@
                                     <td>
                                         {% for review in article.reviews %}
                                             {% if review.reviewer.id == user.id %}
-                                                {% if review.submitedReview == false %}
+                                                {% if review.reviewState.id == 1 %}
                                                 <a href="{{ path('app_review_addreview', {review: review.id}) }}"
                                                     class="btn btn-sm btn-info"
                                                     title="Vyplnit recenzi článku"><i class="fa fa-pen"></i></a>
                                                     {% if review.topicalityInterestAndUsefulness is not null and review.originality is not null and review.proffesionalLevel is not null and review.languageAndStylisticLevel is not null %}
-                                                <a href="{{ path('app_review_submitreview', {review: review.id}) }}"
+                                                <a href="#"
                                                     data-confirm-title="Odevzdání recenze"
                                                     data-confirm-text="Opravdu si přejete odevzdat Vaši recenzi?"
-                                                    class="btn btn-sm btn-success confirm"
-                                                    title="Odevzdat recenzi článku autorovy i redaktorovi, po té již nebude možná úprava."><i class="fa fa-check"></i></a>
+                                                    data-confirm-url="{{ path('app_review_submitreview', {review: review.id}) }}"
+                                                    data-confirm-buttons = '<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                                                    class="btn btn-sm btn-warning confirm"
+                                                    title="Zadat celkové rozhodnutí a odevzdat recenzi redaktorovi, po té již nebude možná úprava."><i class="fa fa-check"></i></a>
                                                         {% endif %}
                                                     {% else %}
-                                                        <a href="{{ path('app_review_showreview', {review: review.id}) }}"
-                                                           class="btn btn-sm btn-primary"
-                                                           title="Zobrazit vyplněnou recenzi článku"><i class="fa fa-eye"></i></a>
+                                                        <a href="#"
+                                                           class="btn btn-sm btn-primary confirm"
+                                                           data-confirm-title="Recenze článku"
+                                                           data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                           data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                                                           title="Zobrazit posudek"><i class="fa fa-eye"></i>
+                                                        </a>
                                                     {% endif %}
                                             {% endif %}
                                         {% endfor %}

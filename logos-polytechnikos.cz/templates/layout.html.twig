@@ -5,11 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if _h2Title %}
-        {% set _h2Title = setting.settings.companyName ?? 'Název firmy není dostupný' ~ block('h2Title') %}
-    {% else %}
-        {% set _h2Title = setting.settings.companyName ?? 'Název firmy není dostupný' %}
-    {% endif %}
+
     <div id="novyFormlModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg" >
             <div class="modal-content">
@@ -56,7 +52,7 @@
         {% endfor %}
     {% endblock %}
     <div class="table col-sm-10 offset-1 nadpis-content" style="margin-top: 0.7rem">
-        <h3>{{ _title }}</h3>
+        <h3>{{ _h2Title }}</h3>
     </div>
     <div class="justify-content-center">
     {% block content %}{% endblock %}

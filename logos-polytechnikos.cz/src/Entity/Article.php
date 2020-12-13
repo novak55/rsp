@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use function count;
 
 /**
  * @ORM\Entity()
@@ -104,6 +105,35 @@ class Article
 		$articleStateHistory->setArticle($this);
 	}
 
+	public function hasDifferentReviewersStatement(): bool
+	{
+		if (count($this->reviews) === 2) {
+			$mem = [];
+			foreach ($this->reviews as $review) {
+				if ($review->getReviewerStatement() !== null && $review->getReviewerStatement()->getId() !== 2) {
+					$mem[$review->getReviewerStatement()->getId()] = true;
+				}
+			}
+			return count($mem) === 2;
+		}
+		return false;
+	}
+    
+    public function hasFilledReviewersStatement(): bool
+    {
+        $countReviewers = count($this->reviews);
+        if ($countReviewers > 1) {
+            $mem = [];
+            foreach ($this->reviews as $review) {
+                if ($review->getReviewerStatement() !== null) {
+                    $mem[] = $review->getReviewerStatement()->getId();
+                }
+            }
+            return count($mem) === $countReviewers;
+        }
+        return false;
+	}
+	
 	public function getId(): ?int
 	{
 		return $this->id;

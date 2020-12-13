@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -65,14 +66,28 @@ class Review
 	private $comment;
 
 	/**
-	 * @ORM\Column(type="boolean", nullable=false)
-	 * @var bool
+	 * @ORM\ManyToOne(targetEntity="App\Entity\ReviewState", inversedBy="reviews")
+	 * @ORM\JoinColumn(nullable=false)
+	 * @var ReviewState
 	 */
-	private $submitedReview;
+	private $reviewState;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\ReviewerStatementState", inversedBy="reviews")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var ReviewerStatementState|null
+	 */
+	private $reviewerStatement;
+
+	/**
+	 * @ORM\Column(type="datetime_immutable", nullable=false)
+	 * @var DateTimeImmutable
+	 */
+	private $insertDate;
 
 	public function __construct()
 	{
-		$this->submitedReview = false;
+		$this->insertDate = new DateTimeImmutable();
 	}
 
 	public function getId(): ?int
@@ -115,26 +130,6 @@ class Review
 		$this->topicalityInterestAndUsefulness = $topicalityInterestAndUsefulness;
 	}
 
-	public function getLanguageAndStylisticLevel(): ?EvaluationLevel
-	{
-		return $this->languageAndStylisticLevel;
-	}
-
-	public function setLanguageAndStylisticLevel(?EvaluationLevel $languageAndStylisticLevel): void
-	{
-		$this->languageAndStylisticLevel = $languageAndStylisticLevel;
-	}
-
-	public function getComment(): ?string
-	{
-		return $this->comment;
-	}
-
-	public function setComment(?string $comment): void
-	{
-		$this->comment = $comment;
-	}
-
 	public function getOriginality(): ?EvaluationLevel
 	{
 		return $this->originality;
@@ -155,14 +150,54 @@ class Review
 		$this->proffesionalLevel = $proffesionalLevel;
 	}
 
-	public function isSubmitedReview(): bool
+	public function getLanguageAndStylisticLevel(): ?EvaluationLevel
 	{
-		return $this->submitedReview;
+		return $this->languageAndStylisticLevel;
 	}
 
-	public function setSubmitedReview(bool $submitedReview): void
+	public function setLanguageAndStylisticLevel(?EvaluationLevel $languageAndStylisticLevel): void
 	{
-		$this->submitedReview = $submitedReview;
+		$this->languageAndStylisticLevel = $languageAndStylisticLevel;
+	}
+
+	public function getComment(): ?string
+	{
+		return $this->comment;
+	}
+
+	public function setComment(?string $comment): void
+	{
+		$this->comment = $comment;
+	}
+
+	public function getReviewState(): ReviewState
+	{
+		return $this->reviewState;
+	}
+
+	public function setReviewState(ReviewState $reviewState): void
+	{
+		$this->reviewState = $reviewState;
+	}
+
+	public function getReviewerStatement(): ?ReviewerStatementState
+	{
+		return $this->reviewerStatement;
+	}
+
+	public function setReviewerStatement(?ReviewerStatementState $reviewerStatement): void
+	{
+		$this->reviewerStatement = $reviewerStatement;
+	}
+
+	public function getInsertDate(): DateTimeImmutable
+	{
+		return $this->insertDate;
+	}
+
+	public function setInsertDate(DateTimeImmutable $insertDate): void
+	{
+		$this->insertDate = $insertDate;
 	}
 
 }

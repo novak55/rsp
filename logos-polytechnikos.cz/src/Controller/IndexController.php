@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ArticleRepository;
-use App\Security\SecurityService;
+//SecurityService toto není potřeba - řeší se přes $this->isGranted('ROLE_xxx'), ale musí být extendovaný AbstractController
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +15,9 @@ class IndexController extends AbstractController
 	/** @var ArticleRepository */
 	private $articleRepository;
 
-	/** @var SecurityService */
-	private $securityService;
-
-	public function __construct(ArticleRepository $articleRepository, SecurityService $securityService)
+	public function __construct(ArticleRepository $articleRepository/*, SecurityService $securityService*/)
 	{
 		$this->articleRepository = $articleRepository;
-		$this->securityService = $securityService;
 	}
 
 	/**
@@ -30,9 +26,9 @@ class IndexController extends AbstractController
 	 */
 	public function index()
 	{
-		return $this->securityService->hasRole('ROLE_AUTOR') ? $this->redirect('/my-articles') : $this->render('rsp/index.html.twig', [
+		return $this->isGranted('ROLE_AUTOR') ? $this->redirect('/my-articles') : $this->render('rsp/index.html.twig', [
 			'articles' => $this->articleRepository->getArticleWidgetByUserAndRole($this->getUser()),
-            'user' => $this->getUser(),
+			'user' => $this->getUser(),
 		]);
 	}
 

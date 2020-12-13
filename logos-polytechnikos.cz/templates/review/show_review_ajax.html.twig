@@ -1,0 +1,81 @@
+{% if review.reviewerStatement|length > 0 %}
+    {% if review.reviewerStatement.id == 1 %}
+        {% set textColor="text-success" %}
+        {% set bgColor="bg-success" %}
+    {% elseif review.reviewerStatement.id == 2 %}
+        {% set textColor="text-warning" %}
+        {% set bgColor="bg-warning" %}
+    {% elseif review.reviewerStatement.id == 3 %}
+        {% set textColor="text-danger" %}
+        {% set bgColor="bg-danger" %}
+    {% else %}
+        {% set textColor="" %}
+        {% set bgColor="" %}
+    {% endif %}
+{% endif %}
+<div class="card {{ bgColor }}">
+    <div class="card-header">
+        <h5 class="card-title {{ textColor }}">Doporučení recenzenta {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %} - {{ review.reviewer.getFullnameByName }}{% endif %}</h5>
+    </div>
+    <div class="card-body">
+        <div class="form-group row form-group-inlined">
+            <div class="col-md-12 nowrap">
+                {{ review.reviewerStatement|length > 0 ? review.reviewerStatement.statement : 'nevyjádřeno' }}
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title {{ textColor }}">Hodnocení v jednotlivých kategoriích</h5>
+    </div>
+    <div class="card-body {{ bgColor }}">
+        <div class="form-group">
+            <div class="row align-content-center">
+                <div class="col-md-4">Oblast hodnocení</div>
+                <div class="col-md-2">známka</div>
+                <div class="col-md-4">Oblast hodnocení</div>
+                <div class="col-md-2">známka</div>
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4">
+                    Aktuálnost, zajímavost a přínosnost
+                </div>
+                <div class="col-md-2">{{ review.topicalityInterestAndUsefulness.id }}</div>
+                <div class="col-md-4">
+                    Originalita
+                </div>
+                <div class="col-md-2">{{ review.originality.id }}</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-4">
+                    Profesionální úroveň
+                </div>
+                <div class="col-md-2">{{ review.proffesionalLevel.id }}</div>
+                <div class="col-md-4">
+                    Jazyková a stylistická úroveň
+                </div>
+                <div class="col-md-2">{{ review.languageAndStylisticLevel.id }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title {{ textColor }}">{% trans %}Textový komentář{% endtrans %}</h5>
+    </div>
+    <div class="card-body {{ bgColor }}">
+        <div class="form-group row form-group-inlined">
+            <div class="col-md-12">
+                {{ review.comment|raw }}
+            </div>
+        </div>
+    </div>
+</div>
