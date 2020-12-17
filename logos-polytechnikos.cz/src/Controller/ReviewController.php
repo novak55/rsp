@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Review;
+use App\Form\ComplaintType;
 use App\Form\ReviewerResultType;
 use App\Form\ReviewType;
 use App\Manager\RspManager;
@@ -108,4 +109,30 @@ class ReviewController extends AbstractController
 		]);
 	}
 
+
+    /**
+     * @Route("/review/{review}/complaint")
+     * @param Review $review
+     * @return Response
+     */
+    public function submitComplaint(Request $request, Review $review): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        if (!($review->getArticle()->getAuthor() === $this->getUser() && $review->getReviewState()->getId() === 3)) {
+            return $this->render('security/secerr.html.twig');
+        }
+
+        $form = $this->formFactory->create(ComplaintType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // TODO: Uložit námitku
+            $this->flashBag->add('success', 'Vaše námitka byla zaslána redaktorovi.');
+        }
+
+        return $this->render('review/review_complaint.html.twig', [
+            'review' => $review,
+            'complaintBody' => "Kaboom",
+            'form' => $form->createView(),
+        ]);
+    }
 }

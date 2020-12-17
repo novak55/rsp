@@ -18,6 +18,10 @@
   padding-right: 0px;
 }
 
+.card .card-body {
+  overflow: auto;
+}
+
 .card .card-body .form-group:last-child {
   margin-bottom: 0px;
 }
