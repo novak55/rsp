@@ -149,3 +149,23 @@ i[data-toggle=tooltip] {
 .card.bg-warning .card-body {
   background: #ffeeba !important;
 }
+
+.list-group.with-action {
+  .list-group-item {
+    padding: 0.25rem;
+    display: flex;
+    white-space: nowrap;
+
+    .title {
+      flex: 1;
+      align-self: center;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+
+    .action {
+      flex: 0;
+      align-self: center;
+    }
+  }
+}

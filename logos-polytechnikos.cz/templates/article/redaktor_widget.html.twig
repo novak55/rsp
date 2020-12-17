@@ -59,12 +59,12 @@
                                     </td>
                                     <td>
                                     {% if article.reviews|length > 0 %}
-                                            <ul class="list-group">
+                                            <ul class="list-group with-action">
                                             {% for review in article.reviews %}
                                                 <li title="{% if review.reviewerStatement|length > 0 %}{{ review.reviewerStatement.statement }}{% endif %}"
-                                                    class="nowrap list-group-item{% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} list-group-item-success{% elseif review.reviewerStatement.id == 2 %} list-group-item-warning{% else %} list-group-item-danger{% endif %}{% endif %}">
-                                                    <div class="float-left">{{ review.reviewer.fullName }}</div>
-                                                    <div class="float-right">
+                                                    class="list-group-item {% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} list-group-item-success{% elseif review.reviewerStatement.id == 2 %} list-group-item-warning{% else %} list-group-item-danger{% endif %}{% endif %}">
+                                                    <div class="title">{{ review.reviewer.fullName }}</div>
+                                                    <div class="action">
                                                         {% if review.reviewState.id > 1 %}
                                                             <a href="#"
                                                                class="btn btn-sm btn-info confirm"
@@ -83,13 +83,10 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-right nowrap">{% if is_granted('ROLE_REDAKTOR') %}
-                                        {% if article.hasDifferentReviewersStatement %}
-
-                                        {% endif %}
                                         {% if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) %}
-                                        <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}"
-                                            class="btn btn-sm btn-info open-form"
-                                            title="Přidat recenzenta"><i class="fa fa-user-plus"></i></a>
+                                            <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}"
+                                               class="btn btn-sm btn-info open-form"
+                                               title="Přidat recenzenta"><i class="fa fa-user-plus"></i></a>
                                         {% endif %}
                                         {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
                                             <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
