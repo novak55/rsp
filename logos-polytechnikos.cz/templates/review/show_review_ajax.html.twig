@@ -26,11 +26,11 @@
     </div>
 </div>
 <br>
-<div class="card">
+<div class="card {{ bgColor }}">
     <div class="card-header">
         <h5 class="card-title {{ textColor }}">Hodnocení v jednotlivých kategoriích</h5>
     </div>
-    <div class="card-body {{ bgColor }}">
+    <div class="card-body">
         <div class="form-group">
             <div class="row align-content-center">
                 <div class="col-md-4">Oblast hodnocení</div>
@@ -67,11 +67,11 @@
     </div>
 </div>
 <br>
-<div class="card">
+<div class="card {{ bgColor }}">
     <div class="card-header">
         <h5 class="card-title {{ textColor }}">{% trans %}Textový komentář{% endtrans %}</h5>
     </div>
-    <div class="card-body {{ bgColor }}">
+    <div class="card-body">
         <div class="form-group row form-group-inlined">
             <div class="col-md-12">
                 {{ review.comment|raw }}

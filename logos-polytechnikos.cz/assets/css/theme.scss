@@ -141,3 +141,11 @@
 i[data-toggle=tooltip] {
   cursor: pointer;
 }
+
+.card .card-header .text-warning {
+  color: #987406 !important;
+}
+
+.card.bg-warning .card-body {
+  background: #ffeeba !important;
+}

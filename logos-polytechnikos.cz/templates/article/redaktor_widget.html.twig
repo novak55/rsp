@@ -63,16 +63,18 @@
                                             {% for review in article.reviews %}
                                                 <li title="{% if review.reviewerStatement|length > 0 %}{{ review.reviewerStatement.statement }}{% endif %}"
                                                     class="nowrap list-group-item{% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} list-group-item-success{% elseif review.reviewerStatement.id == 2 %} list-group-item-warning{% else %} list-group-item-danger{% endif %}{% endif %}">
-                                                    {{ review.reviewer.fullNameByName }}
-                                                    {% if review.reviewState.id > 1 %}
-                                                        <a href="#"
-                                                           class="btn btn-sm btn-info confirm"
-                                                           data-confirm-title="Recenze článku"
-                                                           data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
-                                                           data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
-                                                           title="Zobrazit posudek"><i class="fa fa-eye"></i>
-                                                        </a>
-                                                    {% endif %}
+                                                    <div class="float-left">{{ review.reviewer.fullName }}</div>
+                                                    <div class="float-right">
+                                                        {% if review.reviewState.id > 1 %}
+                                                            <a href="#"
+                                                               class="btn btn-sm btn-info confirm"
+                                                               data-confirm-title="Recenze článku"
+                                                               data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                               data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                                                               title="Zobrazit posudek"><i class="fa fa-eye"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
                                                 </li>
                                             {% endfor %}
                                             </ul>
