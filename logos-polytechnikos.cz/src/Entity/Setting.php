@@ -36,6 +36,18 @@ class Setting
 	 */
 	private $loginByEmail;
 
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $instructions;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $reviewManagement;
+
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -74,6 +86,26 @@ class Setting
 	public function setLoginByEmail(?bool $loginByEmail): void
 	{
 		$this->loginByEmail = $loginByEmail;
+	}
+
+	public function getInstructions(): ?string
+	{
+		return $this->instructions;
+	}
+
+	public function setInstructions(?string $instructions = null): void
+	{
+		$this->instructions = $instructions;
+	}
+
+	public function getReviewManagement(): ?string
+	{
+		return $this->reviewManagement;
+	}
+
+	public function setReviewManagement(string $reviewManagement): void
+	{
+		$this->reviewManagement = $reviewManagement;
 	}
 
 }
