@@ -48,6 +48,18 @@ class Setting
 	 */
 	private $reviewManagement;
 
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $about;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $contact;
+
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -93,7 +105,7 @@ class Setting
 		return $this->instructions;
 	}
 
-	public function setInstructions(?string $instructions = null): void
+	public function setInstructions(?string $instructions): void
 	{
 		$this->instructions = $instructions;
 	}
@@ -106,6 +118,26 @@ class Setting
 	public function setReviewManagement(string $reviewManagement): void
 	{
 		$this->reviewManagement = $reviewManagement;
+	}
+
+	public function getAbout(): ?string
+	{
+		return $this->about;
+	}
+
+	public function setAbout(?string $about): void
+	{
+		$this->about = $about;
+	}
+
+	public function getContact(): ?string
+	{
+		return $this->contact;
+	}
+
+	public function setContact(?string $contact): void
+	{
+		$this->contact = $contact;
 	}
 
 }

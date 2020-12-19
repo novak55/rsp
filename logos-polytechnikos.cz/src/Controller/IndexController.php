@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Setting;
+use App\Form\ChangeAboutType;
+use App\Form\ChangeContactType;
 use App\Form\ChangeInstructionType;
 use App\Form\ChangeReviewManagementType;
 use App\Manager\RspManager;
@@ -130,6 +132,69 @@ class IndexController extends AbstractController
 			return new RedirectResponse($this->generateUrl('app_index_changereviewmanagement'));
 		}
 		return $this->render('rsp/change_review_management.html.twig', [
+			'form' => $form->createView(),
+		]);
+	}
+
+	/**
+	 * @Route("/about")
+	 * @return Response
+	 */
+	public function about(): Response
+	{
+		return $this->render('rsp/show_about.html.twig');
+	}
+
+	/**
+	 * @Route("/change-about")
+	 * @param Request $request
+	 * @return Response|RedirectResponse
+	 */
+	public function changeAbout(Request $request)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$form = $this->formFactory->create(ChangeAboutType::class, $this->settings);
+		$form->handleRequest($request);
+		if ($form->isSubmitted()) {
+			if ($form->isValid()) {
+				$this->manager->save($this->settings);
+				$this->flashBag->add('success', 'Informace o časopise byly úspěšně uloženy.');
+				return new RedirectResponse($this->generateUrl('app_index_changeabout'));
+			}
+
+			$this->flashBag->add('warning', 'Nelze uložit prázdný formulář s informacemi o časopise.');
+			return new RedirectResponse($this->generateUrl('app_index_changeabout'));
+		}
+		return $this->render('rsp/change_about.html.twig', [
+			'form' => $form->createView(),
+		]);
+	}
+
+	/**
+	 * @Route("/change-contact")
+	 * @param Request $request
+	 * @return Response|RedirectResponse
+	 */
+	public function changeContact(Request $request)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$form = $this->formFactory->create(ChangeContactType::class, $this->settings);
+		$form->handleRequest($request);
+		if ($form->isSubmitted()) {
+			if ($form->isValid()) {
+				$this->manager->save($this->settings);
+				$this->flashBag->add('success', 'Kontaktní informace o byly úspěšně uloženy.');
+				return new RedirectResponse($this->generateUrl('app_index_changecontact'));
+			}
+
+			$this->flashBag->add('warning', 'Nelze uložit prázdný formulář s kontakními informacemi.');
+			return new RedirectResponse($this->generateUrl('app_index_changecontact'));
+		}
+		return $this->render('rsp/change_contact.html.twig', [
 			'form' => $form->createView(),
 		]);
 	}
