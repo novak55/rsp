@@ -14,7 +14,7 @@
                 </div>
                     <div class="card-body">
                     {% if setting.settings.instructions is not null %}
-                        {{ setting.settings.instructions|raw }}
+                        {{ setting.settings.instructions|replace({'%sablona%': '<a href="' ~ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) ~ '">Šablona</a>'})|raw }}
                     {% else %}
                         <div class="alert alert-warning">Instrukce zatím nebyly vyplněny.</div>
                     {% endif %}

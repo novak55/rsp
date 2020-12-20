@@ -60,6 +60,13 @@ class Setting
 	 */
 	private $contact;
 
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\TepmlateHistory")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var TepmlateHistory|null
+	 */
+	private $activeTemplate;
+
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -138,6 +145,16 @@ class Setting
 	public function setContact(?string $contact): void
 	{
 		$this->contact = $contact;
+	}
+
+	public function getActiveTemplate(): ?TepmlateHistory
+	{
+		return $this->activeTemplate;
+	}
+
+	public function setActiveTemplate(?TepmlateHistory $activeTemplate): void
+	{
+		$this->activeTemplate = $activeTemplate;
 	}
 
 }

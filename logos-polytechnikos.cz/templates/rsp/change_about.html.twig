@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="row justify-content-center">
-        <div class="col col-xl-10 col-lg-12">
+        <div class="col col-xl-8 col-lg-12">
             <div class="card">
                 {{ form_start(form) }}
                     <div class="card-header">Upravujete informace o časopise na úvodní stránce</div>
@@ -15,5 +15,6 @@
                 {{ form_end(form) }}
             </div>
         </div>
+        {{ include('info_variables.html.twig') }}
     </div>
 {% endblock %}

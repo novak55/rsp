@@ -13,7 +13,7 @@
                     </div>
                     <div class="card-body">
                         {% if setting.settings.about is not null %}
-                            {{ setting.settings.about|raw }}
+                            {{ setting.settings.about|replace({'%sablona%': '<a href="' ~ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) ~ '">Šablona</a>'})|raw }}
                         {% else %}
                             <div class="alert alert-warning">Informace o časopise LOGOS POLYTECHNIKOS nebyly vyplněny.</div>
                         {% endif %}

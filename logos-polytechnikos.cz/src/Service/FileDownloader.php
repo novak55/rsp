@@ -4,8 +4,11 @@ namespace App\Service;
 
 use App\Controller\ArticleController;
 use App\Entity\FileAttachment;
+use App\Entity\Setting;
+use App\Entity\TepmlateHistory;
 use App\Entity\User;
 use App\Repository\FileRepository;
+use App\Repository\SettingsRepository;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function in_array;
 
@@ -21,11 +24,20 @@ class FileDownloader
 	/** @var FileRepository */
 	private $fileRepository;
 
-	public function __construct($targetDirectory, AuthorizationCheckerInterface $authorizationChecker, FileRepository $fileRepository)
+	/** @var Setting */
+	private $setting;
+
+	public function __construct(
+		$targetDirectory,
+		AuthorizationCheckerInterface $authorizationChecker,
+		FileRepository $fileRepository,
+		SettingsRepository $settingsRepository
+	)
 	{
 		$this->targetDirectory = $targetDirectory;
 		$this->authorizationChecker = $authorizationChecker;
 		$this->fileRepository = $fileRepository;
+		$this->setting = $settingsRepository->getSettings();
 	}
 
 	/**
@@ -63,7 +75,7 @@ class FileDownloader
 						&& $fileAttachment->getArticle()->getCurrentState()->getId() === ArticleController::STAV_PREDANO_RECENZENTUM)
 					||
 					(
-                        $fileAttachment->getArticle()->getAuthor() === $user
+						$fileAttachment->getArticle()->getAuthor() === $user
 					)
 				)
 			)
@@ -79,6 +91,36 @@ class FileDownloader
 	public function getTargetDirectory(): string
 	{
 		return $this->targetDirectory;
+	}
+
+	/**
+	 * @param TepmlateHistory $template
+	 * @param User|null $user
+	 * @return false|string
+	 */
+	public function templateDownLoad(TepmlateHistory $template, ?User $user = null)
+	{
+		if (
+			$template->getId() === $this->setting->getActiveTemplate()->getId()
+			||
+			(
+				$user !== null
+				&&
+				(
+					(
+						$this->authorizationChecker->isGranted('ROLE_SEFREDAKTOR')
+						||
+						$this->authorizationChecker->isGranted('ROLE_REDAKTOR')
+					)
+					&& $template->getArticleTemplate()->getArticle() === null
+				)
+			)
+		) {
+			$this->setSubfolder('templates/' . $template->getDate()->format('Y-m-d') . '/' . $template->getArticleTemplate()->getFileSystemName());
+			return $this->getTargetDirectory();
+		}
+
+		return false;
 	}
 
 	private function setSubfolder(string $subFolder): void

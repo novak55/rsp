@@ -2,15 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\FileAttachment;
 use App\Entity\Setting;
+use App\Entity\TepmlateHistory;
 use App\Form\ChangeAboutType;
 use App\Form\ChangeContactType;
 use App\Form\ChangeInstructionType;
 use App\Form\ChangeReviewManagementType;
+use App\Form\ChangeTemplateType;
 use App\Manager\RspManager;
 use App\Repository\ArticleRepository;
-//SecurityService toto není potřeba - řeší se přes $this->isGranted('ROLE_xxx'), ale musí být extendovaný AbstractController
+use App\Repository\FileRepository;
 use App\Repository\SettingsRepository;
+use App\Service\FileUploader;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -197,6 +202,67 @@ class IndexController extends AbstractController
 		return $this->render('rsp/change_contact.html.twig', [
 			'form' => $form->createView(),
 		]);
+	}
+
+	/**
+	 * @Route("/change-template")
+	 * @param Request $request
+	 * @param FileRepository $fileRepository
+	 * @param FileUploader $fileUploader
+	 * @return Response|RedirectResponse
+	 */
+	public function changeTemplate(Request $request, FileRepository $fileRepository, FileUploader $fileUploader)
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR') )) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$templateHistory = new TepmlateHistory();
+		$form = $this->formFactory->create(ChangeTemplateType::class, $templateHistory);
+		$form->handleRequest($request);
+		if ($form->isSubmitted()) {
+			if ($form->isValid()) {
+				$templateHistory->setWhoChanged($this->getUser());
+				$this->manager->save($templateHistory);
+				$fileAttachment = new FileAttachment();
+				$file = $form->get('articleTemplate')->getData();
+
+				if ($file !== null) {
+					$fileAttachment->setMimeType($file->getMimeType());
+					$fileAttachment->setFileName($file->getClientOriginalName());
+					$fileUploader->setSubfolder('templates/' . (new DateTime())->format('Y-m-d'));
+					$fileAttachment->setFileSystemName($fileUploader->upload($file));
+					$this->manager->add($fileAttachment);
+					$templateHistory->setArticleTemplate($fileAttachment);
+					$this->settings->setActiveTemplate($templateHistory);
+					$this->manager->save($templateHistory);
+					$this->flashBag->add('success', 'Nová šablona byla úspěšně přidána.');
+					return new RedirectResponse($this->generateUrl('app_index_changetemplate'));
+				}
+			}
+
+			$this->flashBag->add('warning', 'Nelze uložit prázdný formulář se šablonou, nebo šablona nemá správný formát: DOCX.');
+			return new RedirectResponse($this->generateUrl('app_index_changetemplate'));
+		}
+		return $this->render('rsp/change_template.html.twig', [
+			'form' => $form->createView(),
+			'templates' => $fileRepository->getTemplates(),
+		]);
+	}
+
+	/**
+	 * @Route("/set-default-template/{template}")
+	 * @param TepmlateHistory $template
+	 * @return RedirectResponse|Response
+	 */
+	public function setDefaultTemplate(TepmlateHistory $template)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$this->settings->setActiveTemplate($template);
+		$this->manager->saveData();
+		$this->flashBag->add('success', 'Aktuální šablona byla nastavena.');
+		return new RedirectResponse($this->generateUrl('app_index_changetemplate'));
 	}
 
 }

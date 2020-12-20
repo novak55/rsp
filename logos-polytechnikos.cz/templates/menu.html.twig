@@ -10,7 +10,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Pro přispěvatele</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny</a>
-                    <a class="dropdown-item" href="#">Šablona</a>
+                    <a class="dropdown-item" href="{{ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) }}">Šablona</a>
                     <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item"
@@ -74,13 +74,13 @@
                 {% if is_granted('ROLE_REDAKTOR') %}
                 <a class="dropdown-item" href="{{ path('app_index_changereviewmanagement') }}">Upravit recenzní řízení</a>
                 <a class="dropdown-item" href="{{ path('app_index_changeinstruction') }}">Upravit pokyny</a>
-                <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Změnit šablonu</a>
+                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Změnit šablonu</a>
                 <a class="dropdown-item" href="{{ path('app_index_changeabout') }}">Upravit úvodní stránku</a>
                 <a class="dropdown-item" href="{{ path('app_index_changecontact') }}">Upravit kontaktní informace</a>
                 {% else %}
                 <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
                 <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny pro přispěvatele</a>
-                <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Šablona</a>
+                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Šablona</a>
                 <a class="dropdown-item" href="{{ path('app_index_about') }}">Úvodní stránka</a>
                 {% endif %}
             </div>
