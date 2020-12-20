@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-2">
+        Email:
+    </div>
+    <div class="col-4">
+        {{ user.email }}
+    </div>
+    <div class="col-2">
+        Registrován:
+    </div>
+    <div class="col-3">
+        {{ user.insertDate|date('d. m. Y') }}
+    </div>
+</div>
+<div class="separator"></div>
+<div class="card">
+    <div class="card-header"><h6>Zpracovávané články ({{ user.articles|length }}) </h6></div>
+    <div class="card-body">
+        {% if user.articles|length > 0 %}
+            <ul class="list-group">
+                {% for article in user.articles %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-4">{{ article.name }}</div>
+                            <div class="col-4">{{ article.insertDate|date('d. m. Y') }}</div>
+                            <div class="col-4">{{ article.currentState.state }}</div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            Uživatel dosud žádný příspěvek nevydal.
+        {% endif %}
+    </div>
+</div>
+

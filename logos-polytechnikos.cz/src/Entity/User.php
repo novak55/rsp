@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function serialize;
+use function trim;
 use function unserialize;
 
 /**
@@ -16,261 +18,301 @@ use function unserialize;
 class User implements UserInterface, Serializable
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @var int|null
-     */
-    private $id;
+	/**
+	 * @ORM\Id()
+	 * @ORM\GeneratedValue()
+	 * @ORM\Column(type="integer")
+	 * @var int|null
+	 */
+	private $id;
 
-    /**
-     * @ORM\Column(type="string", length=20, unique=true, name="login")
-     * @var string|null
-     */
-    private $username;
+	/**
+	 * @ORM\Column(type="string", length=20, unique=true, name="login")
+	 * @var string|null
+	 */
+	private $username;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @var string|null
-     */
-    private $password;
+	/**
+	 * @ORM\Column(type="string", length=100)
+	 * @var string|null
+	 */
+	private $password;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     * @var string
-     */
-    private $titleBeforeName;
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 * @var string
+	 */
+	private $titleBeforeName;
 
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     * @var string
-     */
-    private $titleAfterName;
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 * @var string
+	 */
+	private $titleAfterName;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @var string|null
-     */
-    private $name;
+	/**
+	 * @ORM\Column(type="string", length=100)
+	 * @var string|null
+	 */
+	private $name;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @var string
-     */
-    private $surname;
+	/**
+	 * @ORM\Column(type="string", length=100)
+	 * @var string
+	 */
+	private $surname;
 
-    /**
-     * @ORM\Column(type="string", length=100, unique=true)
-     * @var string|null
-     */
-    private $email;
+	/**
+	 * @ORM\Column(type="string", length=100, unique=true)
+	 * @var string|null
+	 */
+	private $email;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserRole", inversedBy="usersRole")
-     * @var UserRole|null
-     */
-    private $role;
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\UserRole", inversedBy="usersRole")
+	 * @var UserRole|null
+	 */
+	private $role;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="reviewer")
-     * @var Collection|Review[]|null
-     */
-    private $reviews;
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="reviewer")
+	 * @var Collection|Review[]|null
+	 */
+	private $reviews;
 
-    /** @var string|null */
-    private $rolePlainText;
+	/**
+	 * @ORM\Column(type="datetime_immutable", nullable=true)
+	 * @var DateTimeImmutable|null
+	 */
+	private $insertDate;
 
-    public function __construct()
-    {
-        $this->reviews = new ArrayCollection();
-    }
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
+	 * @var Collection|Article[]|null
+	 */
+	private $articles;
 
-    public function getFullName(): string
-    {
-        $fullName = '';
-        if ($this->titleBeforeName !== null && trim($this->titleBeforeName) !== '') {
-            $fullName .= $this->titleBeforeName . ' ';
-        }
-        $fullName .= $this->getFullNameByName();
-        if ($this->titleAfterName !== null && trim($this->titleAfterName) !== '') {
-            $fullName .= ', ' . $this->titleAfterName;
-        }
-        return $fullName;
-    }
+	/** @var string|null */
+	private $rolePlainText;
 
-    public function getFullNameByName(): ?string
-    {
-        return $this->name . ' ' . $this->surname;
-    }
+	public function __construct()
+	{
+		$this->reviews = new ArrayCollection();
+		$this->articles = new ArrayCollection();
+		$this->insertDate = new DateTimeImmutable();
+	}
 
-    public function getFullNameBySurname(): ?string
-    {
-        return $this->surname . ' ' . $this->name;
-    }
+	public function getFullName(): string
+	{
+		$fullName = '';
+		if ($this->titleBeforeName !== null && trim($this->titleBeforeName) !== '') {
+			$fullName .= $this->titleBeforeName . ' ';
+		}
+		$fullName .= $this->getFullNameByName();
+		if ($this->titleAfterName !== null && trim($this->titleAfterName) !== '') {
+			$fullName .= ', ' . $this->titleAfterName;
+		}
+		return $fullName;
+	}
 
-    /**
-     * @return string[]
-     */
-    public function getRoles(): array
-    {
-        return [
-            $this->role->getRole(),
-        ];
-    }
+	public function getFullNameByName(): ?string
+	{
+		return $this->name . ' ' . $this->surname;
+	}
 
-    public function getSalt(): void
-    {
-        /** nutná implementace z interface */
-    }
+	public function getFullNameBySurname(): ?string
+	{
+		return $this->surname . ' ' . $this->name;
+	}
 
-    public function eraseCredentials(): void
-    {
-        /** nutná implementace z interface */
-    }
+	/**
+	 * @return string[]
+	 */
+	public function getRoles(): array
+	{
+		return [
+			$this->role->getRole(),
+		];
+	}
 
-    public function serialize()
-    {
-        return serialize([
-            $this->id,
-            $this->username,
-            $this->email,
-            $this->password,
-            $this->titleBeforeName,
-            $this->titleAfterName,
-            $this->name,
-            $this->surname,
-        ]);
-    }
+	public function getSalt(): void
+	{
+		/** nutná implementace z interface */
+	}
 
-    public function unserialize($serialized): void
-    {
-        [
-            $this->id,
-            $this->username,
-            $this->email,
-            $this->password,
-            $this->titleBeforeName,
-            $this->titleAfterName,
-            $this->name,
-            $this->surname,
-        ] = unserialize($serialized, ['allowed_classes' => false]);
-    }
+	public function eraseCredentials(): void
+	{
+		/** nutná implementace z interface */
+	}
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	public function serialize()
+	{
+		return serialize([
+			$this->id,
+			$this->username,
+			$this->email,
+			$this->password,
+			$this->titleBeforeName,
+			$this->titleAfterName,
+			$this->name,
+			$this->surname,
+		]);
+	}
 
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
+	public function unserialize($serialized): void
+	{
+		[
+			$this->id,
+			$this->username,
+			$this->email,
+			$this->password,
+			$this->titleBeforeName,
+			$this->titleAfterName,
+			$this->name,
+			$this->surname,
+		] = unserialize($serialized, ['allowed_classes' => false]);
+	}
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
 
-    public function setUsername(?string $username): void
-    {
-        $this->username = $username;
-    }
+	public function setId(?int $id): void
+	{
+		$this->id = $id;
+	}
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
+	public function getUsername(): ?string
+	{
+		return $this->username;
+	}
 
-    public function setPassword(?string $password): void
-    {
-        $this->password = $password;
-    }
+	public function setUsername(?string $username): void
+	{
+		$this->username = $username;
+	}
 
-    public function getTitleBeforeName(): ?string
-    {
-        return $this->titleBeforeName;
-    }
+	public function getPassword(): ?string
+	{
+		return $this->password;
+	}
 
-    public function setTitleBeforeName(?string $titleBeforeName): void
-    {
-        $this->titleBeforeName = $titleBeforeName;
-    }
+	public function setPassword(?string $password): void
+	{
+		$this->password = $password;
+	}
 
-    public function getTitleAfterName(): ?string
-    {
-        return $this->titleAfterName;
-    }
+	public function getTitleBeforeName(): ?string
+	{
+		return $this->titleBeforeName;
+	}
 
-    public function setTitleAfterName(?string $titleAfterName): void
-    {
-        $this->titleAfterName = $titleAfterName;
-    }
+	public function setTitleBeforeName(?string $titleBeforeName): void
+	{
+		$this->titleBeforeName = $titleBeforeName;
+	}
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+	public function getTitleAfterName(): ?string
+	{
+		return $this->titleAfterName;
+	}
 
-    public function setName(?string $name): void
-    {
-        $this->name = $name;
-    }
+	public function setTitleAfterName(?string $titleAfterName): void
+	{
+		$this->titleAfterName = $titleAfterName;
+	}
 
-    public function getSurname(): ?string
-    {
-        return $this->surname;
-    }
+	public function getName(): ?string
+	{
+		return $this->name;
+	}
 
-    public function setSurname(string $surname): void
-    {
-        $this->surname = $surname;
-    }
+	public function setName(?string $name): void
+	{
+		$this->name = $name;
+	}
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+	public function getSurname(): ?string
+	{
+		return $this->surname;
+	}
 
-    public function setEmail(?string $email): void
-    {
-        $this->email = $email;
-    }
+	public function setSurname(string $surname): void
+	{
+		$this->surname = $surname;
+	}
 
-    public function getRole(): ?UserRole
-    {
-        return $this->role;
-    }
+	public function getEmail(): ?string
+	{
+		return $this->email;
+	}
 
-    public function setRole(?UserRole $role): void
-    {
-        $this->role = $role;
-    }
+	public function setEmail(?string $email): void
+	{
+		$this->email = $email;
+	}
 
-    public function getRolePlainText(): ?string
-    {
-        return $this->rolePlainText;
-    }
+	public function getRole(): ?UserRole
+	{
+		return $this->role;
+	}
 
-    public function setRolePlainText(?string $rolePlainText): void
-    {
-        $this->rolePlainText = $rolePlainText;
-    }
+	public function setRole(?UserRole $role): void
+	{
+		$this->role = $role;
+	}
 
-    /**
-     * @return Review[]|Collection|null
-     */
-    public function getReviews()
-    {
-        return $this->reviews;
-    }
+	public function getRolePlainText(): ?string
+	{
+		return $this->rolePlainText;
+	}
 
-    /**
-     * @param Review[]|Collection|null $reviews
-     */
-    public function setReviews($reviews): void
-    {
-        $this->reviews = $reviews;
-    }
+	public function setRolePlainText(?string $rolePlainText): void
+	{
+		$this->rolePlainText = $rolePlainText;
+	}
+
+	/**
+	 * @return Review[]|Collection|null
+	 */
+	public function getReviews()
+	{
+		return $this->reviews;
+	}
+
+	/**
+	 * @param Review[]|Collection|null $reviews
+	 */
+	public function setReviews($reviews): void
+	{
+		$this->reviews = $reviews;
+	}
+
+	public function getInsertDate(): ?DateTimeImmutable
+	{
+		return $this->insertDate;
+	}
+
+	public function setInsertDate(?DateTimeImmutable $insertDate): void
+	{
+		$this->insertDate = $insertDate;
+	}
+
+	/**
+	 * @return Article[]|Collection|null
+	 */
+	public function getArticles()
+	{
+		return $this->articles;
+	}
+
+	/**
+	 * @param Article[]|Collection|null $articles
+	 */
+	public function setArticles($articles): void
+	{
+		$this->articles = $articles;
+	}
 
 }

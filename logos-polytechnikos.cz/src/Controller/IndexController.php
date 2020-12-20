@@ -256,6 +256,7 @@ class IndexController extends AbstractController
 	 */
 	public function setDefaultTemplate(TepmlateHistory $template)
 	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		if (!$this->isGranted('ROLE_REDAKTOR')) {
 			return $this->render('security/secerr.html.twig');
 		}

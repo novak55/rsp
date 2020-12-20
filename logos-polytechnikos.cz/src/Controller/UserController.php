@@ -103,7 +103,12 @@ class UserController extends AbstractController
 	 * @param Request $request
 	 * @return Response|RedirectResponse
 	 */
-	public function addReviewerArticle(Request $request, Article $article, ArticleRepository $articleRepository, ReviewRepository $reviewRepository)
+	public function addReviewerArticle(
+		Request $request,
+		Article $article,
+		ArticleRepository $articleRepository,
+		ReviewRepository $reviewRepository
+	)
 	{
 		if (!$this->isGranted('ROLE_REDAKTOR')) {
 			return $this->render('security/secerr.html.twig');
@@ -126,23 +131,59 @@ class UserController extends AbstractController
 	}
 
 	/**
-	 * @Route("/change-profile")
+	 * @Route("/change-profile/{user}")
 	 * @param Request $request
 	 * @return RedirectResponse|Response
 	 */
-	public function changeProfile(Request $request)
+	public function changeProfile(Request $request, ?User $user = null)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-		$user = $this->getUser();
+		if ($user !== null && !$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		if ($user === null) {
+			$user = $this->getUser();
+		}
+		$url = $request->query->has('url') ? $request->query->get('url') : $this->generateUrl('rsp');
 		$form = $this->createForm(UserProfileType::class, $user);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->manager->saveUser($user, $this->getUser()->getPassword());
-			$this->flashBag->add('success', 'Váš profil byl upraven.');
-			return new RedirectResponse($this->generateUrl('rsp'));
+			$this->flashBag->add('success', $this->getUser()->getId() === $user->getId() ? 'Váš profil byl upraven.' : 'Profil uživatele ' . $user->getFullNameByName() . ' byl upraven.');
+			return new RedirectResponse($url);
 		}
 		return $this->render('user/register.html.twig', [
 			'form' => $form->createView(),
+		]);
+	}
+
+	/**
+	 * @Route("/user-list")
+	 * @return Response
+	 */
+	public function userList(): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('user/user_list.html.twig', [
+			'users' => $this->userRepository->getUsers(),
+		]);
+	}
+
+	/**
+	 * @Route("/user-profile/{user}")
+	 * @param User $user
+	 * @return Response
+	 */
+	public function userProfile(User $user): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('user/user_profile.html.twig', [
+			'user' => $user,
 		]);
 	}
 

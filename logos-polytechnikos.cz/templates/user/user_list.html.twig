@@ -1,0 +1,85 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title float-left">{% trans %}Seznam uživatelů portálu{% endtrans %}</h5>
+                    <div class="float-right">
+                        <div class="form-inline my-2 my-lg-0">
+                            <label for="#table-page-size">Záznamů na stránce: </label>
+                            <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                                <option>100</option>
+                                <option>200</option>
+                                <option>300</option>
+                                <option value="-1" selected>Vše</option>
+                            </select>
+                            <input class="form-control mr-sm-2" type="search" placeholder="{% trans %}Hledat{% endtrans %}" aria-label="Search" data-search-in=".dataTables_filter">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive dt-hide-filter">
+                        <table class="table table-striped datatable_filter">
+                        <thead>
+                        <tr>
+                            <th>Celé jméno</th>
+                            <th class="datatable-ignore">Datum registrace</th>
+                            <th>Přiřazená role</th>
+                            <th class="datatable-ignore">E-mail</th>
+                            <th class="datatable-ignore">Počet příspěvků</th>
+                            <th class="datatable-ignore">Počet recenzí</th>
+                            <th class="datatable-ignore">Činnosti</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                {% if users|length > 0 %}
+                    {% for user in users %}
+                        <tr>
+                            <td data-sort="{{ user.surname }}">{{ user.fullNameByName }}</td>
+                            <td data-sort="{{ user.insertDate|date('U') }}">{{ user.insertDate|date('d. m. Y') }}</td>
+                            <td>{{ user.role.description }}</td>
+                            <td>{{ user.email }}</td>
+                            <td class="text-center">{{ user.articles|length }}</td>
+                            <td class="text-center">{{ user.reviews|length }}</td>
+                            <td class="text-center">
+                                {% if is_granted('ROLE_REDAKTOR') %}
+                                <a class="btn btn-sm btn-warning confirm"
+                                   data-confirm-url="{{ path('app_user_changeprofile', {user: user.id, url: app.request.requestUri}) }}"
+                                   data-confirm-title="Upravit profil uživatele"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                                   title="Upravit uživatele"
+                                   href="#"><i class="fa fa-pen"></i>
+                                </a>
+                                {% endif %}
+                                <a href="#"
+                                   title="Zobrazit detailní profil uživatele"
+                                   class="btn btn-sm btn-info confirm"
+                                   data-confirm-title="Detailní profil uživatele {{ user.fullNameByName }}"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                                   data-confirm-url="{{ path('app_user_userprofile', {user: user.id}) }}">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="5" class="bg-danger text-center">Nebyl nalezen žádný uživatel.</td></tr>
+                {% endif %}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('rspIndex') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('rspIndex') }}
+{% endblock %}
