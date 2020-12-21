@@ -10,6 +10,8 @@
                         <div class="form-inline my-2 my-lg-0">
                             <label for="#table-page-size">Záznamů na stránce: </label>
                             <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                                <option>10</option>
+                                <option>50</option>
                                 <option>100</option>
                                 <option>200</option>
                                 <option>300</option>
@@ -44,23 +46,23 @@
                             <td class="text-center">{{ user.articles|length }}</td>
                             <td class="text-center">{{ user.reviews|length }}</td>
                             <td class="text-center">
-                                {% if is_granted('ROLE_REDAKTOR') %}
-                                <a class="btn btn-sm btn-warning confirm"
-                                   data-confirm-url="{{ path('app_user_changeprofile', {user: user.id, url: app.request.requestUri}) }}"
-                                   data-confirm-title="Upravit profil uživatele"
-                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
-                                   title="Upravit uživatele"
-                                   href="#"><i class="fa fa-pen"></i>
-                                </a>
-                                {% endif %}
                                 <a href="#"
-                                   title="Zobrazit detailní profil uživatele"
-                                   class="btn btn-sm btn-info confirm"
-                                   data-confirm-title="Detailní profil uživatele {{ user.fullNameByName }}"
-                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                                   title="Zobrazit detail uživatele"
+                                   class="btn btn-sm btn-outline-secondary confirm"
+                                   data-confirm-title="Detail uživatele {{ user.fullNameByName }}"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
                                    data-confirm-url="{{ path('app_user_userprofile', {user: user.id}) }}">
-                                    <i class="fa fa-search"></i>
+                                    <i class="fa fa-info-circle"></i>
                                 </a>
+                                {% if is_granted('ROLE_REDAKTOR') %}
+                                    <a class="btn btn-sm btn-outline-secondary confirm"
+                                       data-confirm-url="{{ path('app_user_changeprofile', {user: user.id, url: app.request.requestUri}) }}"
+                                       data-confirm-title="Editovat uživatele"
+                                       data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                                       title="Editovat uživatele"
+                                       href="#"><i class="fa fa-pen"></i>
+                                    </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

@@ -311,7 +311,7 @@ ul.sub-tabs{
 }
 
 .table.table-striped tbody tr:hover{
-    background-color: rgb(240, 255, 227) !important;
+    background-color: #e3f2ff !important;
     color: #000 !important;
 }
 
@@ -396,4 +396,8 @@ select, input{
     background-size: 30px;
     width: 30px;
     height: 30px;
+}
+
+.btn-light.disabled, .btn-light:disabled {
+    color: #c0c3c5 !important;
 }

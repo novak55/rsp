@@ -7,6 +7,8 @@
                     <div class="form-inline my-2 my-lg-0">
                         <label for="#table-page-size">Záznamů na stránce: </label>
                         <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                            <option>10</option>
+                            <option>50</option>
                             <option>100</option>
                             <option>200</option>
                             <option>300</option>
@@ -24,7 +26,7 @@
                             <th><i class="fa fa-signature">&nbsp;</i>Název</th>
                             <th><i class="fa fa-flag">&nbsp;</i>Stav</th>
                             <th><i class="fa fa-user">&nbsp;</i>Autor</th>
-                            <th><i class="fa fa-calendar-alt">&nbsp;</i>Ze dne</th>
+                            <th><i class="fa fa-calendar-alt">&nbsp;</i>Datum vložení</th>
                             <th class="datatable-ignore"><i class="fa fa-users">&nbsp;</i>Spoluautoři</th>
                             <th class="datatable-ignore"><i class="fa fa-users">&nbsp;</i>Recenzenti</th>
                             <th class="datatable-ignore"><i class="fa fa-tasks">&nbsp;</i>Činnosti</th>
@@ -46,7 +48,7 @@
                                     <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
                                     <td data-sort="{{ article.insertDate|date('U') }}"
                                         class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
-                                    <td class="col-3">
+                                    <td class="col-2">
                                         {% if article.collaborators|length > 0 %}
                                             {% for collaborator in article.collaborators %}
                                                 {{ collaborator.fullName }}<br>
@@ -56,8 +58,8 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if article.reviews|length > 0 %}
-                                            <ul class="list-group with-action">
+                                        <ul class="list-group with-action">
+                                            {% if article.reviews|length > 0 %}
                                                 {% for review in article.reviews %}
                                                     <li title="{% if review.reviewerStatement|length > 0 %}{{ review.reviewerStatement.statement }}{% endif %}"
                                                         class="list-group-item {% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} list-group-item-success{% elseif review.reviewerStatement.id == 2 %} list-group-item-warning{% else %} list-group-item-danger{% endif %}{% endif %}">
@@ -65,7 +67,7 @@
                                                         <div class="action">
                                                             {% if review.reviewState.id > 1 %}
                                                                 <a href="#"
-                                                                   class="btn btn-sm btn-info confirm"
+                                                                   class="btn btn-sm btn-outline-secondary confirm"
                                                                    data-confirm-title="Recenze článku"
                                                                    data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
                                                                    data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
@@ -75,33 +77,43 @@
                                                         </div>
                                                     </li>
                                                 {% endfor %}
-                                            </ul>
-                                        {% else %}
-                                            Doposud nepřiřazeni
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-right nowrap">
-                                        {% if is_granted('ROLE_REDAKTOR') %}
-                                            {% if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) %}
-                                                <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}"
-                                                   class="btn btn-sm btn-info open-form"
-                                                   title="Přidat recenzenta"><i class="fa fa-user-plus"></i></a>
                                             {% endif %}
+                                            {% if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) %}
+                                                <li class = "list-group-item">
+                                                    <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}" class="btn btn-sm btn-outline-secondary open-form w-100" title="Přidat recenzenta"><i class="fa fa-user-plus"></i></a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </td>
+                                    <td class="text-center nowrap">
+                                        {% if is_granted('ROLE_REDAKTOR') %}
                                             {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
                                                 <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
-                                                   class="btn btn-sm btn-warning"
-                                                   title="Zpřístupnit podudek autrovi"><i class="fa fa-pen"></i>
+                                                   class="btn btn-sm btn-outline-secondary"
+                                                   title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
+                                                </a>
+                                            {% else %}
+                                                <a href="#"
+                                                   class="btn btn-sm btn-light disabled"
+                                                   title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
                                                 </a>
                                             {% endif %}
                                             {% if article.currentState.id == 2 %}
                                                 <a href="{{ path('app_article_returnarticlenotsuitablethema', {article: article.id, uri: app.request.get('_route')}) }}"
-                                                    class="btn btn-danger btn-sm confirm"
+                                                    class="btn btn-outline-secondary btn-sm confirm"
                                                     data-confirm-title = "Vrácení článku"
                                                     data-confirm-text = "Opravdu si přejete vrátit článek: {{ article.name}} z důvodu tématické nevhodnosti?"
-                                                    title="Vrátit článek z důvodu tématiské nevhodnosti."><i class="fa fa-undo"></i></a>
+                                                    title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
+                                            {% else %}
+                                                <a href="#"
+                                                   class="btn btn-light btn-sm confirm disabled"
+                                                   title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
                                             {% endif %}
-                                            <a href=""
-                                               class="btn btn-sm btn-secondary"
+                                            <a href="#"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               data-confirm-url="{{ path('app_user_changeprofile', {user: user.id, url: app.request.requestUri}) }}"
+                                               data-confirm-title="Upravit profil uživatele"
+                                               data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
                                                title="Historie"><i class="fa fa-history"></i>
                                             </a>
                                         {% endif %}
