@@ -251,4 +251,19 @@ class ArticleController extends AbstractController
 		]);
 	}
 
+	/**
+	 * @Route("/show-article-history/{article}")
+	 * @param Article $article
+	 * @return Response
+	 */
+	public function showArticleHistory(Article $article): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('arcitle/history.html.twig', [
+			'article' => $article,
+		]);
+	}
+
 }
