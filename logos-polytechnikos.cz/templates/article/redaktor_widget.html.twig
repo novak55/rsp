@@ -7,6 +7,7 @@
                     <div class="form-inline my-2 my-lg-0">
                         <label for="#table-page-size">Záznamů na stránce: </label>
                         <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                            <option>5</option>
                             <option>10</option>
                             <option>50</option>
                             <option>100</option>
@@ -69,7 +70,7 @@
                                                                 <a href="#"
                                                                    class="btn btn-sm btn-outline-secondary confirm"
                                                                    data-confirm-title="Recenze článku"
-                                                                   data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary mb-2" data-dismiss="modal">Zavřít</button>'
                                                                    data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
                                                                    title="Zobrazit posudek"><i class="fa fa-eye"></i>
                                                                 </a>
@@ -111,9 +112,6 @@
                                             {% endif %}
                                             <a href="#"
                                                class="btn btn-sm btn-outline-secondary"
-                                               data-confirm-url="{{ path('app_user_changeprofile', {user: user.id, url: app.request.requestUri}) }}"
-                                               data-confirm-title="Upravit profil uživatele"
-                                               data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
                                                title="Historie"><i class="fa fa-history"></i>
                                             </a>
                                         {% endif %}
