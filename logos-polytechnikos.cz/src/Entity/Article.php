@@ -23,7 +23,7 @@ class Article
 	private $id;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Magazine")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Magazine", inversedBy="articles")
 	 * @var Magazine|null
 	 */
 	private $magazine;

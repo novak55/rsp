@@ -4,13 +4,12 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  */
-class MagazineThema
+class MagazineState
 {
 
 	/**
@@ -22,13 +21,13 @@ class MagazineThema
 	private $id;
 
 	/**
-	 * @ORM\Column(type="string", nullable=false)
+	 * @ORM\Column(type="string")
 	 * @var string
 	 */
-	private $theme;
+	private $state;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="App\Entity\Magazine", mappedBy="magazineThema")
+	 * @ORM\OneToMany(targetEntity = "App\Entity\Magazine", mappedBy="currentState")
 	 * @ORM\JoinColumn(nullable=true)
 	 * @var Collection|Magazine[]|null
 	 */
@@ -49,14 +48,14 @@ class MagazineThema
 		$this->id = $id;
 	}
 
-	public function getTheme(): ?string
+	public function getState(): ?string
 	{
-		return $this->theme;
+		return $this->state;
 	}
 
-	public function setTheme(string $theme): void
+	public function setState(?string $state): void
 	{
-		$this->theme = $theme;
+		$this->state = $state;
 	}
 
 	/**

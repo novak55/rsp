@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Správa témat časopisu
+                    <a class="btn btn-sm btn-warning confirm"
+                       data-confirm-title="Přidání nového tématu"
+                       data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                       data-confirm-url="{{ path('app_magazine_settheme') }}"
+                       title="Přidat nové téma časopisu"
+                       href="#"><i class="fa fa-plus"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if themes|length > 0 %}
+                        <div class="list-group">
+                        {% for theme in themes %}
+                            <div class="list-group-item d-flex justify-content-between">{{ theme.theme }}
+                            <span>
+                                <a class="btn btn-sm btn-warning confirm"
+                                   data-confirm-title="Upravit popis tématu"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                                   data-confirm-url="{{ path('app_magazine_settheme', {magazineThema: theme.id}) }}"
+                                   href="#"
+                                     title="Upravit popis tématu"><i class="fa fa-pen"></i>
+                                </a>
+                                {% if theme.magazines|length == 0 %}
+                                <a class="btn btn-sm btn-danger confirm"
+                                   href="{{ path('app_magazine_erasetheme', {magazineThema: theme.id}) }}"
+                                   data-confirm-title="Odstranit téma"
+                                   data-confirm-text="Opravdu si přejete odstranit téma:<br><b>{{ theme.theme }}</b>"
+                                     title="Odstranit téma"><i class="fa fa-trash"></i>
+                                </a>
+                                {% endif %}
+                            </span>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">Dosud nebylo vydáno žádná téma časopisu.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

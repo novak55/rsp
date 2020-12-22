@@ -1,0 +1,89 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col {% if edition is not null %}col-xl-5 col-lg-6{% else %}col-xl-10 col-lg-12{% endif %}">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Vydané edice
+                    {% if is_granted('ROLE_REDAKTOR') %}
+                        <a class="btn btn-sm btn-warning confirm"
+                           data-confirm-title="Přidat novou edici časopisu"
+                           data-confirm-url="{{ path('app_magazine_editionmanagement') }}"
+                           data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                           href="#"
+                           title="Přidat další edici časopisu"
+                           href="#"><i class="fa fa-plus"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if magazines|length > 0 %}
+                        {% for magazine in magazines %}
+                            <div class="list-group-item d-flex justify-content-between"><a href="{{ path('app_magazine_edition', {magazine: magazine.id}) }}">{{ magazine.deadline|date('Y') }}/Ročník{{ magazine.deadline|date('Y') - 2009 }}/Číslo{{ magazine.number }}</a>
+                                <span>
+                                <a class="btn btn-sm btn-warning confirm"
+                                   data-confirm-title="Upravit edici časopisu"
+                                   data-confirm-url="{{ path('app_magazine_editionmanagement', {magazine: magazine.id}) }}"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                                   href="#"
+                                   title="Upravit edici časopisu"><i class="fa fa-pen"></i>
+                                </a>
+                                <a class="btn btn-sm btn-danger confirm"
+                                       title="Odstranit téma"><i class="fa fa-trash"></i>
+                                </a>
+                            </span>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                    <div class="alert alert-warning">Dosud nebyla vydána žádná edice časopisu.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if edition is not null %}
+        <div class="col col-xl-5 col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Články edice: {{ edition.deadline|date('Y') }}/Ročník{{ edition.deadline|date('Y') - 2009 }}/Číslo{{ edition.number }}
+                    <a class="btn btn-sm btn-light"
+                       title="Zavřít"
+                       href="{{ path('app_magazine_edition') }}"><i class="fa fa-times"></i>
+                    </a>
+
+                </div>
+                <div class="card-body">
+                    {% if edition.articles|length > 0 %}
+                        <div class="list-group">
+                            <div class="list-group-item list-group-item-info">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        Příspěvek
+                                    </div>
+                                    <div class="col-lg-6">
+                                        Autor
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% for article in edition.articles %}
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}">{{ article.name }}</a>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        {{ article.author.fullNameByName }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        Nebyly nalezeny žádné příspěvky.
+                    {% endif %}
+                </div>
+        </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
