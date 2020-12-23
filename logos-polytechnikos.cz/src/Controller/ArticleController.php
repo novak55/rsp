@@ -285,8 +285,8 @@ class ArticleController extends AbstractController
 	}
 
 	/**
-	 * @Route("/show-article-detail/{article}")
-	 * @param Articel $article
+	 * @Route("/show-article-detail/{article}", name="show_article_detail")
+	 * @param Article $article
 	 * @return Response
 	 */
 	public function showArticleDetail(Article $article): Response

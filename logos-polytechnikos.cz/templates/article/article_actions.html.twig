@@ -1,0 +1,62 @@
+<a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">Stáhnout článek</a>
+
+{% if is_granted('ROLE_AUTOR') %}
+    <a href=# title="Nahrát novou verzi článku" class="btn btn-block btn-primary mt-1" role="button">Nahrát novou verzi článku</a><br>
+{% endif %}
+
+{% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %}
+
+    <a class="btn btn-block btn-success confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 6}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> bez výhrad?">
+        Zařadit článek bez výhrad</a>
+    <a class="btn btn-block btn-info confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 5}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> s výhradami?">
+        Zařadit článek s výhradami</a>
+    <a class="btn btn-block btn-warning confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 3}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu vrátit článek <b>{{ article.name }}</b> zpět k přepracování dle požadavků recenzentů?">
+        Vrátit článek k zapracování připomínek</a>
+    <a class="btn btn-block btn-danger confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 7}) }}"
+        data-confirm-title="Zamítnutí zařazení článku"
+        data-confirm-text="Opravdu zamítnout článek <b>{{ article.name }}</b>?">
+        Zamítnout článek</a>
+
+{#
+    {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
+        <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
+            class="btn btn-sm btn-outline-secondary"
+            title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
+        </a>
+    {% else %}
+        <a href="#"
+            class="btn btn-sm btn-light disabled"
+            title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
+        </a>
+    {% endif %}
+    {% if article.currentState.id == 2 %}
+        <a href="{{ path('app_article_returnarticlenotsuitablethema', {article: article.id, uri: app.request.get('_route')}) }}"
+            class="btn btn-outline-secondary btn-sm confirm"
+            data-confirm-title = "Vrácení článku"
+            data-confirm-text = "Opravdu si přejete vrátit článek: {{ article.name}} z důvodu tématické nevhodnosti?"
+            title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
+    {% else %}
+        <a href="#"
+            class="btn btn-light btn-sm confirm disabled"
+            title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
+    {% endif %}
+#}
+
+{% endif %}
+
+{% if is_granted('ROLE_RECENZENT') %}
+    <a href=# title="Vložit posudek" class="btn btn-block btn-primary mt-1" role="button">Vložit posudek</a>
+{% endif %}
+
+

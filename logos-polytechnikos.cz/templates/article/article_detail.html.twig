@@ -6,19 +6,40 @@
         <div class="card">
             <div class="card-header"><h4>Detail článku {{ article.name }}</h4></div>
             <div class="card-body">
-                Článek: {{ article.name }}
-                <br>
-                ID = {{ article.id }}
-                <section id="tabs">
-                <div class="container">	
-                    <nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-    						<a class="nav-item nav-link active" id="nav-recenze-tab" data-toggle="tab" href="#nav-recenze" role="tab" aria-controls="nav-recenze" aria-selected="true">Recenze</a>
-	    					<a class="nav-item nav-link" id="nav-historie-tab" data-toggle="tab" href="#nav-historie" role="tab" aria-controls="nav-historie" aria-selected="false">Historie verzí článku</a>
+                <div class="containter">
+                <div class="row">
+                    <div class="col">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Název článku</b>: {{ article.name }}</li>
+                            <li class="list-group-item"><b>Autor</b>: {{ article.author.fullNameByName }}</li>
+                            <li class="list-group-item">
+                                <b>Spoluautoři</b>: 
+                                {% if article.collaborators|length > 0 %}
+                                    {% for collaborator in article.collaborators %}
+                                        {{ collaborator.fullName }}{{ loop.index < article.collaborators|length ? '; ': ''}}
+                                    {% endfor %}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item"><b>Datum vložení</b>: {{ article.insertDate|date('d.m.Y') }}</li>
+                            <li class="list-group-item"><b>Stav</b>: {{ article.currentState.state }}</li>
+                            <li class="list-group-item"><b>Zařazení k edici</b>: {{ article.magazine.magazineThema.theme }}</li>
+                            <li class="list-group-item"><b>Termín uzávěrky</b>: {{ article.magazine.deadline|date('d.m.Y') }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-4 center-block">
+                        <div class="card text-center">
+                            <div class="card-header"><h5>Akce</h5></div>
+                            <div class="card-body">
+                                {% include 'article/article_actions.html.twig' %}
+                            </div>
                         </div>
-                    </nav>
-                    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-recenze" role="tabpanel" aria-labelledby="nav-recenze-tab">
+                    </div>
+                </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="card mt-3">
+                        <div class="card-header"><h5>Recenze</h5></div>
+                        <div class="card-body">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -28,41 +49,34 @@
                                         <th>Originalita</th>
                                         <th>Profesionální úroveň</th>
                                         <th>Jazyková a stylistická úroveň</th>
+                                        <th>Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% if article.reviews|length > 0 %}
                                         {% for review in article.reviews %}
-                                            <tr>                        
+                                            <tr class="{% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} table-success{% elseif review.reviewerStatement.id == 2 %} table-warning{% else %} table-danger{% endif %}{% endif %}">                        
                                                 <td>{{ review.reviewer.fullName }}</td>
-                                                <td>
-                                                    {% if review.reviewState.id > 1 %}
-                                                        <a href="#"
-                                                            class="confirm"
+                                                <td>{{ review.reviewerStatement|length > 0 ? review.reviewerStatement.statement : 'nevyjádřeno' }}</td>
+                                                <td>{{ review.topicalityInterestAndUsefulness is not null ? review.topicalityInterestAndUsefulness.id : 'neuvedeno' }}</td>
+                                                <td>{{ review.originality is not null ? review.originality.id : 'neuvedeno'}}</td>
+                                                <td>{{ review.proffesionalLevel is not null ? review.proffesionalLevel.id : 'neuvedeno' }}</td>
+                                                <td>{{ review.languageAndStylisticLevel is not null ? review.languageAndStylisticLevel.id : 'neuvedeno' }}</td>
+                                                <td> <a href="#"
+                                                            class="btn btn-sm btn-primary confirm"
                                                             data-confirm-title="Recenze článku"
-                                                            data-confirm-buttons='<button type="button" class="btn btn-outline-secondary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                            data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
                                                             data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
-                                                            title="Zobrazit detail">
-                                                            {{ review.reviewerStatement|length > 0 ? review.reviewerStatement.statement : 'nevyjádřeno' }}
-                                                        </a>
-                                                    {% endif %}
-                                                </td>
-                                                <td>{{ review.topicalityInterestAndUsefulness.id }}</td>
-                                                <td>{{ review.originality.id }}</td>
-                                                <td>{{ review.proffesionalLevel.id }}</td>
-                                                <td>{{ review.languageAndStylisticLevel.id }}</td>
+                                                            title="Zobrazit posudek"><i class="fa fa-eye"></i>
+                                                            </a></td>
                                             </tr>
                                         {% endfor %}
                                     {% endif %}
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane fade" id="nav-historie" role="tabpanel" aria-labelledby="nav-historie-tab">
-                                <h3>Zatím nic</h3>
-                        </div>
-                    </div>            
+                    </div>
                 </div>
-                </section>
             </div>
         </div>
     </div>
