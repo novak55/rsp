@@ -266,4 +266,15 @@ class ArticleController extends AbstractController
 		]);
 	}
 
+	/**
+	 * @Route("/show-article-detail/{article}")
+	 * @param Articel $article
+	 * @return Response
+	 */
+	public function showArticleDetail(Article $article): Response
+	{
+		return $this->render('article/article_detail.html.twig', [
+			'article' => $article,
+		]);
+	}
 }

@@ -1,0 +1,78 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><h4>Detail článku {{ article.name }}</h4></div>
+            <div class="card-body">
+                Článek: {{ article.name }}
+                <br>
+                ID = {{ article.id }}
+                <section id="tabs">
+                <div class="container">	
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+    						<a class="nav-item nav-link active" id="nav-recenze-tab" data-toggle="tab" href="#nav-recenze" role="tab" aria-controls="nav-recenze" aria-selected="true">Recenze</a>
+	    					<a class="nav-item nav-link" id="nav-historie-tab" data-toggle="tab" href="#nav-historie" role="tab" aria-controls="nav-historie" aria-selected="false">Historie verzí článku</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-recenze" role="tabpanel" aria-labelledby="nav-recenze-tab">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Recenzent</th>
+                                        <th>Doporučení</th>
+                                        <th>Aktuálnost, zajímavost a přínosnost</th>
+                                        <th>Originalita</th>
+                                        <th>Profesionální úroveň</th>
+                                        <th>Jazyková a stylistická úroveň</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if article.reviews|length > 0 %}
+                                        {% for review in article.reviews %}
+                                            <tr>                        
+                                                <td>{{ review.reviewer.fullName }}</td>
+                                                <td>
+                                                    {% if review.reviewState.id > 1 %}
+                                                        <a href="#"
+                                                            class="confirm"
+                                                            data-confirm-title="Recenze článku"
+                                                            data-confirm-buttons='<button type="button" class="btn btn-outline-secondary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                            data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                                                            title="Zobrazit detail">
+                                                            {{ review.reviewerStatement|length > 0 ? review.reviewerStatement.statement : 'nevyjádřeno' }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ review.topicalityInterestAndUsefulness.id }}</td>
+                                                <td>{{ review.originality.id }}</td>
+                                                <td>{{ review.proffesionalLevel.id }}</td>
+                                                <td>{{ review.languageAndStylisticLevel.id }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="nav-historie" role="tabpanel" aria-labelledby="nav-historie-tab">
+                                <h3>Zatím nic</h3>
+                        </div>
+                    </div>            
+                </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('articleMyArticles') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('articleMyArticles') }}
+{% endblock %}
