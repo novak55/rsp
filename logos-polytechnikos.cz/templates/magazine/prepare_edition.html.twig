@@ -4,15 +4,22 @@
     <div class="row justify-content-center">
         <div class="col {% if edition is not null %}col-xl-4 col-lg-5{% else %}col-xl-10 col-lg-12{% endif %}">
             <div class="card">
-                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Připravované edice
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_magazine_edition') }}">Vydané edice</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ path('app_magazine_prepareedition') }}">Připravované edice</a>
+                        </li>
+                    </ul>
                     {% if is_granted('ROLE_REDAKTOR') %}
                         <a class="btn btn-sm btn-warning confirm"
                            data-confirm-title="Přidat novou edici časopisu"
                            data-confirm-url="{{ path('app_magazine_setedition') }}"
                            data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
                            href="#"
-                           title="Přidat další edici časopisu"
-                           href="#"><i class="fa fa-plus"></i>
+                           title="Přidat další edici časopisu"><i class="fa fa-plus"></i>
                         </a>
                     {% endif %}
                 </div>

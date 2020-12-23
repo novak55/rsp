@@ -20,7 +20,7 @@
                     {% elseif is_granted('ROLE_SEFREDAKTOR') %}
                         <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
                         <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny pro přispěvatele</a>
-                        <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Šablona</a>
+                        <a class="dropdown-item" href="{{ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) }}">Šablona</a>
                         <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Úvodní stránka</a>
                     {% endif %}
                 </div>
@@ -84,7 +84,7 @@
                 {% else %}
                 <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
                 <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny pro přispěvatele</a>
-                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Šablona</a>
+                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Seznam šablon</a>
                 <a class="dropdown-item" href="{{ path('app_index_about') }}">Úvodní stránka</a>
                 {% endif %}
             </div>
