@@ -57,14 +57,32 @@ class MagazineController extends AbstractController
 	{
 		return $this->render('magazine/edition.html.twig', [
 			'edition' => $magazine,
-			'magazines' => $this->magazineRepository->getMagazines(),
+			'magazines' => $this->magazineRepository->getMagazines(true),
 		]);
 	}
 
 	/**
-	 * @Route("/edition-management/{magazine}")
+	 * @Route("/prepare-edition/{magazine}")
+	 * @return Response
 	 */
-	public function editionManagement(Request $request, ?Magazine $magazine = null)
+	public function prepareEdition(?Magazine $magazine = null): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('magazine/prepare_edition.html.twig', [
+			'edition' => $magazine,
+			'magazines' => $this->magazineRepository->getMagazines(false),
+		]);
+	}
+
+	/**
+	 * @Route("/set-edition/{magazine}")
+	 * @param Request $request
+	 * @param Magazine|null $magazine
+	 * @return RedirectResponse|Response
+	 */
+	public function setEdition(Request $request, ?Magazine $magazine = null)
 	{
 		if (!$this->isGranted('ROLE_REDAKTOR')) {
 			return $this->render('security/secerr.html.twig');
@@ -76,13 +94,37 @@ class MagazineController extends AbstractController
 		$form = $this->formFactory->create(MagazineType::class, $magazine);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-//			$this->manager->save($magazine);
-			$this->flashBag->add('success', 'Edice časopisu byla uložena.');
-			return new RedirectResponse($this->generateUrl('app_magazine_edition'));
+			if ($magazine->getNumber() === null) {
+				$magazine->setNumber($this->magazineRepository->getCurrentNumber($magazine));
+			}
+			$this->manager->save($magazine);
+			$this->flashBag->add('success', 'Edice časopisu číslo ' . $magazine->getNumber() . ' byla uložena.');
+			return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
 		}
 		return $this->render('magazine/edition_management_ajax.html.twig', [
 			'form' => $form->createView(),
 		]);
+	}
+
+	/**
+	 * @Route("/erase-edition/{magazine}")
+	 * @param Magazine $magazine
+	 * @return RedirectResponse|Response
+	 */
+	public function eraseEdition(Magazine $magazine)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		if ($this->magazineRepository->hasMagazineSomeArticle($magazine)) {
+			$this->flashBag->add('warning', 'Nelze odstranit edici časopisu, které obsahuje články.');
+			return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
+		}
+
+		$this->manager->remove($magazine);
+		$this->flashBag->add('success', 'Edice časopisu byla odstraněna.');
+		return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
 	}
 
 	/**
@@ -168,7 +210,7 @@ class MagazineController extends AbstractController
 	/**
 	 * @Route("/set-state/{magazineState}")
 	 * @param Request $request
-	 * @param MagazineThema|null $magazineState
+	 * @param MagazineState|null $magazineState
 	 * @return RedirectResponse|Response
 	 */
 	public function setState(Request $request, ?MagazineState $magazineState = null)

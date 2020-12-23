@@ -38,12 +38,7 @@
                             {% for article in articles %}
                                 <tr>
                                     <td data-sort="{{ article.name }}" data-filter="{{ article.name }}">
-                                        {% if article.currentAttachment is not null %}
-                                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
-                                               title="Stáhnout článek">{{ article.name }}</a>
-                                        {% else %}
-                                            <abbr title="Článek není dostupný">{{ article.name }}</abbr>
-                                        {% endif %}
+                                        {% include 'article/get_article_attachment.html.twig' %}
                                     </td>
                                     <td>{{ article.currentState.state }}{% if article.currentState.id == 4 %} ({{ article.reviews|length }}x){% endif %}</td>
                                     <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>

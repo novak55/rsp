@@ -2,6 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Magazine;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,6 +34,19 @@ class ArticleTypeArticle extends ArticleCollaboratorType
 					]),
 				],
 				'help' => 'Zadejte název článku, maximální dálka je omezena na 255 znaků.',
+			])
+			->add('magazine', EntityType::class, [
+				'class' => Magazine::class,
+				'label' => 'Zařazení článku k edici',
+				'required' => true,
+				'choice_label' => static function (Magazine $magazine) {
+					return $magazine->getDeadline()->format('Y') . '/Ročník' . ($magazine->getDeadline()->format('Y') - 2009) . '/Číslo' . $magazine->getNumber() . ' - ' . $magazine->getMagazineThema()->getTheme();
+				},
+				'query_builder' => static function (EntityRepository $er) {
+					return $er->createQueryBuilder('m')
+						->where('m.currentState = 2 and m.deadline >= :now')
+						->setParameter('now', new DateTimeImmutable());
+				},
 			])
 			->add('attachment', FileType::class, [
 				'label' => 'Článek',

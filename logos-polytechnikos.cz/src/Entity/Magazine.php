@@ -88,7 +88,7 @@ class Magazine
 		$this->deadline = $deadline;
 	}
 
-	public function getCurrentState(): MagazineState
+	public function getCurrentState(): ?MagazineState
 	{
 		return $this->currentState;
 	}

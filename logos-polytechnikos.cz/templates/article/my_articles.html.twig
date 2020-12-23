@@ -35,7 +35,7 @@
                         {% if articles|length > 0 %}
                             {% for article in articles %}
                                 <tr>
-                                    <td>
+                                    <td data-filter="{{ article.name }}">
                                         {% if article.currentAttachment is not null %}
                                         <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
                                            title="Stáhnout článek"
@@ -74,10 +74,18 @@
                                            title="Zobrazit historii stavů článku"><i class="fa fa-recycle"></i>
                                         </a>
                                         #}
+                                        {% if article.currentState.id < 4 %}
                                         <a class="btn btn-sm btn-warning"
                                            href="{{ path('app_article_modifyarticle', {article: article.id}) }}"
                                            title="Upravit článek"><i class="fa fa-edit"></i> Upravit
                                         </a>
+                                        {% endif %}
+                                        {% if article.currentState.id > 4 or article.currentState.id == 3 %}
+                                            <a class="btn btn-sm btn-info"
+                                               href="{{ path('app_article_showarticle', {article: article.id}) }}"
+                                               title="Zobrazit vyjádření recenzentů"><i class="fa fa-info-circle"></i>  Recenze
+                                            </a>
+                                        {% endif %}
                                         <a class="btn btn-sm btn-danger"
                                            href="#"
                                            title="Odstranit článek"><i class="fa fa-trash"></i>

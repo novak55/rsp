@@ -2,21 +2,35 @@
 
 namespace App\Form;
 
+use App\Entity\MagazineState;
 use App\Entity\MagazineThema;
+use App\Repository\MagazineRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MagazineType extends AbstractType
 {
+
+	/** @var MagazineRepository */
+	private $magazineRepository;
+
+	public function __construct(MagazineRepository $magazineRepository)
+	{
+		$this->magazineRepository = $magazineRepository;
+	}
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void
 	{
 		parent::buildForm($builder, $options);
 
+		$lastDate = null;
+		if ($options['data']->getDeadline() === null) {
+			$lastDate = $this->magazineRepository->getLastDateMagazine();
+		}
 		$builder
 			->add('magazineThema', EntityType::class, [
 				'class' => MagazineThema::class,
@@ -29,11 +43,21 @@ class MagazineType extends AbstractType
 				'required' => true,
 				'label' => 'Uzávěrka',
 				'widget' => 'single_text',
-				'constraints' => [
-					new NotBlank([
-						'message' => 'Vyplňte název číselníku stavu.',
-					]),
+				'attr' => [
+					'min' => $lastDate,
 				],
+			])
+			->add('number', ChoiceType::class, [
+				'placeholder' => 'Doplnit automaticky',
+				'label' => 'Číslo edice',
+				'required' => false,
+				'choices' => [1 => 1, 2, 3, 4, 5],
+			])
+			->add('currentState', EntityType::class, [
+				'class' => MagazineState::class,
+				'choice_label' => 'state',
+				'required' => true,
+				'label' => 'Stav přístupnosti edice',
 			])
 			->add('submit', SubmitType::class, [
 				'label' => 'Uložit stav',
