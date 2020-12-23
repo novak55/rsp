@@ -35,7 +35,7 @@
                         {% if articles|length > 0 %}
                             {% for article in articles %}
                                 <tr>
-                                    <td>
+                                    <td data-filter="{{ article.name }}">
                                         {% if article.currentAttachment is not null %}
                                         <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
                                            title="Stáhnout článek"
