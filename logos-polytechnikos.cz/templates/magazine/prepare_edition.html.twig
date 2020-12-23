@@ -4,13 +4,24 @@
     <div class="row justify-content-center">
         <div class="col {% if edition is not null %}col-xl-4 col-lg-5{% else %}col-xl-10 col-lg-12{% endif %}">
             <div class="card">
-                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Vydané edice</div>
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Připravované edice
+                    {% if is_granted('ROLE_REDAKTOR') %}
+                        <a class="btn btn-sm btn-warning confirm"
+                           data-confirm-title="Přidat novou edici časopisu"
+                           data-confirm-url="{{ path('app_magazine_setedition') }}"
+                           data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                           href="#"
+                           title="Přidat další edici časopisu"
+                           href="#"><i class="fa fa-plus"></i>
+                        </a>
+                    {% endif %}
+                </div>
                 <div class="card-body">
                     {% if magazines|length > 0 %}
                         {% for magazine in magazines %}
                             <div class="list-group-item d-flex justify-content-between">
                                 <div class="col-xl-11 col-md-10">
-                                <a href="{{ path('app_magazine_edition', {magazine: magazine.id}) }}">
+                                <a href="{{ path('app_magazine_prepareedition', {magazine: magazine.id}) }}">
                                     {{ magazine.deadline|date('Y') }}/Ročník{{ magazine.deadline|date('Y') - 2009 }}/Číslo{{ magazine.number }}
                                 </a>
 
@@ -22,6 +33,25 @@
                                 {% endif %}
                                       <abbr title="Počet příspěvků v edici: {{ magazine.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7)|length }}">({{ magazine.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7)|length }})</abbr>
                                 </div>
+                                {% if is_granted('ROLE_REDAKTOR') %}
+                                    <span>
+                                    <a class="btn btn-sm btn-warning confirm"
+                                       data-confirm-title="Upravit edici časopisu"
+                                       data-confirm-url="{{ path('app_magazine_setedition', {magazine: magazine.id}) }}"
+                                       data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                                       href="#"
+                                       title="Upravit edici časopisu"><i class="fa fa-pen"></i>
+                                    </a>
+                                    {% if magazine.articles|length == 0 %}
+                                    <a class="btn btn-sm btn-danger confirm"
+                                       data-confirm-title="Odstranit edici časopisu"
+                                       data-confirm-text="Opravdu si přejete odstranit <b>{{magazine.deadline|date('Y') }}/Ročník{{ magazine.deadline|date('Y') - 2009 }}/Číslo{{ magazine.number }}</b>"
+                                       href="{{ path('app_magazine_eraseedition', {magazine: magazine.id}) }}"
+                                       title="Odstranit téma"><i class="fa fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                    </span>
+                                {% endif %}
                             </div>
 
                         {% endfor %}

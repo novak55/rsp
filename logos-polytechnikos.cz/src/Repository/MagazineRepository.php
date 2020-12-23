@@ -25,7 +25,7 @@ class MagazineRepository
 	 */
 	public function getMagazines(bool $restrict): ?array
 	{
-		$where = $restrict ? ['currentState' => 3] : [];
+		$where = $restrict ? ['currentState' => 3] : ['currentState' => [1, 2]];
 		return $this->em->getRepository(Magazine::class)->findBy($where, ['deadline' => 'DESC']);
 	}
 

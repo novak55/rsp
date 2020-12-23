@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\ArticleCollaborator;
+use App\Entity\ArticleState;
 use App\Entity\ArticleStateHistory;
 use App\Entity\FileAttachment;
 use App\Form\ArticleCollaboratorType;
@@ -157,7 +158,7 @@ class ArticleController extends AbstractController
 	/**
 	 * @Route("/diasble-collaborator/{collaborator}")
 	 * @param ArticleCollaborator $collaborator
-	 * @return RedirectResponse
+	 * @return RedirectResponse|Response
 	 */
 	public function disableColaborator(ArticleCollaborator $collaborator): RedirectResponse
 	{
@@ -173,7 +174,7 @@ class ArticleController extends AbstractController
 		}
 
 		$this->addFlash('danger', 'Tohoto spoluautora nemůžete odstranit! Nejedná se o vašeho spoluautora.');
-		return new RedirectResponse($this->generateUrl('/'));
+		return new RedirectResponse($this->generateUrl('rsp'));
 	}
 
 	/**
@@ -222,6 +223,22 @@ class ArticleController extends AbstractController
 	}
 
 	/**
+	 * @Route("/decision-article-state/{article}/{articleState}")
+	 * @param Article $article
+	 * @param ArticleState $articleState
+	 * @return RedirectResponse|Response
+	 */
+	public function decisionArticleState(Article $article, ArticleState $articleState)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR') && !in_array($articleState->getId(), [self::STAV_VRACENO, self::STAV_PRIJTO_VYHRADA, self::STAV_PRIJATO], true)) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$this->manager->changeArticleState($article, $articleState, $this->getUser());
+		$this->flashBag->add('success', 'Stav článku ' . $article->getName() . ' byl změněn na ' . $articleState->getState());
+		return new RedirectResponse($this->generateUrl('rsp'));
+	}
+
+	/**
 	 * @Route("/return-article-not-suitable-thema/{article}")
 	 * @param Request $request
 	 * @param Article $article
@@ -246,8 +263,9 @@ class ArticleController extends AbstractController
 	 */
 	public function showArticle(Article $article): Response
 	{
-		return $this->render('article/show_article.html.twig', [
+		return $this->render('article/review_article.html.twig', [
 			'article' => $article,
+			'user' => $this->getUser(),
 		]);
 	}
 

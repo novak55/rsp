@@ -55,13 +55,24 @@ class MagazineController extends AbstractController
 	 */
 	public function edition(?Magazine $magazine = null): Response
 	{
-	    $restrict = true;
-	    if($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR')){
-	        $restrict = false;
-        }
 		return $this->render('magazine/edition.html.twig', [
-            'edition' => $magazine,
-            'magazines' => $this->magazineRepository->getMagazines($restrict),
+			'edition' => $magazine,
+			'magazines' => $this->magazineRepository->getMagazines(true),
+		]);
+	}
+
+	/**
+	 * @Route("/prepare-edition/{magazine}")
+	 * @return Response
+	 */
+	public function prepareEdition(?Magazine $magazine = null): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('magazine/prepare_edition.html.twig', [
+			'edition' => $magazine,
+			'magazines' => $this->magazineRepository->getMagazines(false),
 		]);
 	}
 
@@ -88,7 +99,7 @@ class MagazineController extends AbstractController
 			}
 			$this->manager->save($magazine);
 			$this->flashBag->add('success', 'Edice časopisu číslo ' . $magazine->getNumber() . ' byla uložena.');
-			return new RedirectResponse($this->generateUrl('app_magazine_edition'));
+			return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
 		}
 		return $this->render('magazine/edition_management_ajax.html.twig', [
 			'form' => $form->createView(),
@@ -108,12 +119,12 @@ class MagazineController extends AbstractController
 
 		if ($this->magazineRepository->hasMagazineSomeArticle($magazine)) {
 			$this->flashBag->add('warning', 'Nelze odstranit edici časopisu, které obsahuje články.');
-			return new RedirectResponse($this->generateUrl('app_magazine_edition'));
+			return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
 		}
 
 		$this->manager->remove($magazine);
 		$this->flashBag->add('success', 'Edice časopisu byla odstraněna.');
-		return new RedirectResponse($this->generateUrl('app_magazine_edition'));
+		return new RedirectResponse($this->generateUrl('app_magazine_prepareedition'));
 	}
 
 	/**
