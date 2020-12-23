@@ -20,7 +20,7 @@
                                     - {{ magazine.currentState.state }}
                                     {% endif %}
                                 {% endif %}
-                                      <abbr title="Počet příspěvků v edici: {{ magazine.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7)|length }}">({{ magazine.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7)|length }})</abbr>
+                                      <abbr title="Počet příspěvků v edici: {{ magazine.articles|filter(v => v.currentState.id > 4 and v.currentState.id != 7)|length }}">({{ magazine.articles|filter(v => v.currentState.id > 4 and v.currentState.id != 7)|length }})</abbr>
                                 </div>
                             </div>
 
@@ -42,7 +42,7 @@
 
                 </div>
                 <div class="card-body">
-                    {% if edition.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7)|length > 0 %}
+                    {% if edition.articles|filter(v => v.currentState.id > 4 and v.currentState.id != 7)|length > 0 %}
                         <div class="list-group">
                             <div class="list-group-item list-group-item-info">
                                 <div class="row">
@@ -55,10 +55,10 @@
                                 </div>
                             </div>
 
-                        {% for article in edition.articles|filter(v => v.currentState.id > 4, v => v.currentState.id < 7) %}
+                        {% for article in edition.articles|filter(v => v.currentState.id > 4 and v.currentState.id != 7) %}
                             <div class="list-group-item">
                                 <div class="row">
-                                    <div class="col-lg-7">
+                                    <div class="col-lg-7">xcfghsf
                                         {% include 'article/get_article_attachment.html.twig' %}
                                     </div>
                                     <div class="col-lg-5">
