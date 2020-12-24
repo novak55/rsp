@@ -235,7 +235,7 @@ class ArticleController extends AbstractController
 		}
 		$this->manager->changeArticleState($article, $articleState, $this->getUser());
 		$this->flashBag->add('success', 'Stav článku ' . $article->getName() . ' byl změněn na ' . $articleState->getState());
-		return new RedirectResponse($this->generateUrl('rsp'));
+		return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $article->getId())));
 	}
 
 	/**

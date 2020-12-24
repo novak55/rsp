@@ -56,7 +56,7 @@ class ReviewController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->manager->save($review);
 			$this->flashBag->add('success', 'Vaše recenze článku byla přidána.');
-			return new RedirectResponse($this->generateUrl('rsp'));
+			return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $review->getArticle()->getId())));
 		}
 		return $this->render('review/add_review.html.twig', [
 			'form' => $form->createView(),
@@ -80,7 +80,7 @@ class ReviewController extends AbstractController
 			$review->setReviewState($reviewRepository->getStateReviewById(self::ODESLANO_REDAKTOROVI));
 			$this->manager->save($review);
 			$this->flashBag->add('success', 'Vaše recenze článku ' . $review->getArticle()->getName() . ' byla odevzdána.');
-			return new RedirectResponse($this->generateUrl('rsp'));
+			return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $review->getArticle()->getId())));
 		}
 		return $this->render('review/reviewer_result.html.twig', [
 			'form' => $form->createView(),

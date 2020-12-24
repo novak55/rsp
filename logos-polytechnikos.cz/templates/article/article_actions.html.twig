@@ -1,11 +1,17 @@
-<a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
-title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">Stáhnout článek</a>
+{% if article.currentAttachment is not null %}
+    <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+    title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">Stáhnout článek</a>
+{% endif %}
 
 {% if is_granted('ROLE_AUTOR') %}
     <a href=# title="Nahrát novou verzi článku" class="btn btn-block btn-primary mt-1" role="button">Nahrát novou verzi článku</a><br>
 {% endif %}
 
 {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %}
+
+    {# % if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) % #}
+    <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}" class="btn btn-block btn-primary mt-1 open-form w-100" title="Přidat recenzenta"><i class="fa fa-user-plus"></i> Přidat recenzenta</a>
+    {# % endif % #}
 
     <a class="btn btn-block btn-success confirm"
         href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 6}) }}"
@@ -31,12 +37,12 @@ title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">
 {#
     {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
         <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
-            class="btn btn-sm btn-outline-secondary"
+            class="btn btn-block btn-sm btn-outline-secondary"
             title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
         </a>
     {% else %}
         <a href="#"
-            class="btn btn-sm btn-light disabled"
+            class="btn btn-block btn-sm btn-light disabled"
             title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
         </a>
     {% endif %}
@@ -56,7 +62,32 @@ title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">
 {% endif %}
 
 {% if is_granted('ROLE_RECENZENT') %}
-    <a href=# title="Vložit posudek" class="btn btn-block btn-primary mt-1" role="button">Vložit posudek</a>
+    {% for review in article.reviews %}
+        {% if review.reviewer.id == app.user.id %}
+            {% if review.reviewState.id == 1 %}
+                <a href="{{ path('app_review_addreview', {review: review.id}) }}"
+                    class="btn btn-block btn-info mt-1"
+                    title="Vyplnit recenzi článku"><i class="fa fa-pen"></i> Vyplnit recenzi článku</a>
+                {% if review.topicalityInterestAndUsefulness is not null and review.originality is not null and review.proffesionalLevel is not null and review.languageAndStylisticLevel is not null %}
+                    <a href="#"
+                        data-confirm-title="Odevzdání recenze"
+                        data-confirm-text="Opravdu si přejete odevzdat Vaši recenzi?"
+                        data-confirm-url="{{ path('app_review_submitreview', {review: review.id}) }}"
+                        data-confirm-buttons = '<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                        class="btn btn-block btn-warning confirm mt-1"
+                        title="Zadat celkové rozhodnutí a odevzdat recenzi redaktorovi, po té již nebude možná úprava."><i class="fa fa-check"></i> Odevzdat recenzi</a>
+                {% endif %}
+            {% else %}
+                <a href="#"
+                    class="btn btn-block mt-1 btn-primary confirm"
+                    data-confirm-title="Moje recenze"
+                    data-confirm-buttons='<button type="button" class="btn btn-primary" data-dismiss="modal">Zavřít</button>'
+                    data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                    title="Zobrazit posudek"><i class="fa fa-eye"></i> Zobrazit můj posudek
+                </a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
 {% endif %}
 
 

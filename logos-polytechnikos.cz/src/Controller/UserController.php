@@ -122,7 +122,7 @@ class UserController extends AbstractController
 			$review->setReviewState($reviewRepository->getStateReviewById(ReviewController::ROZPRACOVANO));
 			$this->manager->add($review);
 			$this->manager->changeArticleState($article, $articleRepository->getStateArticleById(ArticleController::STAV_PREDANO_RECENZENTUM), $this->getUser());
-			return new RedirectResponse($this->generateUrl('rsp'));
+			return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $article->getId())));
 		}
 
 		return $this->render('user/add_reviewer_article.html.twig', [
