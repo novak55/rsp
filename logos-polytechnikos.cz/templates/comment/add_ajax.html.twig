@@ -1,0 +1,10 @@
+{% if review is not null %}
+    {{ form_start(form) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+    {% if review.comments|length > 0 %}
+        {% include "comment/show_comment.html.twig" %}
+    {% endif %}
+{% else %}
+    <div>Žádná diskuse neprobíhá</div>
+{% endif %}

@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 </div>
-                <div class="row justify-content-center">
+                <div class="row">
                     <div class="card mt-3">
                         <div class="card-header"><h5>Recenze</h5></div>
                         <div class="card-body">
@@ -74,6 +74,20 @@
                                     {% endif %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card mt-3">
+                            {% set review = article.getReviewByUser(app.user) %}
+                            <div class="card-header">
+                                <div class="row justify-content-between">
+                                    <h5>Diskuse</h5>
+                                    {% include "comment/add_anchor_comment.html.twig" %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% include 'comment/show_comment.html.twig' %}
+                            </div>
                         </div>
                     </div>
                 </div>

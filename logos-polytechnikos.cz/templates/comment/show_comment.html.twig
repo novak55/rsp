@@ -1,0 +1,30 @@
+<div class="list-group">
+    <div class="row">
+    {% if review is not null and review.comments|length > 0 %}
+    {% for comment in review.comments|reverse %}
+            {% if comment.user == app.user %}
+                <div class="col-2">
+                    {% if comment.unreadComment(app.user) == true %}<span class="text-danger bold"><i class="fa fa-exclamation"></i></span>{% endif %}
+                    <span class="small"><i>{{ comment.insertDate|date('H:i') }}</i>
+                    <abbr title="{{ comment.insertDate|date('H:i:s  d. m. Y') }}"><i>{{ comment.insertDate|date('d.m.') }}</i></abbr>
+                    </span>
+                </div>
+            {% endif%}
+            <div class="col-10 list-group-item {% if comment.user.role.id == 2 %}text-right list-group-item-info{% else %}list-group-item-warning{% endif %}">
+                {% if comment.user == app.user %}{% include "comment/edit_anchor_comment.html.twig" %}{% endif %}
+                {{ comment.text|raw }}
+            </div>
+            {% if comment.user != app.user %}
+                <div class="col-2">
+                    {% if comment.unreadComment(app.user) == true %}<span class="text-danger bold"><i class="fa fa-exclamation"></i></span>{% endif %}
+                    <span class="small"><i>{{ comment.insertDate|date('H:i') }}</i>
+                    <abbr title="{{ comment.insertDate|date('H:i:s  d. m. Y') }}"><i>{{ comment.insertDate|date('d.m.') }}</i></abbr>
+                    {% if comment.user.role.id == 2 %}Autor{% endif %}
+                    {% if comment.user.role.id == 4 %}Recenzent{% endif %}
+                    </span>
+                </div>
+            {% endif%}
+    {% endfor %}
+    {% endif %}
+    </div>
+</div>

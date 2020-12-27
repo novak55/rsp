@@ -1,0 +1,16 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    {% set cardTitle %}<ul class="nav nav-pills card-header-pills">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('rsp') }}">Články k recenzi</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="{{ path('app_review_myreviewedarticle') }}">Recenzované články</a>
+        </li>
+        </ul>
+    {% endset %}
+    {% include 'article/recenzent_widget.html.twig' %}
+
+{% endblock %}
+

@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use function count;
 
@@ -118,22 +119,34 @@ class Article
 		}
 		return false;
 	}
-    
-    public function hasFilledReviewersStatement(): bool
-    {
-        $countReviewers = count($this->reviews);
-        if ($countReviewers > 1) {
-            $mem = [];
-            foreach ($this->reviews as $review) {
-                if ($review->getReviewerStatement() !== null) {
-                    $mem[] = $review->getReviewerStatement()->getId();
-                }
-            }
-            return count($mem) === $countReviewers;
-        }
-        return false;
+
+	/**
+	 * @param User $user
+	 * @return ArrayCollection|Collection|Review
+	 */
+	public function getReviewByUser(User $user)
+	{
+		return $this->getReviews()
+			->matching(Criteria::create()
+				->where(Criteria::expr()
+					->eq('reviewer', $user)))->first();
 	}
-	
+
+	public function hasFilledReviewersStatement(): bool
+	{
+		$countReviewers = count($this->reviews);
+		if ($countReviewers > 1) {
+			$mem = [];
+			foreach ($this->reviews as $review) {
+				if ($review->getReviewerStatement() !== null) {
+					$mem[] = $review->getReviewerStatement()->getId();
+				}
+			}
+			return count($mem) === $countReviewers;
+		}
+		return false;
+	}
+
 	public function getId(): ?int
 	{
 		return $this->id;

@@ -2,10 +2,26 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col col-xl-10 col-lg-12">
+    <div class="col col-xl-11 col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title float-left">{% trans %}Články{% endtrans %}</h5>
+                <h5 class="card-title float-left">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item"><a class="nav-link">Články:</a> </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState is null %}active{% endif %}" href="{{ path('app_article_myarticles') }}">Přehled všech</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState != null and articleState.id == 6 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 6}) }}">Přijaté</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState != null and articleState.id == 3 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 3}) }}">Vrácené</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="danger nav-link {% if articleState != null and articleState.id == 7 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 7}) }}">Zamítnuté</a>
+                        </li>
+                    </ul>
+                </h5>
                 <div class="float-right">
                     <div class="form-inline my-2 my-lg-0">
                         <label for="#table-page-size">Záznamů na stránce: </label>

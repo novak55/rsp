@@ -32,11 +32,19 @@ class ReviewController extends AbstractController
 	/** @var RspManager */
 	private $manager;
 
-	public function __construct(FlashBagInterface $flashBag, FormFactoryInterface $formFactory, RspManager $manager)
+	private $reviewRepository;
+
+	public function __construct(
+		FlashBagInterface $flashBag,
+		FormFactoryInterface $formFactory,
+		RspManager $manager,
+		ReviewRepository $reviewRepository
+	)
 	{
 		$this->flashBag = $flashBag;
 		$this->formFactory = $formFactory;
 		$this->manager = $manager;
+		$this->reviewRepository = $reviewRepository;
 	}
 
 	/**
@@ -56,7 +64,7 @@ class ReviewController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			$this->manager->save($review);
 			$this->flashBag->add('success', 'Vaše recenze článku byla přidána.');
-			return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $review->getArticle()->getId())));
+			return new RedirectResponse($this->generateUrl('show_article_detail', ['article' => $review->getArticle()->getId()]));
 		}
 		return $this->render('review/add_review.html.twig', [
 			'form' => $form->createView(),
@@ -69,7 +77,7 @@ class ReviewController extends AbstractController
 	 * @param Review $review
 	 * @return RedirectResponse|Response
 	 */
-	public function submitReview(Request $request, Review $review, ReviewRepository $reviewRepository)
+	public function submitReview(Request $request, Review $review)
 	{
 		if ($review->getReviewer() !== $this->getUser()) {
 			return $this->render('security/secerr.html.twig');
@@ -77,10 +85,10 @@ class ReviewController extends AbstractController
 		$form = $this->createForm(ReviewerResultType::class, $review);
 		$form->handleRequest($request);
 		if ($form->isSubmitted() && $form->isValid()) {
-			$review->setReviewState($reviewRepository->getStateReviewById(self::ODESLANO_REDAKTOROVI));
+			$review->setReviewState($this->reviewRepository->getStateReviewById(self::ODESLANO_REDAKTOROVI));
 			$this->manager->save($review);
 			$this->flashBag->add('success', 'Vaše recenze článku ' . $review->getArticle()->getName() . ' byla odevzdána.');
-			return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $review->getArticle()->getId())));
+			return new RedirectResponse($this->generateUrl('show_article_detail', ['article' => $review->getArticle()->getId()]));
 		}
 		return $this->render('review/reviewer_result.html.twig', [
 			'form' => $form->createView(),
@@ -96,7 +104,7 @@ class ReviewController extends AbstractController
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		if (!($review->getReviewer() === $this->getUser()
-			|| ($review->getArticle()->getAuthor() === $this->getUser() && $review->getReviewState()->getId() === 3)
+			|| ($review->getArticle()->getAuthor() === $this->getUser() && $review->getReviewState()->getId() === self::ZPRISTUPNENO_AUTOROVI)
 			|| $this->isGranted('ROLE_REDAKTOR')
 			|| $this->isGranted('ROLE_SEFREDAKTOR'))
 			|| $review->getReviewState()->getId() === 1
@@ -109,30 +117,48 @@ class ReviewController extends AbstractController
 		]);
 	}
 
+	/**
+	 * @Route("/review/{review}/complaint")
+	 * @param Request $request
+	 * @param Review $review
+	 * @return Response
+	 */
+	public function submitComplaint(Request $request, Review $review): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!($review->getArticle()->getAuthor() === $this->getUser() && $review->getReviewState()->getId() === 3)) {
+			return $this->render('security/secerr.html.twig');
+		}
 
-    /**
-     * @Route("/review/{review}/complaint")
-     * @param Review $review
-     * @return Response
-     */
-    public function submitComplaint(Request $request, Review $review): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        if (!($review->getArticle()->getAuthor() === $this->getUser() && $review->getReviewState()->getId() === 3)) {
-            return $this->render('security/secerr.html.twig');
-        }
+		$form = $this->formFactory->create(ComplaintType::class);
+		$form->handleRequest($request);
+		if ($form->isSubmitted() && $form->isValid()) {
+			// TODO: Uložit námitku
+			$this->flashBag->add('success', 'Vaše námitka byla zaslána redaktorovi.');
+		}
 
-        $form = $this->formFactory->create(ComplaintType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // TODO: Uložit námitku
-            $this->flashBag->add('success', 'Vaše námitka byla zaslána redaktorovi.');
-        }
+		return $this->render('review/review_complaint.html.twig', [
+			'review' => $review,
+			'complaintBody' => 'Kaboom',
+			'form' => $form->createView(),
+		]);
+	}
 
-        return $this->render('review/review_complaint.html.twig', [
-            'review' => $review,
-            'complaintBody' => "Kaboom",
-            'form' => $form->createView(),
-        ]);
-    }
+	/**
+	 * @Route("/my-reviewed-article")
+	 * @return Response
+	 */
+	public function myReviewedArticle(): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!$this->isGranted('ROLE_RECENZENT')) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		return $this->render('review/my_reviewed_article.html.twig', [
+			'articles' => $this->reviewRepository->myReviewedArticle($this->getUser()),
+			'user' => $this->getUser(),
+		]);
+	}
+
 }

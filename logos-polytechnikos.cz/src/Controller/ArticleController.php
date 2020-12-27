@@ -62,15 +62,17 @@ class ArticleController extends AbstractController
 	}
 
 	/**
-	 * @Route("/my-articles")
+	 * @Route("/my-articles/{articleState}")
+	 * @param ArticleState|null $articleState
 	 * @return Response
 	 */
-	public function myArticles(): Response
+	public function myArticles(?ArticleState $articleState = null): Response
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-		$articles = $this->articleRepository->getUserArticles($this->getUser());
+		$articles = $this->articleRepository->getUserArticles($this->getUser(), $articleState);
 		return $this->render('article/my_articles.html.twig', [
 			'articles' => $articles,
+			'articleState' => $articleState,
 		]);
 	}
 
@@ -295,4 +297,32 @@ class ArticleController extends AbstractController
 			'article' => $article,
 		]);
 	}
+	/**
+	 * @Route("/article-without-reviewer")
+	 * @return Response
+	 */
+	public function ArticleWithoutReviewer(): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('article/article_without_reviewer.html.twig', [
+			'articles' => $this->articleRepository->getArticlesWithoutReviewer(),
+		]);
+	}
+
+	/**
+	 * @Route("/article-for-decision")
+	 * @return Response
+	 */
+	public function articleForDecision(): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('article/article_for_decision.html.twig', [
+			'articles' => $this->articleRepository->getArticlesForDecision(),
+		]);
+	}
+
 }

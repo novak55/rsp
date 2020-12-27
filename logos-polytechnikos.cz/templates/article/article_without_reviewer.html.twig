@@ -1,0 +1,16 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    {% set cardTitle %}Články, ke kterým je třeba přiřadit recenzenta{% endset %}
+    {% include 'article/redaktor_widget.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('rspIndex') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('rspIndex') }}
+{% endblock %}
+

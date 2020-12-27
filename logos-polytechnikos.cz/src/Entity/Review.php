@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use function count;
 
 /**
  * @ORM\Entity()
@@ -85,11 +89,27 @@ class Review
 	 */
 	private $insertDate;
 
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="review")
+	 * @ORM\JoinColumn(nullable=false)
+	 * @var Collection|Comment[]|null
+	 */
+	private $comments;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\CommentUnread", mappedBy="review")
+	 * @ORM\JoinColumn(nullable=false)
+	 * @var Collection|CommentUnread[]|null
+	 */
+	private $commentsUnread;
+
 	public function __construct()
 	{
 		$this->insertDate = new DateTimeImmutable();
+		$this->comment = new ArrayCollection();
+		$this->commentsUnread = new ArrayCollection();
 	}
-
+	
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -198,6 +218,38 @@ class Review
 	public function setInsertDate(DateTimeImmutable $insertDate): void
 	{
 		$this->insertDate = $insertDate;
+	}
+
+	/**
+	 * @return Comment[]|Collection|null
+	 */
+	public function getComments()
+	{
+		return $this->comments;
+	}
+
+	/**
+	 * @param Comment[]|Collection|null $comments
+	 */
+	public function setComments($comments): void
+	{
+		$this->comments = $comments;
+	}
+
+	/**
+	 * @return CommentUnread[]|Collection|null
+	 */
+	public function getCommentsUnread()
+	{
+		return $this->commentsUnread;
+	}
+
+	/**
+	 * @param CommentUnread[]|Collection|null $commentsUnread
+	 */
+	public function setCommentsUnread($commentsUnread): void
+	{
+		$this->commentsUnread = $commentsUnread;
 	}
 
 }
