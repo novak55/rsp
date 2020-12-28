@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Controller\ArticleController;
 use App\Entity\Article;
 use App\Entity\ArticleState;
+use App\Entity\Review;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -77,5 +78,38 @@ class ArticleRepository
 		}
 		return $qb->getQuery()->getResult();
 	}
+
+	/**
+	 * @return Article[]|null
+	 */
+	public function getArticlesWithFinishedReviews() {
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a')
+			->andWhere('a.currentState = ' . ArticleController::STAV_PREDANO_RECENZENTUM);
+
+		$sub1 = $this->em->createQueryBuilder()
+			->select('r1')
+			->from(Review::class, 'r1')
+			->andWhere('r1.article = a')
+			->andWhere('r1.reviewState = 1');
+		
+		$qb->andWhere($qb->expr()->not($qb->expr()->exists($sub1->getDQL())));
+
+		return $qb->getQuery()->getResult();
+	}
+
+	/**
+	 * @return Article[]|null
+	 */
+	public function getArticlesWithNoReviews() {
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a')
+			->andWhere('a.currentState = ' . ArticleController::STAV_PODANO);
+
+		return $qb->getQuery()->getResult();
+	}
+
 
 }

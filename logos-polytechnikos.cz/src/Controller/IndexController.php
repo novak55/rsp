@@ -266,4 +266,36 @@ class IndexController extends AbstractController
 		return new RedirectResponse($this->generateUrl('app_index_changetemplate'));
 	}
 
+	/**
+	 * @Route("/articles-no-reviewer")
+	 * @return RedirectResponse|Response
+	 */
+	public function articlesNoReviewer()
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		return $this->render('article/articles_no_review.html.twig', [
+			'articles' => $this->articleRepository->getArticlesWithNoReviews(),
+		]);		
+	}
+
+		/**
+	 * @Route("/finish-reviews")
+	 * @return RedirectResponse|Response
+	 */
+	public function finishReviews()
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		return $this->render('article/articles_finished_review.html.twig', [
+			'articles' => $this->articleRepository->getArticlesWithFinishedReviews(),
+		]);		
+	}
+
 }
