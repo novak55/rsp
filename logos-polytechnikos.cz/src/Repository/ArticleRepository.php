@@ -10,6 +10,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use function count;
 use function implode;
 
 class ArticleRepository
@@ -31,9 +32,13 @@ class ArticleRepository
 	 * @param User $author
 	 * @return Article[]|null
 	 */
-	public function getUserArticles(User $author): ?array
+	public function getUserArticles(User $author, ?ArticleState $articleState = null): ?array
 	{
-		return $this->em->getRepository(Article::class)->findBy(['author' => $author]);
+		$where = ['author' => $author];
+		if ($articleState !== null) {
+			$where['currentState'] = $articleState;
+		}
+		return $this->em->getRepository(Article::class)->findBy($where);
 	}
 
 	/**
@@ -69,6 +74,7 @@ class ArticleRepository
 				$qb->join('a.reviews', 'r')
 					->andWhere('a.currentState = ' . ArticleController::STAV_PREDANO_RECENZENTUM)
 					->andWhere('r.reviewer = :user')
+					->andWhere('r.reviewerStatement is null')
 					->setParameter('user', $user);
 			}
 			if ($this->authorizationChecker->isGranted('ROLE_REDAKTOR')
@@ -76,6 +82,62 @@ class ArticleRepository
 				$qb->andWhere('a.currentState in (' . ArticleController::STAV_PREDANO_RECENZENTUM . ',' . ArticleController::STAV_PODANO . ')');
 			}
 		}
+		return $qb->getQuery()->getResult();
+	}
+
+	public function countArticlesWithoutReviewers(): int
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('count(a)')
+			->from(Article::class, 'a')
+			->leftJoin('a.reviews', 'r')
+			->groupBy('a')
+			->where('a.currentState = 2')
+			->having('count(r.id) < 2');
+		return count($qb->getQuery()->getResult());
+	}
+
+	/**
+	 * @return Article[]|null
+	 */
+	public function getArticlesWithoutReviewer(): ?array
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a')
+			->leftJoin('a.reviews', 'r')
+			->groupBy('a')
+			->where('a.currentState = 2')
+			->having('count(r.id) < 2');
+		return $qb->getQuery()->getResult();
+	}
+
+	public function countArticlesForDecision(): int
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('count(a)')
+			->from(Article::class, 'a')
+			->leftJoin('a.reviews', 'r')
+			->groupBy('a')
+			->where('r.reviewerStatement is not null and a.currentState = 4')
+			->having('count(r.id) > 1
+			and count(r.id) = (SELECT count(r2.id) from ' . Review::class . ' r2 where r2.article = a.id)');
+		return count($qb->getQuery()->getResult());
+	}
+
+	/**
+	 * @return Article[]|null
+	 */
+	public function getArticlesForDecision(): ?array
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a')
+			->leftJoin('a.reviews', 'r')
+			->groupBy('a')
+			->where('r.reviewerStatement is not null and a.currentState = 4 ')
+			->having('count(r.id) > 1
+			and count(r.id) = (SELECT count(r2.id) from ' . Review::class . ' r2 where r2.article = a.id)');
 		return $qb->getQuery()->getResult();
 	}
 

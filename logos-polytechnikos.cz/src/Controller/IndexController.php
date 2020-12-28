@@ -63,10 +63,12 @@ class IndexController extends AbstractController
 	 */
 	public function index()
 	{
-		return $this->isGranted('ROLE_AUTOR') ? $this->redirect('/my-articles') : $this->render('rsp/index.html.twig', [
-			'articles' => $this->articleRepository->getArticleWidgetByUserAndRole($this->getUser()),
-			'user' => $this->getUser(),
-		]);
+		return $this->isGranted('ROLE_AUTOR')
+			? $this->redirect('/my-articles')
+			: $this->render('rsp/index.html.twig', [
+				'articles' => $this->articleRepository->getArticleWidgetByUserAndRole($this->getUser()),
+				'user' => $this->getUser(),
+			]);
 	}
 
 	/**

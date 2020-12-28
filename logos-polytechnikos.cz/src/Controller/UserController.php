@@ -26,6 +26,7 @@ class UserController extends AbstractController
 {
 
 	public const ROLE_AUTOR = 2;
+	public const ROLE_RECENZENT = 4;
 
 	/** @var FlashBagInterface */
 	private $flashBag;

@@ -1,0 +1,8 @@
+<a class="btn btn-warning btn-sm confirm"
+   data-confirm-title="Úprava komentáře"
+   data-confirm-url="{{ path('app_comment_editcomment', {comment: comment.id, url: app.request.requestUri}) }}"
+   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+   title="Uložit komentář"
+   href="#">
+    <i class="fa fa-pen"></i>
+</a>

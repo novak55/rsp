@@ -1,1 +1,29 @@
 {% include 'article/articles_table.html.twig' with { 'tableTitle' : 'Moje články k recenzi' } %}
+
+<div class="row justify-content-center">
+    <div class="col col-xl-10 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title float-left">{% if cardTitle is defined %}{{ cardTitle }}{% else %}Články{% endif %}</h5>
+                <div class="float-right">
+                    <div class="form-inline my-2 my-lg-0">
+                        <label for="#table-page-size">Záznamů na stránce: </label>
+                        <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                            <option>5</option>
+                            <option>10</option>
+                            <option>50</option>
+                            <option>100</option>
+                            <option>200</option>
+                            <option>300</option>
+                            <option value="-1" selected>Vše</option>
+                        </select>
+                        <input class="form-control mr-sm-2" type="search" placeholder="{% trans %}Hledat{% endtrans %}" aria-label="Search" data-search-in=".dataTables_filter">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% include 'article/articles_table.html.twig' %}
+            </div>
+        </div>
+    </div>
+</div>

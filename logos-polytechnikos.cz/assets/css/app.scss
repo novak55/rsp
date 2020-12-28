@@ -401,3 +401,10 @@ select, input{
 .btn-light.disabled, .btn-light:disabled {
     color: #c0c3c5 !important;
 }
+.alert-secondary{
+    border: 1px #868686 solid;
+}
+
+div.alert-secondary button.close{
+    color: #868686;
+}

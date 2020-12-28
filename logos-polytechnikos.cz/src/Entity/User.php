@@ -92,6 +92,13 @@ class User implements UserInterface, Serializable
 	 */
 	private $articles;
 
+	/**
+	 * @ORM\Column(type="datetime_immutable")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var DateTimeImmutable|null
+	 */
+	private $lastReadComment;
+
 	/** @var string|null */
 	private $rolePlainText;
 
@@ -313,6 +320,16 @@ class User implements UserInterface, Serializable
 	public function setArticles($articles): void
 	{
 		$this->articles = $articles;
+	}
+
+	public function getLastReadComment(): ?DateTimeImmutable
+	{
+		return $this->lastReadComment;
+	}
+
+	public function setLastReadComment(?DateTimeImmutable $lastReadComment): void
+	{
+		$this->lastReadComment = $lastReadComment;
 	}
 
 }

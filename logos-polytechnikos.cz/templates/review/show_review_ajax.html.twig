@@ -15,7 +15,12 @@
 {% endif %}
 <div class="card {{ bgColor }}">
     <div class="card-header">
-        <h5 class="card-title {{ textColor }}">Doporučení recenzenta {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %} - {{ review.reviewer.getFullnameByName }}{% endif %}</h5>
+        <div class="row  justify-content-between">
+            <h5 class="card-title {{ textColor }}">Doporučení recenzenta {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %} - {{ review.reviewer.getFullnameByName }}{% endif %}</h5>
+            {% if review.reviewerStatement.id == 2 and (is_granted('ROLE_AUTOR') or is_granted('ROLE_RECENZENT'))%}
+                {% include "comment/add_anchor_comment.html.twig" %}
+            {% endif %}
+        </div>
     </div>
     <div class="card-body">
         <div class="form-group row form-group-inlined">

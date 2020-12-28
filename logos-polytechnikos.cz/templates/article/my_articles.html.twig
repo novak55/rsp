@@ -2,6 +2,125 @@
 
 {% block content %}
     {% include 'article/articles_table.html.twig' with {'showAuthor' : false, 'tableTitle' : 'Moje články'} %}
+    <div class="col col-xl-11 col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title float-left">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item"><a class="nav-link">Články:</a> </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState is null %}active{% endif %}" href="{{ path('app_article_myarticles') }}">Přehled všech</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState != null and articleState.id == 6 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 6}) }}">Přijaté</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if articleState != null and articleState.id == 3 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 3}) }}">Vrácené</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="danger nav-link {% if articleState != null and articleState.id == 7 %}active{% endif %}" href="{{ path('app_article_myarticles', {articleState: 7}) }}">Zamítnuté</a>
+                        </li>
+                    </ul>
+                </h5>
+                <div class="float-right">
+                    <div class="form-inline my-2 my-lg-0">
+                        <label for="#table-page-size">Záznamů na stránce: </label>
+                        <select id="table-page-size" class="form-control ml-2 mr-sm-2" data-pagelen-for=".dataTables_filter">
+                            <option>100</option>
+                            <option>200</option>
+                            <option>300</option>
+                            <option value="-1" selected>Vše</option>
+                        </select>
+                        <input class="form-control mr-sm-2" type="search" placeholder="{% trans %}Hledat{% endtrans %}" aria-label="Search" data-search-in=".dataTables_filter">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive dt-hide-filter">
+                    <table id="article-list-dt" class="table table-striped datatable_filter">
+                        <thead>
+                        <tr>
+                            <th>Název</th>
+                            <th>Vložen</th>
+                            <th>Stav</th>
+                            <th class="datatable-ignore">Spoluautoři</th>
+                            <th class="datatable-ignore col-2">Akce</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if articles|length > 0 %}
+                            {% for article in articles %}
+                                <tr>
+                                    <td data-filter="{{ article.name }}">
+                                        {% if article.currentAttachment is not null %}
+                                        <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+                                           title="Stáhnout článek"
+                                        >{{ article.name }}</a>
+                                        {% else %}
+                                            {{ article.name }}
+                                        {% endif %}
+                                        {% if article.currentAttachment is null %}
+                                            <i class="fas fa-exclamation-triangle text-danger ml-1" data-toggle="tooltip" data-placement="right" title="Článek zatím neobsahuje text."></i>
+                                        {% elseif article.currentState.id == 1 %}
+                                            <i class="fas fa-exclamation-triangle text-warning ml-1" data-toggle="tooltip" data-placement="right" title="Článek ještě není podán."></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                                    <td class="text-center">{{ article.currentState.state }}</td>
+                                    <td >
+                                        {% if article.collaborators|length > 0 %}
+                                            {% for collaborator in article.collaborators %}
+                                                <a href="mailto: {{ collaborator.email }}"
+                                                   title="Odelat e-mail spoluautorovi">{{ collaborator.fullName }}</a><br>
+                                            {% endfor %}
+                                        {% else %}
+                                            Neuvedeni
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right nowrap">
+                                        {% if article.currentState.id == 1 %}
+                                            <a class="btn btn-sm btn-success"
+                                               href="{{ path('app_article_submitarticle', {article: article.id}) }}"
+                                               title="Podat článek"><i class="fa fa-check"></i>
+                                            </a>
+                                        {% endif %}
+                                        {#
+                                        <a class="btn btn-sm btn-info"
+                                           href="#"
+                                           title="Zobrazit historii stavů článku"><i class="fa fa-recycle"></i>
+                                        </a>
+                                        #}
+                                        {% if article.currentState.id < 4 %}
+                                        <a class="btn btn-sm btn-warning"
+                                           href="{{ path('app_article_modifyarticle', {article: article.id}) }}"
+                                           title="Upravit článek"><i class="fa fa-edit"></i> Upravit
+                                        </a>
+                                        {% endif %}
+                                        {% if article.currentState.id > 4 or article.currentState.id == 3 %}
+                                            <a class="btn btn-sm btn-info"
+                                               href="{{ path('app_article_showarticle', {article: article.id}) }}"
+                                               title="Zobrazit vyjádření recenzentů"><i class="fa fa-info-circle"></i>  Recenze
+                                            </a>
+                                        {% endif %}
+                                        <a class="btn btn-sm btn-danger"
+                                           href="#"
+                                           title="Odstranit článek"><i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný Vámi odeslaný článek.</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}

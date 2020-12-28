@@ -38,4 +38,13 @@ class UserRepository
 		return $qb->getQuery()->getResult();
 	}
 
+	/**
+	 * @param int $userId
+	 * @return User|object|null
+	 */
+	public function getUserById(int $userId): ?object
+	{
+		return $this->_em->getRepository(User::class)->findOneBy(['id' => $userId]);
+	}
+
 }

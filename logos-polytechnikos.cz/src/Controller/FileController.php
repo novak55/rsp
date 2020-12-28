@@ -41,7 +41,7 @@ class FileController extends AbstractController
 		$downLoad = $this->fileDownloader->downLoad($fileAttachment, $this->getUser());
 		if ($downLoad === false) {
 			$this->flashBag->add('danger', 'Chyba: Pro stažení souboru nemáte oprávnění!');
-			return new RedirectResponse($this->generateUrl('rsp'));
+			return new RedirectResponse($this->generateurl('rsp'));
 		}
 
 		if (!is_readable($downLoad) || !is_file($downLoad)) {
