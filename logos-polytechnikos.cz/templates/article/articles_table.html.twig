@@ -1,0 +1,56 @@
+{% set showAuthor = showAuthor is defined ? showAuthor : true %}
+
+<div class="table-responsive dt-hide-filter">
+    <table class="table table-striped datatable_filter">
+        <thead>
+        <tr>
+            <th><i class="fa fa-signature">&nbsp;</i>Název</th>
+            <th><i class="fa fa-flag">&nbsp;</i>Stav</th>
+            <th><i class="fa fa-calendar-alt">&nbsp;</i>Datum vložení</th>
+            {% if showAuthor %}<th><i class="fa fa-user">&nbsp;</i>Autor</th>{% endif %}
+            <th class="datatable-ignore"><i class="fa fa-users">&nbsp;</i>Spoluautoři</th>
+            <th class="datatable-ignore"><i class="fa fa-download">&nbsp;</i></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if articles|length > 0 %}
+            {% for article in articles %}
+                <tr>
+                    <td data-sort="{{ article.name }}" data-filter="{{ article.name }}">
+                        <a href="{{ path('show_article_detail', {article: article.id}) }}"><i class="fa fa-search-plus"></i> {{ article.name }}</a>
+                    </td>
+                    <td>
+                        {% if article.currentState.id == 4 and article.hasFilledReviewersStatement %}
+                            Recenze dokončeny
+                        {% else %}
+                            {{ article.currentState.state }}{% if article.currentState.id == 4 %} ({{ article.reviews|length }}x){% endif %}
+                        {% endif %}
+                    </td>
+                    <td data-sort="{{ article.insertDate|date('U') }}"
+                        class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
+                    {% if showAuthor %}
+                        <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
+                    {% endif %}
+                    <td class="col-2">
+                        {% if article.collaborators|length > 0 %}
+                            {% for collaborator in article.collaborators %}
+                                {{ collaborator.fullName }}<br>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if article.currentAttachment is not null %}
+                            <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+                            title="Stáhnout článek"><i class="fa fa-download"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="{{ showAuthor ? 6 : 5 }}" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>

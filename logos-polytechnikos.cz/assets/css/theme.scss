@@ -18,6 +18,10 @@
   padding-right: 0px;
 }
 
+.card .card-body {
+  overflow: auto;
+}
+
 .card .card-body .form-group:last-child {
   margin-bottom: 0px;
 }
@@ -132,4 +136,40 @@
 
 .alert-dark {
   background: #222;
+}
+
+.dt-hide-filter .dataTables_wrapper .row:first-child {
+  display: none;
+}
+
+i[data-toggle=tooltip] {
+  cursor: pointer;
+}
+
+.card .card-header .text-warning {
+  color: #987406 !important;
+}
+
+.card.bg-warning .card-body {
+  background: #ffeeba !important;
+}
+
+.list-group.with-action {
+  .list-group-item {
+    padding: 0.25rem;
+    display: flex;
+    white-space: nowrap;
+
+    .title {
+      flex: 1;
+      align-self: center;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+
+    .action {
+      flex: 0;
+      align-self: center;
+    }
+  }
 }

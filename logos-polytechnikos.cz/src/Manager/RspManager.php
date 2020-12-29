@@ -2,7 +2,14 @@
 
 namespace App\Manager;
 
+use App\Entity\Article;
+use App\Entity\ArticleState;
+use App\Entity\ArticleStateHistory;
+use App\Entity\CommentUnread;
+use App\Entity\Review;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RspManager
 {
@@ -10,12 +17,16 @@ class RspManager
 	/** @var EntityManagerInterface */
 	private $em;
 
+	/** @var UserPasswordEncoderInterface */
+	private $passwordEncoder;
+
 	/**
 	 * UserManager constructor.
 	 */
-	public function __construct(EntityManagerInterface $em)
+	public function __construct(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
 	{
 		$this->em = $em;
+		$this->passwordEncoder = $passwordEncoder;
 	}
 
 	public function remove(object $object): void
@@ -32,10 +43,46 @@ class RspManager
 		$this->em->flush();
 	}
 
+	public function saveData(): void
+	{
+		$this->em->flush();
+	}
+
+	public function saveUser(User $user, ?string $password = null): void
+	{
+		$user->setPassword($user->getPassword() !== $password
+			? $this->passwordEncoder->encodePassword($user, $user->getPassword())
+			: $password);
+		$this->save($user);
+	}
+
 	public function add(object $object): void
 	{
 		$this->em->persist($object);
 		$this->em->flush();
+	}
+
+	public function changeArticleState(Article $article, ArticleState $articleState, User $user): void
+	{
+		$article->setCurrentState($articleState);
+		$articleStateHistory = new ArticleStateHistory();
+		$articleStateHistory->setWhoChanged($user);
+		$articleStateHistory->setArticle($article);
+		$articleStateHistory->setArticleState($articleState);
+		$article->addArticleStatesHistory($articleStateHistory);
+		$this->save($article);
+	}
+
+	public function persist(object $object): void
+	{
+		$this->em->persist($object);
+	}
+
+	public function setReadComments(Review $review, User $user): void
+	{
+		$this->em->getConnection()
+			->query('UPDATE comment_unread SET readed = true WHERE readed = false and user_id = ' . $user->getId() . ' and review_id = ' . $review->getId())
+			->execute();
 	}
 
 }

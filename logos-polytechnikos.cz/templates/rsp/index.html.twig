@@ -1,11 +1,16 @@
 {% extends "layout.html.twig" %}
 
-{% block title %}{% if setting.settings|length > 0 %}{{ setting.settings.companyName }}{% else %}Název firmy není dostupný{% endif %} - Vydané články{% endblock %}
-
 {% block content %}
     {# todo: doddělat widgety úvodní stránka #}
     {% if app.user is null %}
-        {% include 'atricle/public_articles_widget.html.twig' %}
+        {% include "rsp/about.html.twig" %}
+        {# include 'article/public_articles_widget.html.twig' #}
+    {% endif %}
+    {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %}
+        {% include 'article/redaktor_widget.html.twig' %}
+    {% endif %}
+    {% if is_granted('ROLE_RECENZENT') %}
+        {% include 'article/recenzent_widget.html.twig'%}
     {% endif %}
 
 {% endblock %}

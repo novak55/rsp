@@ -6,6 +6,7 @@ import './collection-init';
 import './select2';
 import './tinymce';
 import './modal-ajax';
+import './confirm';
 import 'promise-polyfill';
 import 'whatwg-fetch';
 import 'classlist-polyfill';
@@ -15,3 +16,5 @@ elementDatasetPolyfill();
 if (module.hot) {
     module.hot.accept();
 }
+
+$('[data-toggle=tooltip]').tooltip();

@@ -13,21 +13,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegisterType extends AbstractType
+class UserProfileType extends AbstractType
 {
 
 	public function buildForm(FormBuilderInterface $builder, array $options): void
 	{
-		$builder->setMethod('POST')
-			/*->add('title', TextType::class, [
-				'label' => 'Titul',
-				'attr' => [
-					'maxlength' => 100,
-				],
-				'required' => true,
-			])*/
-			->add('name', TextType::class, [
-				'label' => 'Jméno',
+		$builder->add('name', TextType::class, [
+			'label' => 'Jméno',
+			'attr' => [
+				'maxlength' => 100,
+			],
+			'required' => true,
+		])
+			->add('surname', TextType::class, [
+				'label' => 'Příjmení',
 				'attr' => [
 					'maxlength' => 100,
 				],
@@ -47,20 +46,6 @@ class RegisterType extends AbstractType
 				],
 				'required' => false,
 			])
-			->add('surname', TextType::class, [
-				'label' => 'Příjmení',
-				'attr' => [
-					'maxlength' => 100,
-				],
-				'required' => true,
-			])
-			->add('username', TextType::class, [
-				'label' => 'Přihlašovací jméno',
-				'attr' => [
-					'maxlength' => 100,
-				],
-				'required' => true,
-			])
 			->add('email', EmailType::class, [
 				'label' => 'Email',
 				'attr' => [
@@ -68,19 +53,8 @@ class RegisterType extends AbstractType
 				],
 				'required' => true,
 			])
-			->add('password', RepeatedType::class, [
-				'type' => PasswordType::class,
-				'invalid_message' => 'Hesla se neshodují, nebo nemají požadovanou složitost.',
-				'required' => true,
-				'first_options' => ['label' => 'Vaše heslo'],
-				'second_options' => ['label' => 'Zopakujte heslo'],
-				'constraints' => [
-					new Length(['min' => 4]),
-					new NotBlank(),
-				],
-			])
 			->add('doRegister', SubmitType::class, [
-				'label' => 'Registrovat',
+				'label' => 'Upravit profil',
 				'attr' => [
 					'class' => 'btn btn-primary',
 				],

@@ -1,0 +1,19 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                {{ form_start(form) }}
+                    <div class="card-header">Upravujete kontaktní informace na úvodní stránce</div>
+                    <div class="card-body">
+                        {{ form_widget(form.contact) }}
+                    </div>
+                    <div class="card-footer">
+                        {{ form_rest(form) }}
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

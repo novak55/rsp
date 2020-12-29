@@ -1,0 +1,121 @@
+{% if article.currentAttachment is not null %}
+    <a href="{{ path('app_file_downloadattachment', {fileAttachment: article.currentAttachment.id}) }}"
+    title="Stáhnout článek" class="btn btn-block btn-primary mt-1" role="button">Stáhnout článek</a>
+{% endif %}
+
+{% if is_granted('ROLE_AUTOR') %}
+    <a href=# title="Nahrát novou verzi článku" class="btn btn-block btn-primary mt-1" role="button">Nahrát novou verzi článku</a><br>
+    {% if article.currentState.id == 1 %}
+        <a class="btn btn-block btn-primary mt-1"
+            href="{{ path('app_article_submitarticle', {article: article.id}) }}"
+            title="Podat článek"><i class="fa fa-check"> Podat článek</i>
+        </a>
+    {% endif %}
+    {#
+    <a class="btn btn-block btn-primary mt-1"
+        href="#"
+        title="Zobrazit historii stavů článku"><i class="fa fa-recycle"></i>
+    </a>
+    #}
+    {% if article.currentState.id < 4 %}
+    <a class="btn btn-block btn-primary mt-1"
+        href="{{ path('app_article_modifyarticle', {article: article.id}) }}"
+        title="Upravit článek"><i class="fa fa-edit"></i> Upravit článek
+    </a>
+    {% endif %}
+    {% if article.currentState.id > 4 or article.currentState.id == 3 %}
+        <a class="btn btn-block btn-primary mt-1"
+            href="{{ path('app_article_showarticle', {article: article.id}) }}"
+            title="Zobrazit vyjádření recenzentů"><i class="fa fa-info-circle"></i>Zobrazit recenze
+        </a>
+    {% endif %}
+    <a class="btn btn-block btn-primary mt-1"
+        href="#"
+        title="Odstranit článek"><i class="fa fa-trash"> Odstranit článek</i>
+    </a>    
+{% endif %}
+
+{% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR') %}
+
+    {# % if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) % #}
+    <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}" class="btn btn-block btn-primary mt-1 open-form w-100" title="Přidat recenzenta"><i class="fa fa-user-plus"></i> Přidat recenzenta</a>
+    {# % endif % #}
+
+    <a class="btn btn-block btn-success confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 6}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> bez výhrad?">
+        Zařadit článek bez výhrad</a>
+    <a class="btn btn-block btn-info confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 5}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> s výhradami?">
+        Zařadit článek s výhradami</a>
+    <a class="btn btn-block btn-warning confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 3}) }}"
+        data-confirm-title="Schvalování zařazení článku do edice"
+        data-confirm-text="Opravdu vrátit článek <b>{{ article.name }}</b> zpět k přepracování dle požadavků recenzentů?">
+        Vrátit článek k zapracování připomínek</a>
+    <a class="btn btn-block btn-danger confirm"
+        href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 7}) }}"
+        data-confirm-title="Zamítnutí zařazení článku"
+        data-confirm-text="Opravdu zamítnout článek <b>{{ article.name }}</b>?">
+        Zamítnout článek</a>
+
+{#
+    {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
+        <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
+            class="btn btn-block btn-sm btn-outline-secondary"
+            title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
+        </a>
+    {% else %}
+        <a href="#"
+            class="btn btn-block btn-sm btn-light disabled"
+            title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
+        </a>
+    {% endif %}
+    {% if article.currentState.id == 2 %}
+        <a href="{{ path('app_article_returnarticlenotsuitablethema', {article: article.id, uri: app.request.get('_route')}) }}"
+            class="btn btn-outline-secondary btn-sm confirm"
+            data-confirm-title = "Vrácení článku"
+            data-confirm-text = "Opravdu si přejete vrátit článek: {{ article.name}} z důvodu tématické nevhodnosti?"
+            title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
+    {% else %}
+        <a href="#"
+            class="btn btn-light btn-sm confirm disabled"
+            title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
+    {% endif %}
+#}
+
+{% endif %}
+
+{% if is_granted('ROLE_RECENZENT') %}
+    {% for review in article.reviews %}
+        {% if review.reviewer.id == app.user.id %}
+            {% if review.reviewState.id == 1 %}
+                <a href="{{ path('app_review_addreview', {review: review.id}) }}"
+                    class="btn btn-block btn-info mt-1"
+                    title="Vyplnit recenzi článku"><i class="fa fa-pen"></i> Vyplnit recenzi článku</a>
+                {% if review.topicalityInterestAndUsefulness is not null and review.originality is not null and review.proffesionalLevel is not null and review.languageAndStylisticLevel is not null %}
+                    <a href="#"
+                        data-confirm-title="Odevzdání recenze"
+                        data-confirm-text="Opravdu si přejete odevzdat Vaši recenzi?"
+                        data-confirm-url="{{ path('app_review_submitreview', {review: review.id}) }}"
+                        data-confirm-buttons = '<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zrušit</button>'
+                        class="btn btn-block btn-warning confirm mt-1"
+                        title="Zadat celkové rozhodnutí a odevzdat recenzi redaktorovi, po té již nebude možná úprava."><i class="fa fa-check"></i> Odevzdat recenzi</a>
+                {% endif %}
+            {% else %}
+                <a href="#"
+                    class="btn btn-block mt-1 btn-primary confirm"
+                    data-confirm-title="Moje recenze"
+                    data-confirm-buttons='<button type="button" class="btn btn-primary" data-dismiss="modal">Zavřít</button>'
+                    data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                    title="Zobrazit posudek"><i class="fa fa-eye"></i> Zobrazit můj posudek
+                </a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+

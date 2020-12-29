@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between d-flex justify-content-between">Číselník stavů edic časopisů
+                    <a class="btn btn-sm btn-warning confirm"
+                       data-confirm-title="Přidání nového stavu"
+                       data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                       data-confirm-url="{{ path('app_magazine_setstate') }}"
+                       title="Přidat nový čísleník stavu"
+                       href="#"><i class="fa fa-plus"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if states|length > 0 %}
+                        <div class="list-group">
+                        {% for state in states %}
+                            <div class="list-group-item d-flex justify-content-between">{{ state.state }}
+                            <span>
+                                <a class="btn btn-sm btn-warning confirm"
+                                   data-confirm-title="Upravit popis tématu"
+                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">Zavřít</button>'
+                                   data-confirm-url="{{ path('app_magazine_setstate', {magazineState: state.id}) }}"
+                                   href="#"
+                                     title="Upravit popis tématu"><i class="fa fa-pen"></i>
+                                </a>
+                                {% if state.magazines|length == 0 %}
+                                <a class="btn btn-sm btn-danger confirm"
+                                   href="{{ path('app_magazine_erasestate', {magazineState: state.id}) }}"
+                                   data-confirm-title="Odstranit téma"
+                                   data-confirm-text="Opravdu si přejete odstranit stav:<br><b>{{ state.state }}</b>"
+                                     title="Odstranit téma"><i class="fa fa-trash"></i>
+                                </a>
+                                {% endif %}
+                            </span>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">Dosud neby zadán žádný stav edice.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

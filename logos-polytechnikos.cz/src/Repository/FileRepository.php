@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use App\Entity\Review;
+use App\Entity\TepmlateHistory;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,15 +28,23 @@ class FileRepository
 			->from(Review::class, 'r')
 			->join('r.article', 'a')
 			->join('r.reviewer', 'u')
-			->where('r = :reviewer and a = :article')
+			->where('u = :reviewer and a = :article')
 			->setMaxResults(1)
 			->setParameters([
 				'reviewer' => $reviewer,
 				'article' => $article,
 			])
 			->getQuery()
-			->getOneOrNullResult();
+			->getResult();
 		return count($isReviewrer ?? []) > 0;
+	}
+
+	/**
+	 * @return TepmlateHistory[]|null
+	 */
+	public function getTemplates(): ?array
+	{
+		return $this->em->getRepository(TepmlateHistory::class)->findBy([], ['date' => 'DESC']);
 	}
 
 }

@@ -36,6 +36,37 @@ class Setting
 	 */
 	private $loginByEmail;
 
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $instructions;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $reviewManagement;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $about;
+
+	/**
+	 * @ORM\Column(type="text", nullable=true)
+	 * @var string|null
+	 */
+	private $contact;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity="App\Entity\TepmlateHistory")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var TepmlateHistory|null
+	 */
+	private $activeTemplate;
+
 	public function getId(): ?int
 	{
 		return $this->id;
@@ -74,6 +105,56 @@ class Setting
 	public function setLoginByEmail(?bool $loginByEmail): void
 	{
 		$this->loginByEmail = $loginByEmail;
+	}
+
+	public function getInstructions(): ?string
+	{
+		return $this->instructions;
+	}
+
+	public function setInstructions(?string $instructions): void
+	{
+		$this->instructions = $instructions;
+	}
+
+	public function getReviewManagement(): ?string
+	{
+		return $this->reviewManagement;
+	}
+
+	public function setReviewManagement(string $reviewManagement): void
+	{
+		$this->reviewManagement = $reviewManagement;
+	}
+
+	public function getAbout(): ?string
+	{
+		return $this->about;
+	}
+
+	public function setAbout(?string $about): void
+	{
+		$this->about = $about;
+	}
+
+	public function getContact(): ?string
+	{
+		return $this->contact;
+	}
+
+	public function setContact(?string $contact): void
+	{
+		$this->contact = $contact;
+	}
+
+	public function getActiveTemplate(): ?TepmlateHistory
+	{
+		return $this->activeTemplate;
+	}
+
+	public function setActiveTemplate(?TepmlateHistory $activeTemplate): void
+	{
+		$this->activeTemplate = $activeTemplate;
 	}
 
 }

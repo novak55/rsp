@@ -1,0 +1,14 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    {% include 'article/articles_table.html.twig' with {'tableTitle' : 'Články s dokončenými recenzemi'} %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('articleMyArticles') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('articleMyArticles') }}
+{% endblock %}

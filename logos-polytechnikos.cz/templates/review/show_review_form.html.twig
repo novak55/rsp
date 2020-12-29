@@ -1,0 +1,68 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-8 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Recenze článku - {{ review.article.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <div style="padding-bottom: 1rem;">Hodnotí se jako ve škole od 1 do 5, jednička je nejlepší a pětka nejhorší.</div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">Oblast hodnocení</div>
+                            <div class="col-md-1">známka</div>
+                            <div class="col-md-4">Oblast hodnocení</div>
+                            <div class="col-md-1">známka</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Aktuálnost, zajímavost a přínosnost
+                            </div>
+                            <div class="col-md-1">{{ review.topicalityInterestAndUsefulness.id }}</div>
+                            <div class="col-md-4">
+                                Originalita
+                            </div>
+                            <div class="col-md-1">{{ review.originality.id }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Profesionální úroveň
+                            </div>
+                            <div class="col-md-1">{{ review.proffesionalLevel.id }}</div>
+                            <div class="col-md-4">
+                                Jazyková a stylistická úroveň
+                            </div>
+                            <div class="col-md-1">{{ review.languageAndStylisticLevel.id }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+    <div class="row justify-content-center">
+        <div class="col col-xl-8 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{% trans %}Textový komentář{% endtrans %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row form-group-inlined">
+                        <div class="col-md-12 nowrap">
+                            {{ review.comment|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br>
+</
+{% endblock %}
+

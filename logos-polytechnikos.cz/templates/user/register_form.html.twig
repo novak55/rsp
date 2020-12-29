@@ -1,0 +1,73 @@
+{% extends 'layout.html.twig' %}
+
+{% form_theme form _self %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-6 col-lg-8 col-md-12">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5 class="card-title">{% if 'app_user_changeprofile' in app.request.get('_route') %}Úprava profilu{% else %}Registrace{% endif %}</h5>
+                </div>
+                <div class="card-image mt-3 text-center">
+                    <i class="fa fa-user-circle fa-7x" style="color: gray"></i>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="form-group row form-row-columns-align-sides">
+                            <div class="col col-xs-12 col-md-2 nowrap">
+                                {{ form_label(form.titleBeforeName) }}
+                                {{ form_widget(form.titleBeforeName) }}
+                            </div>
+                            <div class="col col-xs-12 col-md-4 nowrap">
+                                {{ form_label(form.name) }}
+                                {{ form_widget(form.name) }}
+                            </div>
+                            <div class="col col-xs-12 col-md-4 nowrap">
+                                {{ form_label(form.surname) }}
+                                {{ form_widget(form.surname) }}
+                            </div>
+                            <div class="col col-xs-12 col-md-2 nowrap">
+                                {{ form_label(form.titleAfterName) }}
+                                {{ form_widget(form.titleAfterName) }}
+                            </div>
+                        </div>
+                    {% if form.role is defined %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                        {{ form_row(form.role) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if form.username is defined %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                        {{ form_row(form.username) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.email) }}
+                        </div>
+                    </div>
+                    {% if form.password is defined %}
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.password.first) }}
+                        </div>
+                    </div>
+                    <div class="form-group row form-row-columns-align-sides">
+                        <div class="col col-12">
+                            {{ form_row(form.password.second) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {{ form_widget(form._token) }}
+                        {{ form_rest(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

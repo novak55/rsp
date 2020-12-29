@@ -1,10 +1,45 @@
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark topmenu">
-    <a class="navbar-brand" title="Zobrazit domovskou stránku" href="/"> {{ setting.settings.companyName ?? 'Název firmy není dostupný' }} <span class="small">v.0.0.1.<i>B</i></span></a>
+    <a class="navbar-brand" title="Zobrazit domovskou stránku" href="/"> {{ setting.settings.companyName ?? 'Název firmy není dostupný' }} <span class="small">v.0.5.<i>B</i></span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Časopis</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ path('app_magazine_edition') }}">Vydané edice</a>
+                    {% if app.user is not null %}
+                        <a class="dropdown-item" href="{{ path('app_index_about') }}">Úvodní stránka</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_REDAKTOR') %}
+                        <div class="separator"></div>
+                        <a class="dropdown-item" href="{{ path('app_magazine_prepareedition') }}">Připravované edice</a>
+                        <a class="dropdown-item" href="{{ path('app_magazine_thememanagement') }}">Správa témat</a>
+                        <a class="dropdown-item" href="{{ path('app_magazine_statemanagement') }}">Číselník stavu edice</a>
+                    {% elseif is_granted('ROLE_SEFREDAKTOR') %}
+                        <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
+                        <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny pro přispěvatele</a>
+                        <a class="dropdown-item" href="{{ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) }}">Šablona</a>
+                        <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Úvodní stránka</a>
+                    {% endif %}
+                </div>
+            </li>
+
+            {% if not app.user or is_granted('ROLE_AUTOR')%}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Pro přispěvatele</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny</a>
+                    <a class="dropdown-item" href="{{ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) }}">Šablona</a>
+                    <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                       title="Přidat článek je možné po řihlášení do systému."
+                       href="{{ path('app_article_addarticle') }}"><i class="fa fa-pen"></i>  Přidat článek</a>
+                </div>
+            </li>
+{% endif %}
 {% if app.user %}
     {% if is_granted('ROLE_ADMIN') %}
         <li class="nav-item dropdown">
@@ -24,22 +59,77 @@
                 <a class="dropdown-item" href="{{ path('app_article_addarticle') }}">Přidat článek</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ path('app_article_myarticles') }}">Přehled</a>
+                <a class="dropdown-item" href="{{ path('app_article_myarticles', {articleState: 6}) }}">Přijaté</a>
+                <a class="dropdown-item" href="{{ path('app_article_myarticles', {articleState: 5}) }}">Přijaté s výhradami</a>
+                <a class="dropdown-item" href="{{ path('app_article_myarticles', {articleState: 3}) }}">Vrácené</a>
+                <a class="dropdown-item" href="{{ path('app_article_myarticles', {articleState: 7}) }}">Zamítnuté</a>
             </div>
         </li>
+    {% endif %}
+    {% if is_granted('ROLE_RECENZENT') %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Recenze</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('rsp') }}">Články k recenzi</a>
+                <a class="dropdown-item" href="{{ path('app_review_myreviewedarticle') }}">Recenzované články</a>
+            </div>
+        </li>
+    {% endif %}
+    {% if is_granted('ROLE_REDAKTOR') or is_granted('ROLE_SEFREDAKTOR')%}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Úkoly</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('app_article_articlewithoutreviewer') }}">Přiřadit recenzenty</a>
+                <a class="dropdown-item" href="{{ path('app_article_articlefordecision') }}">Zpracovat recenze</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Správa uživatelů</a>
+            <div class="dropdown-menu">
+                {% if is_granted('ROLE_REDAKTOR') %}
+                <a class="dropdown-item" href="{{ path('app_user_registereditor') }}">Přidat uživatele</a>
+                {% endif %}
+                <a class="dropdown-item" href="{{ path('app_user_userlist') }}">Seznam uživatelů</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Správa portálu</a>
+            <div class="dropdown-menu">
+                {% if is_granted('ROLE_REDAKTOR') %}
+                <a class="dropdown-item" href="{{ path('app_index_changereviewmanagement') }}">Upravit recenzní řízení</a>
+                <a class="dropdown-item" href="{{ path('app_index_changeinstruction') }}">Upravit pokyny</a>
+                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Změnit šablonu</a>
+                <a class="dropdown-item" href="{{ path('app_index_changeabout') }}">Upravit úvodní stránku</a>
+                <a class="dropdown-item" href="{{ path('app_index_changecontact') }}">Upravit kontaktní informace</a>
+                {% else %}
+                <a class="dropdown-item" href="{{ path('app_index_reviewmanagement') }}">Recenzní řízení</a>
+                <a class="dropdown-item" href="{{ path('app_index_showinstructions') }}">Pokyny pro přispěvatele</a>
+                <a class="dropdown-item" href="{{ path('app_index_changetemplate') }}">Seznam šablon</a>
+                <a class="dropdown-item" href="{{ path('app_index_about') }}">Úvodní stránka</a>
+                {% endif %}
+            </div>
+        </li>
+    {% endif %}
+    {% if not is_granted('ROLE_ADMIN') %}
+        <li class="nav-item dropdown">
+            <a class="nav-link" href="{{ path('app_comment_showreviewhascomment') }}" id="navbardrop">Diskuse</a>
+        </li>
+
     {% endif %}
 {% endif %}
         </ul>
 {% if app.user %}
     <div class="dropdown">
         <button class="btn btn-navbar dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-user"></i>   {{ app.user.name }} {{ app.user.surname }}
+        <i class="fa fa-user"></i>   {{ app.user.fullName }}
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+            <a class="dropdown-item" href="{{ path('app_user_changeprofile', {url: app.request.requestUri}) }}">Upravit profil</a>
             <a class="dropdown-item" href="{{ path('logout') }}">Odhlásit se</a>
         </div>
     </div>
 {% else%}
-    <a href="{{ path('app_security_register') }}" class="btn btn-navbar"><i class="fa fa-registered"></i>  Registrovat</a>  
+    <a href="{{ path('app_user_registerauthor') }}" class="btn btn-navbar"><i class="fa fa-registered"></i>  Registrovat</a>  
     <a href="{{ path('login') }}" class="btn btn-navbar"><i class="fa fa-user-check"></i>  Přihlásit</a>
 {% endif %}
     </div>

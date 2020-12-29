@@ -1,0 +1,55 @@
+{% extends app.request.xmlHttpRequest
+    ? 'review/show_review_ajax.html.twig'
+    : 'review/show_review_form.html.twig' %}
+
+{% block content %}
+    <div>
+        {{ parent() }}
+    </div>
+
+    {% if(complaintBody is defined and complaintBody != null) %}
+        <div class="row justify-content-center">
+            <div class="col col-xl-8 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title float-left">{% trans %}Námitka{% endtrans %}</h5>
+                        <span class="float-right">
+                            Zasláno 17.12.2020 v 20:46 {# TODO: Zobrazit reálný datum #}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {{ complaintBody }} {# TODO: Zobrazit reálný text #}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+    {% else %}
+        {{ form_start(form) }}
+
+        <div class="row justify-content-center">
+            <div class="col col-xl-8 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">{% trans %}Odeslat námitku{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {{ form_widget(form.text) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+
+        <div class="row justify-content-center">
+            <div class="col col-xl-8 col-lg-12">
+                {{ form_widget(form.submit) }}
+            </div>
+        </div><br>
+
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    {% endif %}
+{% endblock %}

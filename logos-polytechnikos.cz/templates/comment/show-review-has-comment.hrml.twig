@@ -1,0 +1,53 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><h5>Diskuse</h5></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="card">
+                                <div class="card-header"><h5>Recenze článků s komentářem</h5></div>
+                                <div class="card-body">
+                                    {% if reviews|length > 0 %}
+                                        <div class="list-group">
+                                        {% for review_r in reviews %}
+                                            <div class="list-group-item">
+                                                {% if review_r.commentsUnread|filter(v => v.readed == false and v.user.id == app.user.id)|length > 0 %}<span class="text-danger bold"><i class="fa fa-exclamation"></i></span>{% endif %}
+                                                <a href="{{ path('app_comment_showreviewhascomment', {review: review_r.id} ) }}">
+                                                    <abbr title="Komentářů celkem {{ review_r.comments|length }}">{{ review_r.article.name }} - ({{ review_r.commentsUnread|filter(v => v.readed == false and v.user.id == app.user.id)|length }} nových z {{ review_r.comments|length }})</abbr>
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        Nebyl nalezen žádný komentář k žádné recenzí článku.
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row justify-content-between">
+                                        <h5>Komentáře k článku {% if review is not null %}{{ review.article.name }}{% endif %}</h5>
+                                        {% if review is not null and (is_granted('ROLE_AUTOR') or is_granted('ROLE_RECENZENT')) %}
+                                            {% include "comment/add_anchor_comment.html.twig" %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% include "comment/show_comment.html.twig" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

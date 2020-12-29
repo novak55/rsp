@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">Recenzní řízení
+                {% if is_granted('ROLE_REDAKTOR') %}
+                    <a class="btn btn-sm btn-warning"
+                       title="Upravit pokyny pro přispěvatele"
+                       href="{{ path('app_index_changereviewmanagement') }}"><i class="fa fa-pen"></i>
+                    </a>
+                {% endif %}
+                </div>
+                <div class="card-body">
+                    {% if setting.settings.reviewManagement is not null %}
+                        {{ setting.settings.reviewManagement|raw }}
+                    {% else %}
+                        <div class="alert alert-warning">Popis recenzního řízení zatím nebyl vyplněn.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

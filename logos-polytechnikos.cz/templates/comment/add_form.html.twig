@@ -1,0 +1,54 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}{% trans %}Komentáře{% endtrans %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row justify-content-between">
+                        <h5>Diskuse k recenzi článku {{ review.article.name }}</h5>
+                        <div>
+                            <a class="btn" href="{{ url }}" title="Zpět"><i class="fa fa-reply"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title col"><h5>Recenze článku</h5></div>
+                                </div>
+                                <div class="card-body">
+                                    {% include 'review/show_review_ajax.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title col">
+                                        <div class="row justify-content-between">
+                                            <h5>Diskuse</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% include "comment/edit_ajax.html.twig" %}
+                                    <div class="separator"></div>
+                                    {% include "comment/show_comment.html.twig" %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

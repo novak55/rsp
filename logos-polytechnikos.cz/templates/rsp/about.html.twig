@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+    <div class="col col-xl-10 col-lg-12">
+        <div class="row">
+            <div class="col-xl-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">O časopise LOGOS POLYTECHNIKOS
+                    {% if is_granted('ROLE_REDAKTOR') %}
+                        <a class="btn btn-sm btn-outline-secondary"
+                           title="Upravit pokyny pro přispěvatele"
+                           href="{{ path('app_index_changeabout') }}"><i class="fa fa-pen"></i>
+                        </a>
+                    {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if setting.settings.about is not null %}
+                            {{ setting.settings.about|replace({'%sablona%': '<a href="' ~ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) ~ '">Šablona</a>'})|raw }}
+                        {% else %}
+                            <div class="alert alert-warning">Informace o časopise LOGOS POLYTECHNIKOS nebyly vyplněny.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <div class="card" style="position: sticky; top: 40px;">
+                    <div class="card-header d-flex justify-content-between">Kontakt
+                        {% if is_granted('ROLE_REDAKTOR') %}
+                            <a class="btn btn-sm btn-outline-secondary"
+                               title="Upravit pokyny pro přispěvatele"
+                               href="{{ path('app_index_changecontact') }}"><i class="fa fa-pen"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        {% if setting.settings.contact is not null %}
+                            {{ setting.settings.contact|raw }}
+                        {% else %}
+                            <div class="alert alert-warning">Kontakt na časopis LOGOS POLYTECHNIKOS nebyl vyplněn.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

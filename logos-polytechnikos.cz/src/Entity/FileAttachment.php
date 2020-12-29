@@ -44,8 +44,9 @@ class FileAttachment
 	private $inserted;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="attachments")
-	 * @var Article
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="attachments", fetch="EAGER")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var Article|null
 	 */
 	private $article;
 
@@ -69,7 +70,7 @@ class FileAttachment
 		return $this->article;
 	}
 
-	public function setArticle(Article $article): void
+	public function setArticle(?Article $article): void
 	{
 		$this->article = $article;
 	}

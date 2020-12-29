@@ -62,15 +62,17 @@ class ArticleController extends AbstractController
 	}
 
 	/**
-	 * @Route("/my-articles")
+	 * @Route("/my-articles/{articleState}")
+	 * @param ArticleState|null $articleState
 	 * @return Response
 	 */
-	public function myArticles(): Response
+	public function myArticles(?ArticleState $articleState = null): Response
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-		$articles = $this->articleRepository->getUserArticles($this->getUser());
-		return $this->render('atricle/my_articles.html.twig', [
+		$articles = $this->articleRepository->getUserArticles($this->getUser(), $articleState);
+		return $this->render('article/my_articles.html.twig', [
 			'articles' => $articles,
+			'articleState' => $articleState,
 		]);
 	}
 
@@ -132,7 +134,7 @@ class ArticleController extends AbstractController
 			}
 			return new RedirectResponse($this->generateUrl('app_article_myarticles'));
 		}
-		return $this->render('atricle/add_article.html.twig', [
+		return $this->render('article/add_article.html.twig', [
 			'article' => $article,
 			'form' => $form->createView(),
 		]);
@@ -158,7 +160,7 @@ class ArticleController extends AbstractController
 	/**
 	 * @Route("/diasble-collaborator/{collaborator}")
 	 * @param ArticleCollaborator $collaborator
-	 * @return RedirectResponse
+	 * @return RedirectResponse|Response
 	 */
 	public function disableColaborator(ArticleCollaborator $collaborator): RedirectResponse
 	{
@@ -174,7 +176,7 @@ class ArticleController extends AbstractController
 		}
 
 		$this->addFlash('danger', 'Tohoto spoluautora nemůžete odstranit! Nejedná se o vašeho spoluautora.');
-		return new RedirectResponse($this->generateUrl('/'));
+		return new RedirectResponse($this->generateUrl('rsp'));
 	}
 
 	/**
@@ -196,7 +198,7 @@ class ArticleController extends AbstractController
 			$this->addFlash('success', 'Spoluautor byl upraven.');
 			return $this->redirect($this->generateUrl('app_article_modifyarticle', ['article' => $collaborator->getArticle()->getId()]));
 		}
-		return $this->render('atricle/modify_collaborator_ajax.html.twig', [
+		return $this->render('article/modify_collaborator_ajax.html.twig', [
 			'form' => $form->createView(),
 		]);
 	}
@@ -218,19 +220,125 @@ class ArticleController extends AbstractController
 		}
 		$articleState = $this->articleRepository->getStateArticleById(self::STAV_PODANO);
 		$this->flashBag->add('success', 'Váš článek byl podán. O dalším průběhu budete informováni.');
-		$this->changeArticleState($article, $articleState);
+		$this->manager->changeArticleState($article, $articleState, $this->getUser());
 		return new RedirectResponse($this->generateUrl('app_article_myarticles'));
 	}
 
-	public function changeArticleState(Article $article, ArticleState $articleState): void
+	/**
+	 * @Route("/decision-article-state/{article}/{articleState}")
+	 * @param Article $article
+	 * @param ArticleState $articleState
+	 * @return RedirectResponse|Response
+	 */
+	public function decisionArticleState(Article $article, ArticleState $articleState)
 	{
-		$article->setCurrentState($articleState);
-		$articleStateHistory = new ArticleStateHistory();
-		$articleStateHistory->setWhoChanged($this->getUser());
-		$articleStateHistory->setArticle($article);
-		$articleStateHistory->setArticleState($articleState);
-		$article->addArticleStatesHistory($articleStateHistory);
-		$this->manager->save($article);
+		if (!$this->isGranted('ROLE_REDAKTOR') && !in_array($articleState->getId(), [self::STAV_VRACENO, self::STAV_PRIJTO_VYHRADA, self::STAV_PRIJATO], true)) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$this->manager->changeArticleState($article, $articleState, $this->getUser());
+		$this->flashBag->add('success', 'Stav článku ' . $article->getName() . ' byl změněn na ' . $articleState->getState());
+		return new RedirectResponse($this->generateUrl('show_article_detail', array('article' => $article->getId())));
 	}
 
+	/**
+	 * @Route("/return-article-not-suitable-thema/{article}")
+	 * @param Request $request
+	 * @param Article $article
+	 * @return RedirectResponse|Response
+	 */
+	public function returnArticleNotSuitableThema(Request $request, Article $article)
+	{
+		if (!$this->isGranted('ROLE_REDAKTOR')) {
+			return $this->render('security/secerr.html.twig');
+		}
+		$uri = $request->query->has('uri') ? $request->query->get('uri') : $this->urlGenerator->generate('app_zarizeniwc_prehled');
+
+		$this->manager->changeArticleState($article, $this->articleRepository->getStateArticleById(self::STAV_VRACENO), $this->getUser());
+		$this->flashBag->add('warning', 'Článek ' . $article->getName() . ' byl vrácen z důvodu tématické nevhodnosti.');
+		return new RedirectResponse($this->generateUrl($uri));
+	}
+
+	/**
+	 * @Route("/show-article/{article}")
+	 * @param Article $article
+	 * @return Response
+	 */
+	public function showArticle(Article $article): Response
+	{
+		return $this->render('article/review_article.html.twig', [
+			'article' => $article,
+			'user' => $this->getUser(),
+		]);
+	}
+
+	/**
+	 * @Route("/show-article-history/{article}")
+	 * @param Article $article
+	 * @return Response
+	 */
+	public function showArticleHistory(Article $article): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('arcitle/history.html.twig', [
+			'article' => $article,
+		]);
+	}
+
+	/**
+	 * @Route("/show-article-detail/{article}", name="show_article_detail")
+	 * @param Article $article
+	 * @return Response
+	 */
+	public function showArticleDetail(Article $article): Response
+	{
+		return $this->render('article/article_detail.html.twig', [
+			'article' => $article,
+		]);
+	}
+	/**
+	 * @Route("/article-without-reviewer")
+	 * @return Response
+	 */
+	public function ArticleWithoutReviewer(): Response
+	{
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('article/article_without_reviewer.html.twig', [
+			'articles' => $this->articleRepository->getArticlesWithoutReviewer(),
+		]);
+	}
+
+	/**
+	 * @Route("/article-for-decision")
+	 * @return Response
+	 */
+	public function articleForDecision(): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+		return $this->render('article/article_for_decision.html.twig', [
+			'articles' => $this->articleRepository->getArticlesForDecision(),
+		]);
+	}
+
+	/**
+	 * @Route("/article-all")
+	 * @return Response
+	 */
+	public function allArticles(): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		return $this->render('article/all_articles.html.twig', [
+			'articles' => $this->articleRepository->getAllArticles()
+		]);
+	}
 }

@@ -5,7 +5,9 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use function count;
 
 /**
  * @ORM\Entity()
@@ -22,7 +24,7 @@ class Article
 	private $id;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\Magazine")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Magazine", inversedBy="articles")
 	 * @var Magazine|null
 	 */
 	private $magazine;
@@ -34,7 +36,7 @@ class Article
 	private $name;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity="App\Entity\User")
+	 * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
 	 * @var User|null
 	 */
 	private $author;
@@ -69,13 +71,13 @@ class Article
 	/**
 	 * @ORM\OneToMany (targetEntity="App\Entity\FileAttachment", mappedBy="article")
 	 * @ORM\JoinColumn(nullable=true)
-	 * @var ArrayCollection|null
+	 * @var Collection|FileAttachment[]|null
 	 */
 	private $attachments;
 
 	/**
 	 * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="article")
-	 * @var ArrayCollection
+	 * @var Collection|Review[]|null
 	 */
 	private $reviews;
 
@@ -102,6 +104,54 @@ class Article
 
 		$this->articleStatesHistory[] = $articleStateHistory;
 		$articleStateHistory->setArticle($this);
+	}
+
+	public function hasDifferentReviewersStatement(): bool
+	{
+		if (count($this->reviews) === 2) {
+			$mem = [];
+			foreach ($this->reviews as $review) {
+				if ($review->getReviewerStatement() !== null && $review->getReviewerStatement()->getId() !== 2) {
+					$mem[$review->getReviewerStatement()->getId()] = true;
+				}
+			}
+			return count($mem) === 2;
+		}
+		return false;
+	}
+
+	/**
+	 * @param User $user
+	 * @return ArrayCollection|Collection|Review|null
+	 */
+	public function getReviewByUser(User $user)
+	{
+		$reviews = $this->getReviews()
+			->matching(Criteria::create()
+				->where(Criteria::expr()
+					->eq('reviewer', $user)));
+		
+		if ($reviews != null and count($reviews) > 0) {
+			return $reviews;
+		}
+		else {
+			return $this->getReviews();
+		}
+	}
+
+	public function hasFilledReviewersStatement(): bool
+	{
+		$countReviewers = count($this->reviews);
+		if ($countReviewers > 1) {
+			$mem = [];
+			foreach ($this->reviews as $review) {
+				if ($review->getReviewerStatement() !== null) {
+					$mem[] = $review->getReviewerStatement()->getId();
+				}
+			}
+			return count($mem) === $countReviewers;
+		}
+		return false;
 	}
 
 	public function getId(): ?int
@@ -174,7 +224,10 @@ class Article
 		$this->attachments = $attachments;
 	}
 
-	public function getReviews(): ArrayCollection
+	/**
+	 * @return Review[]|Collection|null
+	 */
+	public function getReviews()
 	{
 		return $this->reviews;
 	}

@@ -1,0 +1,83 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    {% if is_granted('ROLE_REDAKTOR') %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><h4>Schvalování zařazení článku do edice</h4></div>
+                <div class="card-body">
+                    {% if article.reviews|length > 1 and article.hasFilledReviewersStatement %}
+                        <div class="list-group">
+                            <div class="list-group-item"><b>Název článku</b>: {{ article.name }}</div>
+                            <div class="list-group-item"><b>Zařazení k edici</b>: {{ article.magazine.magazineThema.theme }}</div>
+                            <div class="list-group-item"><b>Termín uzávěrky</b>: {{ article.magazine.deadline|date('d.m.Y') }}</div>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="row">
+                            <a class="col btn btn-success confirm"
+                               href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 6}) }}"
+                               data-confirm-title="Schvalování zařazení článku do edice"
+                               data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> bez výhrad?"
+                               style="padding: 1rem 0">Zařadit článek bez výhrad</a>
+                            <a class="col btn btn-info confirm"
+                               href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 5}) }}"
+                               data-confirm-title="Schvalování zařazení článku do edice"
+                               data-confirm-text="Opravdu zařadit článek <b>{{ article.name }}</b> do edice <b>{{ article.magazine.magazineThema.theme }}</b> s výhradami?"
+                               style="padding: 1rem 0">Zařadit článek s výhradami</a>
+                            <a class="col btn btn-warning confirm"
+                               href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 3}) }}"
+                               data-confirm-title="Schvalování zařazení článku do edice"
+                               data-confirm-text="Opravdu vrátit článek <b>{{ article.name }}</b> zpět k přepracování dle požadavků recenzentů?"
+                               style="padding: 1rem 0">Vrátit článek k zapracování připomínek</a>
+                            <a class="col btn btn-danger confirm"
+                               href="{{ path('app_article_decisionarticlestate', {article: article.id, articleState: 7}) }}"
+                               data-confirm-title="Zamítnutí zařazení článku"
+                               data-confirm-text="Opravdu zamítnout článek <b>{{ article.name }}</b>?"
+                               style="padding: 1rem 0">Zamítnout článek</a>
+                        </div>
+                    {% else %}
+                        Nelze rozhodnout dokud nebudou dostupné všechny recenze článku.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% if is_granted('ROLE_SEFREDAKTOR')
+        or is_granted('ROLE_REDAKTOR')
+        or (article.author == user and (article.currentState.id > 4 or article.currentState.id == 3)) %}
+    <div class="row" style="margin-top: 1rem;">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header"><h4>Detail článku {{ article.name }}</h4></div>
+                <div class="card-body">
+                {% if(article.reviews|length > 0) %}
+                    <div class="row">
+                    {% for review in article.reviews %}
+                        <div class="col-{{ 12/article.reviews|length }}">
+                        {% include 'review/show_review_ajax.html.twig' %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><h4>Neoprávněný přístup</h4></div>
+            <div class="card-body">
+            {% include 'security/secerr_ajax.html.twig' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    Detail článku
+{% endblock %}
+

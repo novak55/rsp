@@ -20,7 +20,7 @@ class UserRoleRepository
 	 * @param string $name
 	 * @return UserRole|null
 	 */
-	public function getRoleByName(string $role): ?object
+	public function getRole(string $role): ?object
 	{
 		return $this->_em->getRepository(UserRole::class)->findOneBy(['role' => $role]);
 	}

@@ -1,0 +1,115 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header"><h4>Detail článku {{ article.name }}</h4></div>
+            <div class="card-body">
+                <div class="containter">
+                    <div class="row">
+                        <div class="col">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><b>Název článku</b>: {{ article.name }}</li>
+                                <li class="list-group-item"><b>Autor</b>: {{ article.author.fullNameByName }}</li>
+                                <li class="list-group-item">
+                                    <b>Spoluautoři</b>: 
+                                    {% if article.collaborators|length > 0 %}
+                                        {% for collaborator in article.collaborators %}
+                                            {{ collaborator.fullName }}{{ loop.index < article.collaborators|length ? '; ': ''}}
+                                        {% endfor %}
+                                    {% endif %}
+                                </li>
+                                <li class="list-group-item"><b>Datum vložení</b>: {{ article.insertDate|date('d.m.Y') }}</li>
+                                <li class="list-group-item"><b>Stav</b>: {{ article.currentState.state }}</li>
+                                <li class="list-group-item"><b>Zařazení k edici</b>: {{ article.magazine.magazineThema.theme }}</li>
+                                <li class="list-group-item"><b>Termín uzávěrky</b>: {{ article.magazine.deadline|date('d.m.Y') }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-4 center-block">
+                            <div class="card text-center">
+                                <div class="card-header"><h5>Akce</h5></div>
+                                <div class="card-body">
+                                    {% include 'article/article_actions.html.twig' %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mt-3">
+                                <div class="card-header"><h5>Recenze</h5></div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Recenzent</th>
+                                                <th>Doporučení</th>
+                                                <th>Aktuálnost, zajímavost a přínosnost</th>
+                                                <th>Originalita</th>
+                                                <th>Profesionální úroveň</th>
+                                                <th>Jazyková a stylistická úroveň</th>
+                                                <th>Detail</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% if article.reviews|length > 0 %}
+                                                {% for review in article.reviews %}
+                                                    <tr class="{% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} table-success{% elseif review.reviewerStatement.id == 2 %} table-warning{% else %} table-danger{% endif %}{% endif %}">                        
+                                                        <td>{{ review.reviewer.fullName }}</td>
+                                                        <td>{{ review.reviewerStatement|length > 0 ? review.reviewerStatement.statement : 'nevyjádřeno' }}</td>
+                                                        <td>{{ review.topicalityInterestAndUsefulness is not null ? review.topicalityInterestAndUsefulness.id : 'neuvedeno' }}</td>
+                                                        <td>{{ review.originality is not null ? review.originality.id : 'neuvedeno'}}</td>
+                                                        <td>{{ review.proffesionalLevel is not null ? review.proffesionalLevel.id : 'neuvedeno' }}</td>
+                                                        <td>{{ review.languageAndStylisticLevel is not null ? review.languageAndStylisticLevel.id : 'neuvedeno' }}</td>
+                                                        <td> <a href="#"
+                                                                    class="btn btn-sm btn-primary confirm"
+                                                                    data-confirm-title="Recenze článku"
+                                                                    data-confirm-buttons='<button type="button" class="btn btn-primary mb-2" data-dismiss="modal">Zavřít</button>'
+                                                                    data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
+                                                                    title="Zobrazit posudek"><i class="fa fa-eye"></i>
+                                                                    </a></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="row w-100">
+                        <div class="col-12">
+                            <div class="card mt-3">
+                                {% set reviews = article.getReviewByUser(app.user) %}
+                                {% set review = reviews|first %}
+                                <div class="card-header">
+                                    <div class="row justify-content-between">
+                                        <h5>Diskuse</h5>
+                                        
+                                        {#% if review is defined and review.reviewerStatement.id == 2 and (is_granted('ROLE_AUTOR') or is_granted('ROLE_RECENZENT'))%}
+                                            {% include "comment/add_anchor_comment.html.twig" %}
+                                        {% endif %#}
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% for review in reviews %}
+                                        {% include 'comment/show_comment.html.twig' %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('articleMyArticles') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('articleMyArticles') }}
+{% endblock %}

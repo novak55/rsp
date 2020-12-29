@@ -2,10 +2,14 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Serializable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use function serialize;
+use function trim;
 use function unserialize;
 
 /**
@@ -69,6 +73,54 @@ class User implements UserInterface, Serializable
 	 * @var UserRole|null
 	 */
 	private $role;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Review", mappedBy="reviewer")
+	 * @var Collection|Review[]|null
+	 */
+	private $reviews;
+
+	/**
+	 * @ORM\Column(type="datetime_immutable", nullable=true)
+	 * @var DateTimeImmutable|null
+	 */
+	private $insertDate;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
+	 * @var Collection|Article[]|null
+	 */
+	private $articles;
+
+	/**
+	 * @ORM\Column(type="datetime_immutable")
+	 * @ORM\JoinColumn(nullable=true)
+	 * @var DateTimeImmutable|null
+	 */
+	private $lastReadComment;
+
+	/** @var string|null */
+	private $rolePlainText;
+
+	public function __construct()
+	{
+		$this->reviews = new ArrayCollection();
+		$this->articles = new ArrayCollection();
+		$this->insertDate = new DateTimeImmutable();
+	}
+
+	public function getFullName(): string
+	{
+		$fullName = '';
+		if ($this->titleBeforeName !== null && trim($this->titleBeforeName) !== '') {
+			$fullName .= $this->titleBeforeName . ' ';
+		}
+		$fullName .= $this->getFullNameByName();
+		if ($this->titleAfterName !== null && trim($this->titleAfterName) !== '') {
+			$fullName .= ', ' . $this->titleAfterName;
+		}
+		return $fullName;
+	}
 
 	public function getFullNameByName(): ?string
 	{
@@ -217,4 +269,67 @@ class User implements UserInterface, Serializable
 	{
 		$this->role = $role;
 	}
+
+	public function getRolePlainText(): ?string
+	{
+		return $this->rolePlainText;
+	}
+
+	public function setRolePlainText(?string $rolePlainText): void
+	{
+		$this->rolePlainText = $rolePlainText;
+	}
+
+	/**
+	 * @return Review[]|Collection|null
+	 */
+	public function getReviews()
+	{
+		return $this->reviews;
+	}
+
+	/**
+	 * @param Review[]|Collection|null $reviews
+	 */
+	public function setReviews($reviews): void
+	{
+		$this->reviews = $reviews;
+	}
+
+	public function getInsertDate(): ?DateTimeImmutable
+	{
+		return $this->insertDate;
+	}
+
+	public function setInsertDate(?DateTimeImmutable $insertDate): void
+	{
+		$this->insertDate = $insertDate;
+	}
+
+	/**
+	 * @return Article[]|Collection|null
+	 */
+	public function getArticles()
+	{
+		return $this->articles;
+	}
+
+	/**
+	 * @param Article[]|Collection|null $articles
+	 */
+	public function setArticles($articles): void
+	{
+		$this->articles = $articles;
+	}
+
+	public function getLastReadComment(): ?DateTimeImmutable
+	{
+		return $this->lastReadComment;
+	}
+
+	public function setLastReadComment(?DateTimeImmutable $lastReadComment): void
+	{
+		$this->lastReadComment = $lastReadComment;
+	}
+
 }

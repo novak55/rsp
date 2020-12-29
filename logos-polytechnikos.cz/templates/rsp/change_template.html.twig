@@ -1,0 +1,96 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    {% if is_granted('ROLE_REDAKTOR') %}
+    <div class="row justify-content-center">
+        <div class="col col-xl-5 col-lg-6">
+            <div class="card">
+                {{ form_start(form) }}
+                    <div class="card-header">Upravujete šablonu příspěvku</div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            {{ form_label(form.articleTemplate) }}
+                            {{ form_widget(form.articleTemplate) }}
+                            {{ form_help(form.articleTemplate) }}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        {{ form_rest(form) }}
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+        <div class="col col-xl-5 col-lg-6">
+            <div class="card">
+                <div class="card-header">Aktuální šablona</div>
+                <div class="card-body">
+                    {% if setting.settings.activeTemplate is not null %}
+                        <a title="Stáhnout šablonu"
+                           href="{{ path('app_file_downloadtemplate', {template: setting.settings.activeTemplate.id}) }}">{{ setting.settings.activeTemplate.articleTemplate.fileName }}
+                        </a>
+                    {% else %}
+                    Šablona zatím nebyla vložena.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row justify-content-center" style="margin-top: 2rem;">
+        <div class="col col-xl-10 col-lg-12">
+            <div class="card">
+                <div class="card-header">Přehled šablon</div>
+                <div class="card-body">
+                    {% if templates|length > 0 %}
+                    <div class="list-group">
+                        <div class="list-group-item list-group-item-info">
+                            <div class="row">
+                                <div class="col-md-4">Název</div>
+                                <div class="col-md-3">Ze dne</div>
+                                <div class="col-md-4">Vložil</div>
+                                {% if is_granted('ROLE_REDAKTOR') %}
+                                <div class="col-md-1">Akce</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% for template in templates%}
+                        <div class="list-group-item {% if setting.settings.activeTemplate.id == template.id  %}list-group-item-success{% endif %}">
+                            <div class="d-flex row">
+                                <div class="col-md-4">
+                                    <a title="Stáhnout šablonu"
+                                       href="{{ path('app_file_downloadtemplate', {template: template.id}) }}">{{ template.articleTemplate.fileName }}</a>
+                                </div>
+                                <div class="col-md-3">{{ template.date|date('d.m.Y, H:i:s') }}</div>
+                                <div class="col-md-4">{{ template.whoChanged.fullNameByName }}</div>
+                                {% if is_granted('ROLE_REDAKTOR') %}
+                                <div class="col-md-1">
+                                    {% if setting.settings.activeTemplate.id != template.id  %}
+                                    <a title="Nastavit jako aktuální šablonu."
+                                       data-confirm-title="Změna výchozí šablony"
+                                       data-confirm-text="Opravdu si přeje změnit šablonu na: {{ template.articleTemplate.fileName }}?"
+                                       class="btn btn-sm btn-warning confirm"
+                                       href="{{ path('app_index_setdefaulttemplate', {template: template.id}) }}"><i class="fa fa-cog"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                    Žádna šablona zatím nebyla vložena.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('changeTemplate') }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('changeTemplate') }}
+{% endblock %}
