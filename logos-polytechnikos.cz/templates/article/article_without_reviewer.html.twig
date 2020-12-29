@@ -1,8 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    {% set cardTitle %}Články, ke kterým je třeba přiřadit recenzenta{% endset %}
-    {% include 'article/redaktor_widget.html.twig' %}
+    {% include 'article/redaktor_widget.html.twig' with { 'filter' : 3 } %}
 {% endblock %}
 
 {% block javascripts %}

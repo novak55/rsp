@@ -317,6 +317,7 @@ class ArticleController extends AbstractController
 	 */
 	public function articleForDecision(): Response
 	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
 			return $this->render('security/secerr.html.twig');
 		}
@@ -325,4 +326,19 @@ class ArticleController extends AbstractController
 		]);
 	}
 
+	/**
+	 * @Route("/article-all")
+	 * @return Response
+	 */
+	public function allArticles(): Response
+	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		if (!($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR'))) {
+			return $this->render('security/secerr.html.twig');
+		}
+
+		return $this->render('article/all_articles.html.twig', [
+			'articles' => $this->articleRepository->getAllArticles()
+		]);
+	}
 }

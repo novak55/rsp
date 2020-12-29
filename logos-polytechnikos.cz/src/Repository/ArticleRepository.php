@@ -85,6 +85,19 @@ class ArticleRepository
 		return $qb->getQuery()->getResult();
 	}
 
+	/**
+	 * @return Article[]|null
+	 */
+	public function getAllArticles(): array
+	{
+		$qb = $this->em->createQueryBuilder()
+			->select('a')
+			->from(Article::class, 'a')
+			->andWhere('a.currentState > 1');
+
+		return $qb->getQuery()->getResult();
+	}
+
 	public function countArticlesWithoutReviewers(): int
 	{
 		$qb = $this->em->createQueryBuilder()

@@ -1,10 +1,20 @@
-{% include 'article/articles_table.html.twig' with { 'tableTitle' : 'Moje články k recenzi' } %}
+{% set filter = filter is defined ? filter : 1 %}
 
 <div class="row justify-content-center">
     <div class="col col-xl-10 col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title float-left">{% if cardTitle is defined %}{{ cardTitle }}{% else %}Články{% endif %}</h5>
+                <h5 class="card-title float-left">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item"><a class="nav-link">Články:</a> </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 1 %}active {% endif %}" href="{{ path('rsp') }}">Články k recenzi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 2 %}active {% endif %}"" href="{{ path('app_review_myreviewedarticle') }}">Recenzované články</a>
+                        </li>
+                    </ul>
+                </h5>
                 <div class="float-right">
                     <div class="form-inline my-2 my-lg-0">
                         <label for="#table-page-size">Záznamů na stránce: </label>

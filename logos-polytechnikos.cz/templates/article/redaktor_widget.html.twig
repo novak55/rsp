@@ -1,9 +1,26 @@
-{% include 'article/articles_table.html.twig' with { 'tableTitle' : 'Neuzavřené články' } %}
+{% set filter = filter is defined ? filter : 1 %}
+
 <div class="row justify-content-center">
     <div class="col col-xl-10 col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title float-left">{% if cardTitle is defined %}{{ cardTitle }}{% else %}Články{% endif %}</h5>
+                <h5 class="card-title float-left">
+                    <ul class="nav nav-pills card-header-pills">
+                        <li class="nav-item"><a class="nav-link">Články:</a> </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 1 %}active{% endif %}" href="{{ path('rsp') }}">Neuzavřené</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 3 %}active{% endif %}" href="{{ path('app_article_articlewithoutreviewer') }}">K přiřazení recenzenta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 4 %}active{% endif %}" href="{{ path('app_article_articlefordecision') }}">K rozhodnutí</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if filter == 2 %}active{% endif %}" href="{{ path('app_article_allarticles') }}">Všechny</a>
+                        </li>
+                    </ul>
+                </h5>
                 <div class="float-right">
                     <div class="form-inline my-2 my-lg-0">
                         <label for="#table-page-size">Záznamů na stránce: </label>
@@ -21,108 +38,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive dt-hide-filter">
-                    <table class="table table-striped datatable_filter">
-                        <thead>
-                        <tr>
-                            <th><i class="fa fa-signature">&nbsp;</i>Název</th>
-                            <th><i class="fa fa-flag">&nbsp;</i>Stav</th>
-                            <th><i class="fa fa-user">&nbsp;</i>Autor</th>
-                            <th><i class="fa fa-calendar-alt">&nbsp;</i>Datum vložení</th>
-                            <th class="datatable-ignore"><i class="fa fa-users">&nbsp;</i>Spoluautoři</th>
-                            <th class="datatable-ignore"><i class="fa fa-users">&nbsp;</i>Recenzenti</th>
-                            <th class="no-sort datatable-ignore"><i class="fa fa-tasks">&nbsp;</i>Činnosti</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% if articles|length > 0 %}
-                            {% for article in articles %}
-                                <tr>
-                                    <td data-sort="{{ article.name }}" data-filter="{{ article.name }}">
-                                        {% include 'article/get_article_attachment.html.twig' %}
-                                    </td>
-                                    <td>{{ article.currentState.state }}{% if article.currentState.id == 4 %} ({{ article.reviews|length }}x){% endif %}</td>
-                                    <td data-sort="{{ article.author.surname }}">{{ article.author.fullNameByName }}</td>
-                                    <td data-sort="{{ article.insertDate|date('U') }}"
-                                        class="text-center">{{ article.insertDate|date('d.m.Y') }}</td>
-                                    <td class="col-2">
-                                        {% if article.collaborators|length > 0 %}
-                                            {% for collaborator in article.collaborators %}
-                                                {{ collaborator.fullName }}<br>
-                                            {% endfor %}
-                                        {% else %}
-                                            Neuvedeni
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <ul class="list-group with-action">
-                                            {% if article.reviews|length > 0 %}
-                                                {% for review in article.reviews %}
-                                                    <li title="{% if review.reviewerStatement|length > 0 %}{{ review.reviewerStatement.statement }}{% endif %}"
-                                                        class="list-group-item {% if review.reviewerStatement|length > 0%}{% if review.reviewerStatement.id == 1 %} list-group-item-success{% elseif review.reviewerStatement.id == 2 %} list-group-item-warning{% else %} list-group-item-danger{% endif %}{% endif %}">
-                                                        <div class="title">{{ review.reviewer.fullName }}</div>
-                                                        <div class="action">
-                                                            {% if review.reviewState.id > 1 %}
-                                                                <a href="#"
-                                                                   class="btn btn-sm btn-outline-secondary confirm"
-                                                                   data-confirm-title="Recenze článku"
-                                                                   data-confirm-buttons='<button type="button" class="btn btn-outline-secondary mb-2" data-dismiss="modal">Zavřít</button>'
-                                                                   data-confirm-url="{{ path('app_review_showreview', {review: review.id}) }}"
-                                                                   title="Zobrazit posudek"><i class="fa fa-eye"></i>
-                                                                </a>
-                                                            {% endif %}
-                                                        </div>
-                                                    </li>
-                                                {% endfor %}
-                                            {% endif %}
-                                            {% if article.hasDifferentReviewersStatement or (article.reviews|length < 2 and (article.currentState.id == 2 or article.currentState.id == 4)) %}
-                                                <li class = "list-group-item">
-                                                    <a href="{{ path('app_user_addreviewerarticle', {article: article.id}) }}" class="btn btn-sm btn-outline-secondary open-form w-100" title="Přidat recenzenta"><i class="fa fa-user-plus"></i></a>
-                                                </li>
-                                            {% endif %}
-                                        </ul>
-                                    </td>
-                                    <td class="text-center nowrap">
-                                        {% if is_granted('ROLE_REDAKTOR') %}
-                                            {% if article.reviews|length > 1 and article.hasFilledReviewersStatement and is_granted('ROLE_REDAKTOR') %}
-                                                <a href="{{ path('app_article_showarticle', {article: article.id}) }}"
-                                                   class="btn btn-sm btn-outline-secondary"
-                                                   title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
-                                                </a>
-                                            {% else %}
-                                                <a href="#"
-                                                   class="btn btn-sm btn-light disabled"
-                                                   title="Zobrazit detail článku"><i class="fa fa-info-circle"></i>
-                                                </a>
-                                            {% endif %}
-                                            {% if article.currentState.id == 2 %}
-                                                <a href="{{ path('app_article_returnarticlenotsuitablethema', {article: article.id, uri: app.request.get('_route')}) }}"
-                                                    class="btn btn-outline-secondary btn-sm confirm"
-                                                    data-confirm-title = "Vrácení článku"
-                                                    data-confirm-text = "Opravdu si přejete vrátit článek: {{ article.name}} z důvodu tématické nevhodnosti?"
-                                                    title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
-                                            {% else %}
-                                                <a href="#"
-                                                   class="btn btn-light btn-sm confirm disabled"
-                                                   title="Vrátit článek z důvodu tématické nevhodnosti."><i class="fa fa-arrow-left"></i></a>
-                                            {% endif %}
-                                            <a href="#"
-                                               class="btn btn-sm btn-outline-secondary"
-                                               title="Historie"><i class="fa fa-history"></i>
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4" class="bg-danger text-center">Nebyl nalezen žádný článek.</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-                {# include 'article/articles_table.html.twig'   #}
+                {% include 'article/articles_table.html.twig' %}
             </div>
         </div>
     </div>

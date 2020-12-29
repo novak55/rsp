@@ -1,7 +1,7 @@
+    {% if review is not null and review.comments|length > 0 %}
 <div class="list-group">
     <div class="row">
-    {% if review is not null and review.comments|length > 0 %}
-    {% for comment in review.comments|reverse %}
+        {% for comment in review.comments|reverse %}
             {% if comment.user == app.user %}
                 <div class="col-2">
                     {% if comment.unreadComment(app.user) == true %}<span class="text-danger bold"><i class="fa fa-exclamation"></i></span>{% endif %}
@@ -24,7 +24,7 @@
                     </span>
                 </div>
             {% endif%}
-    {% endfor %}
-    {% endif %}
+        {% endfor %}
     </div>
 </div>
+    {% endif %}

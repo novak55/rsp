@@ -122,14 +122,21 @@ class Article
 
 	/**
 	 * @param User $user
-	 * @return ArrayCollection|Collection|Review
+	 * @return ArrayCollection|Collection|Review|null
 	 */
 	public function getReviewByUser(User $user)
 	{
-		return $this->getReviews()
+		$reviews = $this->getReviews()
 			->matching(Criteria::create()
 				->where(Criteria::expr()
-					->eq('reviewer', $user)))->first();
+					->eq('reviewer', $user)));
+		
+		if ($reviews != null and count($reviews) > 0) {
+			return $reviews;
+		}
+		else {
+			return $this->getReviews();
+		}
 	}
 
 	public function hasFilledReviewersStatement(): bool

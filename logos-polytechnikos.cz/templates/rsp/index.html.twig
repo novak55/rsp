@@ -10,16 +10,7 @@
         {% include 'article/redaktor_widget.html.twig' %}
     {% endif %}
     {% if is_granted('ROLE_RECENZENT') %}
-        {% set cardTitle %}<ul class="nav nav-pills card-header-pills">
-            <li class="nav-item">
-                <a class="nav-link active" href="{{ path('rsp') }}">Články k recenzi</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_review_myreviewedarticle') }}">Recenzované články</a>
-            </li>
-        </ul>
-        {% endset %}
-        {% include 'article/recenzent_widget.html.twig' %}
+        {% include 'article/recenzent_widget.html.twig'%}
     {% endif %}
 
 {% endblock %}
