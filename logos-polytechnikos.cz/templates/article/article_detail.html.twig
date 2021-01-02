@@ -80,6 +80,30 @@
                     <div class="row w-100">
                         <div class="col-12">
                             <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Verze</h5>
+                                </div>
+                                <div class="card-body">
+                                     <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Název</th>
+                                                <th>Verze</th>
+                                                <th>Datum vložení</th>
+                                                <th>Stav</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                     </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-12">
+                            <div class="card mt-3">
                                 {% set reviews = article.getReviewByUser(app.user) %}
                                 {% set review = reviews|first %}
                                 <div class="card-header">
