@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Article;
 use App\Entity\Review;
 use App\Entity\TepmlateHistory;
+use App\Entity\FileAttachment;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -46,5 +47,15 @@ class FileRepository
 	{
 		return $this->em->getRepository(TepmlateHistory::class)->findBy([], ['date' => 'DESC']);
 	}
+
+	/**
+     * @return FileAttachment[]|null
+     */
+	public function getAllFileAttachmentsByArticle(Article $article)
+	{
+	   return $this->em->getRepository(FileAttachment::class)->findBy(['article' => $article], ['id' => 'ASC']);
+	}
+
+
 
 }
