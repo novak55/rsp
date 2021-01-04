@@ -87,13 +87,22 @@
                                      <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Název</th>
                                                 <th>Verze</th>
+                                                <th>Název</th>
                                                 <th>Datum vložení</th>
-                                                <th>Stav</th>
+                                                <th>Stažení</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {% for fileAttachment in fileAttachments %}
+                                            {% set counter = ( counter | default(0) ) + 1 %}
+                                                <tr>
+                                                    <td>{{ counter }}</td>
+                                                    <td>{{ fileAttachment.fileName }}</td>
+                                                    <td>{{ fileAttachment.inserted|date('Y-m-d H:i:s') }}</td>
+                                                    <td><a href="{{ path('app_file_downloadattachment', {fileAttachment: fileAttachment.id}) }}" title="Stáhnout článek"><i class="fa fa-download"></i></a></td>
+                                                </tr>
+                                            {% endfor %}
                                         </tbody>
                                      </table>
                                 </div>

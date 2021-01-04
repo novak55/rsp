@@ -4,7 +4,12 @@
 {% endif %}
 
 {% if is_granted('ROLE_AUTOR') %}
-    <a href=# title="Nahrát novou verzi článku" class="btn btn-block btn-primary mt-1" role="button">Nahrát novou verzi článku</a><br>
+    <a class="btn btn-block btn-primary mt-1"
+        href="{{ path('app_article_addarticleversion', {article: article.id}) }}"
+        title="Nahrát novou verzi článku"
+        role="button"
+    >Nahrát novou verzi článku</a><br>
+
     {% if article.currentState.id == 1 %}
         <a class="btn btn-block btn-primary mt-1"
             href="{{ path('app_article_submitarticle', {article: article.id}) }}"

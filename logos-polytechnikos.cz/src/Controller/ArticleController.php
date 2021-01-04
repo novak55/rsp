@@ -11,6 +11,7 @@ use App\Form\ArticleCollaboratorType;
 use App\Form\ArticleTypeArticle;
 use App\Manager\RspManager;
 use App\Repository\ArticleRepository;
+use App\Repository\FileRepository;
 use App\Service\FileUploader;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,9 @@ class ArticleController extends AbstractController
 	/** @var ArticleRepository */
 	private $articleRepository;
 
+	/** @var FileRepository */
+    private $fileRepository;
+
 	/** @var FlashBagInterface */
 	private $flashBag;
 
@@ -50,12 +54,14 @@ class ArticleController extends AbstractController
 
 	public function __construct(
 		ArticleRepository $articleRepository,
+		FileRepository $fileRepository,
 		FlashBagInterface $flashBag,
 		FormFactoryInterface $formFactory,
 		RspManager $manager
 	)
 	{
 		$this->articleRepository = $articleRepository;
+		$this->fileRepository = $fileRepository;
 		$this->flashBag = $flashBag;
 		$this->formFactory = $formFactory;
 		$this->manager = $manager;
@@ -156,6 +162,23 @@ class ArticleController extends AbstractController
 
 		return $this->addArticle($request, $fileUploader, $article);
 	}
+
+	/**
+     * @Route("/add-article-version/{article}")
+     * @param Request $request
+     * @param FileUploader $fileUploader
+     * @param Article $article
+     * @return RedirectResponse|Response
+     */
+    public function addArticleVersion(Request $request, FileUploader $fileUploader, Article $article)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        if ($article->getAuthor() !== $this->getUser()) {
+            return $this->render('security/secerr.html.twig');
+        }
+
+        return $this->addArticle($request, $fileUploader, $article);
+    }
 
 	/**
 	 * @Route("/diasble-collaborator/{collaborator}")
@@ -295,6 +318,7 @@ class ArticleController extends AbstractController
 	{
 		return $this->render('article/article_detail.html.twig', [
 			'article' => $article,
+			'fileAttachments' => $this->fileRepository->getAllFileAttachmentsByArticle($article)
 		]);
 	}
 	/**
