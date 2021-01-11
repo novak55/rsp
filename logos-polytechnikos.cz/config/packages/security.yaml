@@ -21,7 +21,7 @@ security:
 
             logout:
                 path: /logout
-                target: /
+                target: /power-on
 
     role_hierarchy:
         ROLE_UZIVATEL: ROLE_LOCAL_USER

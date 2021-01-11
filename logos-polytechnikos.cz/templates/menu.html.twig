@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark topmenu">
-    <a class="navbar-brand" title="Zobrazit domovskou stránku" href="/"> {{ setting.settings.companyName ?? 'Název firmy není dostupný' }} <span class="small">v.0.5.<i>B</i></span></a>
+    <a class="navbar-brand" title="Zobrazit domovskou stránku" href="/"> {{ setting.settings.companyName ?? 'Název firmy není dostupný' }} <span class="small">v.1.0</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -118,7 +118,11 @@
     {% endif %}
 {% endif %}
         </ul>
-{% if app.user %}
+    {% if app.session.get('enterPage') is defined and app.session.get('enterPage') == true %}
+        <a class="nav-link btn" title="Odpojit se od aplikace" href="{{ path('app_security_poweroff') }}"><i class="fa fa-power-off"></i></a>
+    {% endif %}
+
+        {% if app.user %}
     <div class="dropdown">
         <button class="btn btn-navbar dropdown-toggle" type="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-user"></i>   {{ app.user.fullName }}

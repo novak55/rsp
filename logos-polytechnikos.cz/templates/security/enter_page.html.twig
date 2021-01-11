@@ -1,0 +1,25 @@
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="alert alert-danger col-md-8 text-center">
+            <h1>Přístup omezen</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h2>Projekt týmu DEADLINE do předmětu RSP</h2>
+        </div>
+    </div>    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            {% if app.session.get('pwdEnterPageError') is defined  and app.session.get('pwdEnterPageError') == true %}
+                <div class="alert alert-warning">Nebylo zadáno správné heslo!</div>
+            {% endif %}
+            Zadejte heslo
+            <form>
+                <input type="password" name="enterPage" value="RSP2020VSPJ">
+                <input type="submit" value="Vstoupit">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+

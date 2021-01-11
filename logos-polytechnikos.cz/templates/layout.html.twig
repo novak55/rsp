@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-
+    {% if app.session.has('enterPage') and app.session.get('enterPage') == true %}
     <div id="novyFormlModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg" >
             <div class="modal-content">
@@ -60,6 +60,10 @@
 
     <img src="https://www.vspj.cz//2017/images/tetris_footer_red.svg" alt="" style="margin-top: 50px; margin-bottom: -1px;">
     <footer class="pb-5 pt-3 bg-red print-hidden" style="background-color: #E8212E;"></footer>
+    {% else %}
+        {% include 'security/enter_page.html.twig' %}
+    {% endif %}
+
 {% endblock %}
 
 {% block javascripts %}
