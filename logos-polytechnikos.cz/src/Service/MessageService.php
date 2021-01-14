@@ -37,10 +37,10 @@ class MessageService extends AbstractController
 				$countArticlesWithoutReviewers = $this->articleRepository->countArticlesWithoutReviewers();
 				$countArticlesForDecision = $this->articleRepository->countArticlesForDecision();
 				if ($countArticlesWithoutReviewers > 0) {
-					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '">Počet článků ke kterým je nutné přiřadit recenzenta: ' . $countArticlesWithoutReviewers . '!</a>';
+					$typeAndMessage['secondary'] .= '<span class="col"><i class="fa fa-info-circle text-info"></i> <a data-toggle="tooltip" data-placement="bottom" href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '">Počet článků ke kterým je nutné přiřadit recenzenta: ' . $countArticlesWithoutReviewers . '</a></span>';
 				}
 				if ($countArticlesForDecision > 0) {
-					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_article_articlefordecision') . '">Počet článků pro rozhodnutí: ' . $countArticlesForDecision . '!</a>';
+					$typeAndMessage['secondary'] .= '<span class="col"><i class="fa fa-info-circle text-info"></i> <a data-toggle="tooltip" data-placement="bottom" href="' . $this->generateUrl('app_article_articlefordecision') . '">Počet článků pro rozhodnutí: ' . $countArticlesForDecision . '</a></span>';
 				}
 			}
 			if ($this->isGranted('ROLE_AUTOR')) {
@@ -52,36 +52,43 @@ class MessageService extends AbstractController
 				$countAcceptedArticlesDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateOverPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PRIJATO));
 				$countAcceptedArticlesDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateOverPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PRIJATO));
 				if ($countAcceptedArticlesDuringPrviousDays > 0) {
-					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col"
+					$typeAndMessage['secondary'] .= '<span class="col"><i class="fa fa-info-circle text-info"></i> <a data-toggle="tooltip" data-placement="bottom"
                     href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 6]) . '"
-                    title="Počet článků které byly přijaté během posledních' . $duringPreviousDays . ' dní">Přijaté články: ' . $countAcceptedArticlesDuringPrviousDays . '!</a>';
+                    title="Počet článků které byly přijaté během posledních ' . $duringPreviousDays . ' dní">Přijaté články: ' . $countAcceptedArticlesDuringPrviousDays . '</a></span>';
 				}
 				if ($countArticlesForRevisionDuringPrviousDays > 0) {
-					$typeAndMessage['warning'] .= '<a class="list-group-item list-group-item-info col"
+					$typeAndMessage['warning'] .= '<span class="col"><i class="fa fa-exclamation-triangle text-white"></i> <a data-toggle="tooltip" data-placement="bottom"
                     href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 3]) . '"
-                    title="Počet článků vrácených k přepracování za posledních' . $duringPreviousDays . ' dní">Vrácené články: ' . $countArticlesForRevisionDuringPrviousDays . '!</a>';
+                    title="Počet článků vrácených k přepracování za posledních ' . $duringPreviousDays . ' dní">Vrácené články: ' . $countArticlesForRevisionDuringPrviousDays . '</a></span>';
 				}
 				if ($countRefusedArticlesDuringPrviousDays > 0) {
-					$typeAndMessage['danger'] .= '<a class="list-group-item list-group-item-info col"
+					$typeAndMessage['danger'] .= '<span class="col"><i class="fa fa-exclamation-triangle text-white"></i> <a data-toggle="tooltip" data-placement="bottom"
                     href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 7]) . '"
-                    title="Počet článků zamítnutých za posledních' . $duringPreviousDays . ' dní">Zamítnuté články: ' . $countRefusedArticlesDuringPrviousDays . '!</a>';
+                    title="Počet článků zamítnutých za posledních ' . $duringPreviousDays . ' dní">Zamítnuté články: ' . $countRefusedArticlesDuringPrviousDays . '</a></span>';
 				}
 				if ($countArticlesInReviewStateDuringPrviousDays > 0) {
-					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col"
+					$typeAndMessage['secondary'] .= '<span class="col"><i class="fa fa-info-circle text-info"></i> <a data-toggle="tooltip" data-placement="bottom"
                     href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '"
-                    title="Počet článků které jsou v recenzním řízení za posledních ' . $duringPreviousDays . ' dní">Články v recenzním řízení: ' . $countArticlesInReviewStateDuringPrviousDays . '!</a>';
+                    title="Počet článků které jsou v recenzním řízení za posledních ' . $duringPreviousDays . ' dní">Články v recenzním řízení: ' . $countArticlesInReviewStateDuringPrviousDays . '</a></span>';
 				}
 
 				if ($countArticlesInReviewStateOverPrviousDays > 0) {
-					$typeAndMessage['warning'] .= '<a class="list-group-item list-group-item-info col"
+					$typeAndMessage['warning'] .= '<span class="col"><i class="fa fa-exclamation-triangle text-white"></i> <a data-toggle="tooltip" data-placement="bottom"
                     href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '"
-                    title="Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní">Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní: ' . $countArticlesInReviewStateOverPrviousDays . '</a>';
+                    title="Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní">Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní: ' . $countArticlesInReviewStateOverPrviousDays . '</a></span>';
 				}
 			}
 			$countUnreadComments = $this->reviewRepository->countUnreadComments($this->getUser());
 			if ($countUnreadComments > 0) {
-				$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_comment_showreviewhascomment') . '">Máte nepřečtené komentáře v diskusi: ' . $countUnreadComments . '!</a>';
-			}
+			    if($countUnreadComments == 1) {
+                    $pluralComments = " nepřečtený komentář";
+                } else if($countUnreadComments < 5) {
+                    $pluralComments = " nepřečtených komentářů";
+                }  else {
+			        $pluralComments = " nepřečtených komentářů";
+                }
+                $typeAndMessage['secondary'] .= '<span class="col"><i class="fa fa-info-circle text-info"></i> <a data-toggle="tooltip" data-placement="bottom" href="' . $this->generateUrl('app_comment_showreviewhascomment') . '">Máte '.$countUnreadComments.' '.$pluralComments.' v diskusi. </a></span>';
+            }
 
 			foreach ($typeAndMessage as $type => $messages) {
 				if ($typeAndMessage[$type] !== null) {

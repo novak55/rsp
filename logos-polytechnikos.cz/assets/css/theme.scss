@@ -60,9 +60,21 @@
     padding: 1em;
     background: #f3333f;
 
+    i {
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      transition-property: color, background-color, border-color, box-shadow;
+      transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+      transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
+      transition-delay: 0s, 0s, 0s, 0s;
+    }
+
     &:hover {
       color: black;
       background: white;
+
+      i {
+        color: black !important;
+      }
     }
   }
 
@@ -193,4 +205,31 @@ nav i:hover {
 
 .card .nav {
   font-size: 0.7em;
+}
+
+.alert .col {
+  border-right: 1px solid gray;
+}
+
+.alert.alert-warning, .alert.alert-danger {
+  .col {
+    border-right: 1px solid white;
+
+    a {
+      color: white !important;
+    }
+  }
+
+  .close {
+    color: white;
+  }
+}
+
+.alert .col:last-child {
+  border-right: none;
+}
+
+.alert i.fa {
+  padding-right: 5px;
+  vertical-align: center;
 }
