@@ -5,8 +5,10 @@ namespace App\Repository;
 use App\Controller\ArticleController;
 use App\Entity\Article;
 use App\Entity\ArticleState;
+use App\Entity\ArticleStateHistory;
 use App\Entity\Review;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -157,7 +159,8 @@ class ArticleRepository
 	/**
 	 * @return Article[]|null
 	 */
-	public function getArticlesWithFinishedReviews() {
+	public function getArticlesWithFinishedReviews(): ?array
+	{
 		$qb = $this->em->createQueryBuilder()
 			->select('a')
 			->from(Article::class, 'a')
@@ -168,7 +171,7 @@ class ArticleRepository
 			->from(Review::class, 'r1')
 			->andWhere('r1.article = a')
 			->andWhere('r1.reviewState = 1');
-		
+
 		$qb->andWhere($qb->expr()->not($qb->expr()->exists($sub1->getDQL())));
 
 		return $qb->getQuery()->getResult();
@@ -177,7 +180,8 @@ class ArticleRepository
 	/**
 	 * @return Article[]|null
 	 */
-	public function getArticlesWithNoReviews() {
+	public function getArticlesWithNoReviews(): ?array
+	{
 		$qb = $this->em->createQueryBuilder()
 			->select('a')
 			->from(Article::class, 'a')
@@ -186,5 +190,30 @@ class ArticleRepository
 		return $qb->getQuery()->getResult();
 	}
 
+	public function getCountArticlesInAskedStateDuringPrviousDays(int $duringPreviousDays, User $user, ArticleState $articleState): int
+	{
+		$from = new DateTime(-$duringPreviousDays . ' days');
+		$qb = $this->em->createQueryBuilder()
+			->select('count(a.id)')
+			->from(Article::class, 'a')
+			->where('a.currentState = :articleState and a.author = :author')
+            ->andWhere('a.id in (SELECT IDENTITY(h.article) FROM ' . ArticleStateHistory::class . ' h WHERE h.date > :from and h.article = a.id)')
+			->setParameters(['articleState' => $articleState, 'author' => $user, 'from' => $from]);
+			$result = $qb->getQuery()->getOneOrNullResult();
+		return $result !== null ? (int)$result[1] : 0;
+	}
+	
+	public function getCountArticlesInAskedStateOverPrviousDays(int $duringPreviousDays, User $user, ArticleState $articleState): int
+	{
+		$from = new DateTime(-$duringPreviousDays . ' days');
+		$qb = $this->em->createQueryBuilder()
+			->select('count(a.id)')
+			->from(Article::class, 'a')
+			->where('a.currentState = :articleState and a.author = :author')
+            ->andWhere('a.id in (SELECT IDENTITY(h.article) FROM ' . ArticleStateHistory::class . ' h WHERE h.date <= :from and h.article = a.id)')
+			->setParameters(['articleState' => $articleState, 'author' => $user, 'from' => $from]);
+			$result = $qb->getQuery()->getOneOrNullResult();
+		return $result !== null ? (int)$result[1] : 0;
+	}
 
 }

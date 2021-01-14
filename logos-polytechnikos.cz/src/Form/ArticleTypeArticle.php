@@ -40,7 +40,7 @@ class ArticleTypeArticle extends ArticleCollaboratorType
 				'label' => 'Zařazení článku k edici',
 				'required' => true,
 				'choice_label' => static function (Magazine $magazine) {
-					return $magazine->getDeadline()->format('Y') . '/Ročník' . ($magazine->getDeadline()->format('Y') - 2009) . '/Číslo' . $magazine->getNumber() . ' - ' . $magazine->getMagazineThema()->getTheme();
+					return $magazine->getDeadline()->format('Y') . '/Ročník' . ($magazine->getDeadline()->format('Y') - 2009) . '/Číslo' . $magazine->getNumber() . ' - ' . $magazine->getMagazineThema()->getTheme() . ' (' . $magazine->getArticles(true)->count() . ')';
 				},
 				'query_builder' => static function (EntityRepository $er) {
 					return $er->createQueryBuilder('m')
