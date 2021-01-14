@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Controller\ArticleController;
 use App\Repository\ArticleRepository;
 use App\Repository\ReviewRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,11 @@ class MessageService extends AbstractController
 	 */
 	public function getMessages(): ?array
 	{
-		$typeAndMessage = ['secondary' => null];
+		$typeAndMessage['secondary'] = null;
+		$typeAndMessage['warning'] = null;
+		$typeAndMessage['danger'] = null;
+		$typeAndMessage['success'] = null;
+		$typeAndMessage['primary'] = null;
 		if ($this->getUser() !== null) {
 			if ($this->isGranted('ROLE_REDAKTOR') || $this->isGranted('ROLE_SEFREDAKTOR')) {
 				$countArticlesWithoutReviewers = $this->articleRepository->countArticlesWithoutReviewers();
@@ -38,14 +43,52 @@ class MessageService extends AbstractController
 					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_article_articlefordecision') . '">Počet článků pro rozhodnutí: ' . $countArticlesForDecision . '!</a>';
 				}
 			}
-            $countUnreadComments = $this->reviewRepository->countUnreadComments($this->getUser());
-            if ($countUnreadComments > 0) {
-                $typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_comment_showreviewhascomment') . '">Máte nepřečtené komentáře v diskusi: ' . $countUnreadComments . '!</a>';
-            }
-			if ($typeAndMessage['secondary'] !== null) {
-				$typeAndMessage['secondary'] = '<div class="row nowrap">' . $typeAndMessage['secondary'] . '</div>';
+			if ($this->isGranted('ROLE_AUTOR')) {
+				$duringPreviousDays = 14;
+				$countArticlesInReviewStateDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateDuringPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PREDANO_RECENZENTUM));
+				$countArticlesForRevisionDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateDuringPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_VRACENO));
+				$countRefusedArticlesDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateDuringPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_ZAMITNUTO));
+				$countArticlesInReviewStateOverPrviousDays = $this->articleRepository->getCountArticlesInAskedStateOverPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PREDANO_RECENZENTUM));
+				$countAcceptedArticlesDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateOverPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PRIJATO));
+				$countAcceptedArticlesDuringPrviousDays = $this->articleRepository->getCountArticlesInAskedStateOverPrviousDays($duringPreviousDays, $this->getUser(), $this->articleRepository->getStateArticleById(ArticleController::STAV_PRIJATO));
+				if ($countAcceptedArticlesDuringPrviousDays > 0) {
+					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col"
+                    href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 6]) . '"
+                    title="Počet článků které byly přijaté během posledních' . $duringPreviousDays . ' dní">Přijaté články: ' . $countAcceptedArticlesDuringPrviousDays . '!</a>';
+				}
+				if ($countArticlesForRevisionDuringPrviousDays > 0) {
+					$typeAndMessage['warning'] .= '<a class="list-group-item list-group-item-info col"
+                    href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 3]) . '"
+                    title="Počet článků vrácených k přepracování za posledních' . $duringPreviousDays . ' dní">Vrácené články: ' . $countArticlesForRevisionDuringPrviousDays . '!</a>';
+				}
+				if ($countRefusedArticlesDuringPrviousDays > 0) {
+					$typeAndMessage['danger'] .= '<a class="list-group-item list-group-item-info col"
+                    href="' . $this->generateUrl('app_article_myarticles', ['articleState' => 7]) . '"
+                    title="Počet článků zamítnutých za posledních' . $duringPreviousDays . ' dní">Zamítnuté články: ' . $countRefusedArticlesDuringPrviousDays . '!</a>';
+				}
+				if ($countArticlesInReviewStateDuringPrviousDays > 0) {
+					$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col"
+                    href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '"
+                    title="Počet článků které jsou v recenzním řízení za posledních ' . $duringPreviousDays . ' dní">Články v recenzním řízení: ' . $countArticlesInReviewStateDuringPrviousDays . '!</a>';
+				}
+
+				if ($countArticlesInReviewStateOverPrviousDays > 0) {
+					$typeAndMessage['warning'] .= '<a class="list-group-item list-group-item-info col"
+                    href="' . $this->generateUrl('app_article_articlewithoutreviewer') . '"
+                    title="Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní">Počet článků které jsou v recenzním řízení déle než posledních ' . $duringPreviousDays . ' dní: ' . $countArticlesInReviewStateOverPrviousDays . '</a>';
+				}
 			}
-			
+			$countUnreadComments = $this->reviewRepository->countUnreadComments($this->getUser());
+			if ($countUnreadComments > 0) {
+				$typeAndMessage['secondary'] .= '<a class="list-group-item list-group-item-info col" href="' . $this->generateUrl('app_comment_showreviewhascomment') . '">Máte nepřečtené komentáře v diskusi: ' . $countUnreadComments . '!</a>';
+			}
+
+			foreach ($typeAndMessage as $type => $messages) {
+				if ($typeAndMessage[$type] !== null) {
+					$typeAndMessage[$type] = '<div class="row nowrap">' . $typeAndMessage[$type] . '</div>';
+				}
+			}
+
 		}
 		return $typeAndMessage;
 	}

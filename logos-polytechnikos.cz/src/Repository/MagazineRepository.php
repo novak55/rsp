@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Article;
+use App\Entity\ArticleState;
 use App\Entity\Magazine;
 use App\Entity\MagazineState;
 use App\Entity\MagazineThema;
