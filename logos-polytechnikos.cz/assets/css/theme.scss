@@ -20,6 +20,7 @@
 
 .card .card-body {
   overflow: auto;
+
 }
 
 .card .card-body .form-group:last-child {
@@ -172,4 +173,24 @@ i[data-toggle=tooltip] {
       align-self: center;
     }
   }
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.89) !important;
+}
+
+.navbar-nav .nav-link:hover {
+  color: white !important;
+}
+
+nav i {
+  color: rgba(255, 255, 255, 0.89) !important;
+}
+
+nav i:hover {
+  color: white !important;
+}
+
+.card .nav {
+  font-size: 0.7em;
 }
